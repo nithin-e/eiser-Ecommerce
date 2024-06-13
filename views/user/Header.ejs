@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+  <link rel="icon" href="/img/fevicon.png" type="image/png" />
+  <title>ZeeCart</title>
+
+
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="/css/bootstrap.css" />
+  <link rel="stylesheet" href="/vendors/linericon/style.css" />
+  <link rel="stylesheet" href="/css/font-awesome.min.css" />
+  <link rel="stylesheet" href="/css/themify-icons.css" />
+  <link rel="stylesheet" href="/css/flaticon.css" />
+  <link rel="stylesheet" href="/vendors/owl-carousel/owl.carousel.min.css" />
+  <link rel="stylesheet" href="/vendors/lightbox/simpleLightbox.css" />
+  <link rel="stylesheet" href="/vendors/lightbox/simpleLightbox.css" />
+  <link rel="stylesheet" href="/vendors/nice-select/css/nice-select.css" />
+  <link rel="stylesheet" href="/vendors/animate-css/animate.css" />
+  <link rel="stylesheet" href="/vendors/jquery-ui/jquery-ui.css" />
+  <!-- main css -->
+  <!-- <link rel="stylesheet" href="css/style.css" /> -->
+  <link rel="stylesheet" href="/css/style.css" />
+  <link rel="stylesheet" href="/css/responsive.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+ 
+
+  <!-- login content -->
+</head>
+
+<body>
+
+  <div class="dropdown-menu" aria-labelledby="userDropdown">
+    <a class="dropdown-item" href="/user-profile">Profile</a>
+    <!-- Include onclick event to trigger SweetAlert -->
+    <a id="logoutButton" class="dropdown-item logoutLink" style="color: red" href="/logout" onclick="confirmLogout(event)">Logout</a>
+</div>
+
+<script>
+    function confirmLogout(event) {
+        event.preventDefault(); // Prevent the default link behavior
+
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, logout!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Redirect to the logout URL after the confirmation
+                window.location.href = event.target.href;
+            }
+        });
+    }
+</script>

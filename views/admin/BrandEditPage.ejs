@@ -1,0 +1,63 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Brand</title>
+    <link rel="stylesheet" href="/css/addcategory.css">
+
+    <style>
+        .success {
+            color:red;
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <%-include('../admin/adminpartials/Header')-%>
+    
+    <!-- navbar start  -->
+    <div class="content">
+        <%-include('../admin/adminpartials/adminNav')-%>
+        <!-- navbar start  -->
+        <!-- adminSidebar start -->
+        <%-include('../admin/adminpartials/adminSidebar')-%>
+        <!-- adminSidebar start -->
+
+        <div class="form-container" style="margin-left: 250px; margin-top: 80px;">
+            <h1>Edit Brand</h1>
+            <form action="/BrandApplyBotton" method="post" id="categoryForm">
+                <div class="form-group">
+                    <label for="name">Brand Name</label>
+                    <input type="text" value="<%= brandDetails.name %>" id="name" name="name">
+                    <span style="color: red;" id="error-message"></span>
+                </div>
+                <input type="hidden" name="id" value="<%= brandDetails.id %>">
+                <div class="form-actions">
+                    <button type="submit">Apply Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+<script>
+
+document.getElementById("categoryForm").addEventListener("submit", function(event) {
+        const nameInput = document.getElementById("name").value.trim();
+        const errorMessage = document.getElementById("error-message");
+        if (nameInput === "") {
+            event.preventDefault();
+            errorMessage.innerText ="Only Space not Allowed "
+        } 
+        if (/\d/.test(nameInput)) {
+            event.preventDefault();
+            errorMessage.innerText ="Number not Allowed"
+        } 
+    });
+</script>
+</html>
+

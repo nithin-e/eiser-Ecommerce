@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Product</title>
+    <link rel="stylesheet" href="/admin/css/editProduct.css">
+</head>
+<body>
+    <%- include('../admin/adminpartials/Header') -%>
+
+    <div class="content">
+        <%- include('../admin/adminpartials/adminNav') -%>
+        <%- include('../admin/adminpartials/adminSidebar') -%>
+
+        <div class="form-container">
+            <h1>Edit Product</h1>
+            <form id="productForm" action="/updateProduct/<%= product._id %>" method="POST" enctype="multipart/form-data">
+
+                <div class="form-group">
+                    <label for="productName">Name</label>
+                    <input type="text" id="productName" name="productName" value="<%= product.name %>" placeholder="Enter product name" required>
+                </div>
+                <div class="form-group">
+                    <label for="productImg">Images</label>
+                    <input type="file" id="productImg" name="productImg" accept="image/*" multiple>
+                    <div class="existing-images">
+                        <% product.images.forEach(image => { %>
+                            <img src="<%= image %>" alt="Product Image" width="100">
+                        <% }) %>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="description">Description</label>
+                    <textarea id="description" name="description" rows="4" placeholder="Enter product description" required><%= product.description %></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="stockQuantity">Stock Quantity</label>
+                    <input type="number" id="stockQuantity" name="stockQuantity" value="<%= product.stockQuantity %>" placeholder="Enter stock quantity" required>
+                </div>
+                <div class="form-group">
+                    <label for="category">Category</label>
+                    <select id="category" name="category" required>
+                        <% allcats.forEach(element => { %> 
+                            <option value="<%= element._id %>" <%= product.category.equals(element._id) ? 'selected' : '' %>><%= element.name %></option>
+                        <% }) %>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="brand">Brand</label>
+                    <select id="brand" name="brand" required>
+                        <% allbrands.forEach(element => { %>
+                            <option value="<%= element._id %>" <%= product.brand.equals(element._id) ? 'selected' : '' %>><%= element.name %></option>
+                        <% }) %>    
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="price">Price</label>
+                    <input type="number" id="price" name="price" value="<%= product.price %>" placeholder="Enter price" required>
+                </div>
+                <div class="form-actions">
+                    <button type="submit">Update Product</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

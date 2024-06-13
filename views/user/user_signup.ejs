@@ -1,0 +1,88 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up</title>
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/fonts/icomoon/style.css">
+
+    
+    <link rel="stylesheet" href="/css/owl.carousel.min.css">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    
+    <!-- Style -->
+    <link rel="stylesheet" href="/css/style1.css">
+    <style>
+        .error-message {
+            color: red;
+            text-align: center;
+            margin: 10px 0;
+        }
+    </style>
+   
+</head>
+<body>
+    <div class="content">
+        <% if (locals.nouser) { %>
+            <div class="error-message"><%= nouser %></div>
+        <% } %>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 order-md-2">
+                    <!-- Add any image or content for the signup page -->
+                    <img src="/img/undraw_file_sync_ot38.svg" alt="Image" class="img-fluid">
+                </div>
+                <div class="col-md-6 contents">
+                    <div class="row justify-content-center">
+                        <div class="col-md-8">
+                            <div class="mb-4">
+                                <h3>Sign Up</h3>
+                            </div>
+                            <form action="/signup" method="post">
+                                <div class="form-group" >
+                                    <label for="name">Name</label >
+                                    <input type="text" class="form-control" id="name" name="name" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="email">Email</label>
+                                    <input type="email" class="form-control" id="email" name="email" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="password">Password</label>
+                                    <input type="password" class="form-control" id="password" name="password" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="confirm_password">Confirm Password</label>
+                                    <input type="password" class="form-control" id="confirm_password" name="confirm_password" required>
+                                </div>
+               
+                                     <input type="submit" value="Sign Up" class="btn text-white btn-block btn-primary">
+                                  
+                                <br>
+                                <span class="label__sign-in">Already have an account?</span>
+                                <a href="/login" class="a__sign-in" style="color: green;">Log In</a>
+                                <span class="d-block text-left my-4 text-muted"> or sign up with</span> 
+                                <div class="social-login">
+                                    <a href="/auth/google" class="google">
+                                        <span class="icon-google mr-3"></span> 
+                                    </a>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="/js/jquery-3.3.1.min.js"></script>
+<script src="/js/popper.min.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/main.js"></script>
+</body>
+</html>
+
+

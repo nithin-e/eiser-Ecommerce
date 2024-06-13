@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="/fonts/icomoon/style.css">
+    <link rel="stylesheet" href="/css/owl.carousel.min.css">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    
+    <!-- Custom Style -->
+    <link rel="stylesheet" href="/css/style1.css">
+
+    
+</head>
+<body>
+    <style>
+        .error-message {
+            color: red;
+            text-align: center;
+            margin: 10px 0;
+        }
+    </style>
+<div class="content">
+    <div class="container">
+        <% if (locals.lock) { %>
+            <div class="error-message"><%= lock %></div>
+        <% } %>
+        <div class="row justify-content-center">
+            <div class="col-md-10 col-lg-8">
+                <div class="row login-wrapper">
+                    <div class="col-md-6 img-container">
+                        <img src="/img/Security on Customizable Cartoon Illustrations _ Bro Style (1).jpeg" alt="Image" class="img-fluid">
+                    </div>
+                    <div class="col-md-6 form-container">
+                        <div class="mb-4">
+                            <h3>Admin Sign In</h3>
+                        </div>
+                        <form action="/admin_login" method="post">
+                            <div class="form-group first">
+                                <label for="email">Email</label>
+                                <input type="email" class="form-control" id="email" name="email">
+                            </div>
+                            <div class="form-group last mb-4">
+                                <label for="password">Password</label>
+                                <input type="password" class="form-control" id="password" name="password">
+                            </div>
+                            <input type="submit" value="Log In" class="btn text-white btn-block btn-primary">
+                            <br>
+                            <div class="social-login">
+                               
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="/js/jquery-3.3.1.min.js"></script>
+<script src="/js/popper.min.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/main.js"></script>
+
+</body>
+</html>

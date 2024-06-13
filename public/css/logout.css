@@ -1,0 +1,357 @@
+
+/* General styles for the page */
+/* body {
+  font-family: Arial, sans-serif;
+  background-color: #f4f4f4;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+}
+
+
+.login-container {
+  margin: 10% auto;
+  position: relative;
+  height: 50vw;
+  width: 75vw;
+  max-width: 768.75px;
+  max-height: 502.5px;
+  background-size: contain;
+  overflow: hidden;
+  box-shadow: 0 0 5px grey;
+  font-family: Raleway, sans-serif;
+  background: #FFFFFF;
+}
+
+.left-shape {
+  position: absolute;
+  z-index: 5;
+  height: 69vw;
+  width: 69vw;
+  max-height: 705px;
+  max-width: 705px;
+  left: -40%;
+  top: -12%;
+  border-radius: 50%;
+  background: linear-gradient(-40deg, #B661F9, #815CE5, #5A51DA 65%);
+}
+
+.left-shape-cutout {
+  position: absolute;
+  height: 6.5%;
+  width: 17.5%;
+  border-bottom-left-radius: 50px;
+  border-top-left-radius: 50px;
+  background: white;
+  opacity: 1;
+  right: -1%;
+  top: 29.2%;
+  transition: all 1s ease-in;
+}
+
+.left-shape-cutout:nth-of-type(2) {
+  top: 41.5%;
+  width: 28%;
+}
+
+.left-shape-cutout:nth-of-type(3) {
+  top: 54%;
+  width: 17.5%;
+}
+
+.login-heading {
+  margin-left: 70%;
+  margin-top: 11%;
+  font-size: 2.8vw;
+  font-weight: bold;
+  color: #7E55E7;
+}
+
+.inputs {
+  height: 8%;
+  margin-left: 57%;
+  margin-top: 2%;
+  outline: none;
+  border: none;
+  border-bottom: 0.3px solid rgba(176, 178, 180, 0.61); 
+  width: 35%;
+  font-size: 1.2vw;
+  transition: all 1s;
+  color: grey;
+}
+
+.inputs:focus {
+  border-bottom: 1px solid #755EDF;
+}
+
+.inputs::placeholder {
+  font-size: 1.2vw;
+  color: #97A4BA;
+}
+
+.a__password-reset {
+  font-size: 1.1vw;
+  color: #97A4BA;
+  position: absolute;
+  width: 20%;
+  top: 55%;
+  right: 0;
+  text-decoration: none;
+}
+
+.button__sign-up {
+  margin-left: 61.5%;
+  margin-top: 15%;
+  width: 28%;
+  height: 8.5%;
+  outline: none;
+  border: none;
+  border-radius: 20px;
+  font-size: 1.5vw;
+  color: white;
+  cursor: pointer;
+  background: linear-gradient(-150deg, #B661F9, #815CE5, #5A51DA);
+  box-shadow: 0 1px 5px #5A51DA;
+  transition: all 0.5s;
+}
+
+.button__sign-up:hover {
+  transform: scale(1.01);
+}
+
+.label__login {
+  position: absolute;
+  font-size: 1.1vw;
+  right: 20%;
+  top: 65%;
+  color: #97A4BA;
+}
+
+.a__login {
+  position: absolute;
+  font-size: 1.2vw;
+  color: #9E7EEC;
+  font-family: sans-serif;
+  font-weight: bold;
+  text-decoration: none;
+  top: 65%;
+  right: 13.5%;
+}
+
+.credit {
+  position: absolute;
+  bottom: 1%;
+  right: 13%;
+  font-size: 1vw;
+  color: #97A4BA;
+}
+
+.credit a {
+  color: #815CE5;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.credit a:hover {
+  text-decoration: underline;
+}
+
+.social-container {
+  display: flex;
+  justify-content:end;
+  margin-top: -75px;
+  margin-right: 70px;
+}
+
+.social {
+  font-size: 2.5vw;
+  color: #db4437;
+  text-decoration: none;
+  transition: color 0.3s ease;
+  margin-right: 100px;
+}
+
+.social:hover {
+  color: #c23321;
+} */
+
+
+/* General styles for the page */
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f4f4f4;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+}
+
+.login-container {
+  margin: 10% auto;
+  position: relative;
+  height: 50vw;
+  width: 75vw;
+  max-width: 768.75px;
+  max-height: 502.5px;
+  background-size: contain;
+  overflow: hidden;
+  box-shadow: 0 0 5px grey;
+  font-family: Raleway, sans-serif;
+  background: #FFFFFF;
+}
+
+.left-shape {
+  position: absolute;
+  z-index: 5;
+  height: 69vw;
+  width: 69vw;
+  max-height: 705px;
+  max-width: 705px;
+  left: -40%;
+  top: -12%;
+  border-radius: 50%;
+  background: linear-gradient(-40deg, #4CAF50, #FFFFFF, #4CAF50 65%);
+}
+
+.left-shape-cutout {
+  position: absolute;
+  height: 6.5%;
+  width: 17.5%;
+  border-bottom-left-radius: 50px;
+  border-top-left-radius: 50px;
+  background:#4CAF50;
+  opacity: 1;
+  right: -1%;
+  top: 29.2%;
+  transition: all 1s ease-in;
+}
+
+.left-shape-cutout:nth-of-type(2) {
+  top: 41.5%;
+  width: 28%;
+}
+
+.left-shape-cutout:nth-of-type(3) {
+  top: 54%;
+  width: 17.5%;
+}
+
+.login-heading {
+  margin-left: 70%;
+  margin-top: 11%;
+  font-size: 2.8vw;
+  font-weight: bold;
+  color: #4CAF50;
+}
+
+.inputs {
+  height: 8%;
+  margin-left: 57%;
+  margin-top: 2%;
+  outline: none;
+  border: none;
+  border-bottom: 0.3px solid rgba(176, 178, 180, 0.61); 
+  width: 35%;
+  font-size: 1.2vw;
+  transition: all 1s;
+  color: green;
+}
+
+.inputs:focus {
+  border-bottom: 1px solid #4CAF50;
+}
+
+.inputs::placeholder {
+  font-size: 1.2vw;
+  color: #4CAF50;
+}
+
+.a__password-reset {
+  font-size: 1.1vw;
+  color: #4CAF50;
+  position: absolute;
+  width: 20%;
+  top: 55%;
+  right: 0;
+  text-decoration: none;
+}
+
+.button__sign-up {
+  margin-left: 61.5%;
+  margin-top: 15%;
+  width: 28%;
+  height: 8.5%;
+  outline: none;
+  border: none;
+  border-radius: 20px;
+  font-size: 1.5vw;
+  color: white;
+  cursor: pointer;
+  background: linear-gradient(-150deg, #4CAF50, #4CAF50);
+  box-shadow: 0 1px 5px #4CAF50;
+  transition: all 0.5s;
+}
+
+.button__sign-up:hover {
+  transform: scale(1.01);
+}
+
+.label__login {
+  position: absolute;
+  font-size: 1.1vw;
+  right: 20%;
+  top: 65%;
+  color: #4CAF50;
+}
+
+.a__login {
+  position: absolute;
+  font-size: 1.2vw;
+  color: #4CAF50;
+  font-family: sans-serif;
+  font-weight: bold;
+  text-decoration: none;
+  top: 65%;
+  right: 13.5%;
+}
+
+.credit {
+  position: absolute;
+  bottom: 1%;
+  right: 13%;
+  font-size: 1vw;
+  color: #4CAF50;
+}
+
+.credit a {
+  color: #4CAF50;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.credit a:hover {
+  text-decoration: underline;
+}
+
+.social-container {
+  display: flex;
+  justify-content: end;
+  margin-top: -75px;
+  margin-right: 70px;
+}
+
+.social {
+  font-size: 2.5vw;
+  /* color: #4CAF50; */
+  color: rgba(15, 103, 226, 0.852);
+  text-decoration: none;
+  transition: color 0.3s ease;
+  margin-right: 100px;
+}
+
+.social:hover {
+  color: #2E7D32;
+}

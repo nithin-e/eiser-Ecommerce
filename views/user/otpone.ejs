@@ -1,0 +1,262 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OTP Verification | Your Company</title>
+    <link rel="stylesheet" href="/css/otp.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+   
+    <style>
+        .error-message {
+            color: red;
+            text-align: center;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+
+    
+
+    <div class="container">
+        <div class="otp-card">
+            <h1>OTP Verification</h1>
+            <% if (locals.errMess) { %>
+                <div class="error-message"><%= errMess %></div>
+            <% } %>
+            <div id="timer">02:00</div>
+            <p>An OTP has been sent to <span class="email">ur mail</span>. Please enter it below to verify your email.</p>
+            <form  id="verifyOtpButton" action="/verify-otp-page" method="POST" class="otp-form">
+                <div class="otp-input-group">
+                    <label for="otp">OTP:</label>
+                    <div class="otp-inputs">
+                        <input type="text" id="otp1" name="otp1" maxlength="1" required>
+                        <input type="text" id="otp2" name="otp2" maxlength="1" required>
+                        <input type="text" id="otp3" name="otp3" maxlength="1" required>
+                        <input type="text" id="otp4" name="otp4" maxlength="1" required>
+                    </div>
+                </div>
+                <div class="otp-actions">
+                    <button type="submit" class="otp-btn otp-btn-primary">Verify OTP</button>
+                    <form action="/resend-otpfor" method="POST">
+                        <button id="resendOtpButton"  type="submit" class="otp-btn otp-btn-secondary" disabled>Resend OTP</button>
+                    </form>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+
+
+
+        let countdownInterval;
+
+        function startCountdown(duration, display, button) {
+            console.log("yeah iam loging");
+            let timer = duration, minutes, seconds;
+            button.disabled = true; // Disable the button when countdown starts
+
+            countdownInterval = setInterval(function () {
+                minutes = parseInt(timer / 60, 10);
+                seconds = parseInt(timer % 60, 10);
+
+                minutes = minutes < 10 ? "0" + minutes : minutes;
+                seconds = seconds < 10 ? "0" + seconds : seconds;
+
+                display.textContent = minutes + ":" + seconds;
+
+                if (--timer < 0) {
+                    clearInterval(countdownInterval);
+                    button.disabled = false; // Enable the button when countdown finishes
+                }
+            }, 1000);
+        }
+        function stopCountdown() {
+        clearInterval(countdownInterval); // Clear the countdown interval
+    }
+
+        window.onload = function () {
+            const twoMinutes = 60 * 2;
+            const display = document.getElementById('timer');
+            const resendButton = document.getElementById('resendOtpButton');
+
+            function initializeCountdown() {
+                clearInterval(countdownInterval); // Clear any existing timer
+                startCountdown(twoMinutes, display, resendButton);
+            }
+
+            resendButton.addEventListener('click', function () {
+                clearInterval(countdownInterval); // Clear any existing timer
+                startCountdown(twoMinutes, display, resendButton,alert("Successful OTP resent")); // Restart the countdown
+                // Logic to resend the OTP can be added here
+            });
+
+            initializeCountdown();
+
+            resendButton.addEventListener('click', function () {
+                // AJAX request to resend OTP
+                fetch('/resend-otpfor', {
+                    method: 'POST', // or 'POST' depending on your server setup
+                })
+                .then(response => {
+                    if (response.ok) {
+                        return response.text();
+                    } else {
+                        throw new Error('Failed to resend OTP');
+                    }
+                })
+                .then(data => {
+                    console.log('Success:', data);
+                    // initializeCountdown(); // Restart the countdown
+                    
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                });
+            });
+
+
+             // Stop the countdown when the form is submitted (Verify OTP button is clicked)
+    document.getElementById('verifyOtpButton').addEventListener('submit', function () {
+        stopCountdown(); // Stop the countdown
+    });
+        };
+    </script>
+ 
+    
+</body>
+</html>
+
+ -->
+
+
+
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OTP Verification | Your Company</title>
+    <link rel="stylesheet" href="/css/otp.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+   
+    <style>
+        .error-message {
+            color: red;
+            text-align: center;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+
+    
+
+    <div class="container">
+        <div class="otp-card">
+            <h1>OTP Verification</h1>
+            <% if (locals.errMess) { %>
+                <div class="error-message"><%= errMess %></div>
+            <% } %>
+            <div id="timer">02:00</div>
+            <p>An OTP has been sent to <span class="email">ur mail</span>. Please enter it below to verify your email.</p>
+            <form  id="verifyOtpButton" action="/verify-otp-page" method="POST" class="otp-form">
+                <div class="otp-input-group">
+                    <label for="otp">OTP:</label>
+                    <div class="otp-inputs">
+                        <input type="text" id="otp1" name="otp1" maxlength="1" required>
+                        <input type="text" id="otp2" name="otp2" maxlength="1" required>
+                        <input type="text" id="otp3" name="otp3" maxlength="1" required>
+                        <input type="text" id="otp4" name="otp4" maxlength="1" required>
+                    </div>
+                </div>
+                <div class="otp-actions">
+                    <button type="submit" class="otp-btn otp-btn-primary">Verify OTP</button>
+                    <form action="/resend" method="POST">
+                        <button id="resendOtpButton"  type="submit" class="otp-btn otp-btn-secondary" disabled>Resend OTP</button>
+                    </form>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+
+
+
+        let countdownInterval;
+
+        function startCountdown(duration, display, button) {
+            console.log("yeah iam loging");
+            let timer = duration, minutes, seconds;
+            button.disabled = true; // Disable the button when countdown starts
+
+            countdownInterval = setInterval(function () {
+                minutes = parseInt(timer / 60, 10);
+                seconds = parseInt(timer % 60, 10);
+
+                minutes = minutes < 10 ? "0" + minutes : minutes;
+                seconds = seconds < 10 ? "0" + seconds : seconds;
+
+                display.textContent = minutes + ":" + seconds;
+
+                if (--timer < 0) {
+                    clearInterval(countdownInterval);
+                    button.disabled = false; // Enable the button when countdown finishes
+                }
+            }, 1000);
+        }
+
+        window.onload = function () {
+            const twoMinutes = 60 * 2;
+            const display = document.getElementById('timer');
+            const resendButton = document.getElementById('resendOtpButton');
+
+            function initializeCountdown() {
+                clearInterval(countdownInterval); // Clear any existing timer
+                startCountdown(twoMinutes, display, resendButton);
+            }
+
+            resendButton.addEventListener('click', function () {
+                clearInterval(countdownInterval); // Clear any existing timer
+                startCountdown(twoMinutes, display, resendButton,alert("Successful OTP resent")); // Restart the countdown
+                // Logic to resend the OTP can be added here
+            });
+
+            initializeCountdown();
+
+            resendButton.addEventListener('click', function () {
+                // AJAX request to resend OTP
+                fetch('/resend-otp', {
+                    method: 'POST', // or 'POST' depending on your server setup
+                })
+                .then(response => {
+                    if (response.ok) {
+                        return response.text();
+                    } else {
+                        throw new Error('Failed to resend OTP');
+                    }
+                })
+                .then(data => {
+                    console.log('Success:', data);
+                    // initializeCountdown(); // Restart the countdown
+                    
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                });
+            });
+        };
+    </script>
+ 
+    
+</body>
+</html>
+
+
