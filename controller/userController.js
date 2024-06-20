@@ -5,19 +5,31 @@ const { render } = require("../app");
 const genOtp = require("../util/otpgenarate");
 const { sendEmail } = require("../util/nodemailer");
 const bcrypt = require("bcrypt");
+const Product =require("../models/pruductModel")
 
 let i = 150;
 module.exports = {
-  homepage: (req, res) => {
+  homepage: async (req, res) => {
     const user = req.session.user;
     req.session.nouser = null;
-    res.render("user/user_home", { user: user });
+
+    const allProduct= await   Product.find()
+    res.render("user/user_home", { user: user,allProduct});
   },
 
   login: (req, res) => {
     const lock=req.session.lock
     req.session.lock=null
-    res.render("user/user_login" ,{lock});
+
+    const success=req.session.success
+    req.session.success=null
+
+    const blockuser=req.session.blockuser
+    req.session.blockuser=null
+
+    const googleblock=req.session.googleblock 
+    req.session.googleblock =null
+    res.render("user/user_login" ,{lock,blockuser,googleblock});
   },
 
   loginAndSignup: (req, res) => {
@@ -33,7 +45,6 @@ module.exports = {
      errMess = req.session.errMess;
      req.session.errMess = null;
     }
-
     res.render("user/otp", {errMess});
   },
 
@@ -49,8 +60,6 @@ module.exports = {
       if (existingUser) {
        
         req.session.nouser = "This email is already registered. You can login with another one.";
-
-        res.redirect("/loginandsignup");
       } else {
         req.session.email = email;
         req.session.user = name;
@@ -62,6 +71,8 @@ module.exports = {
 
       const { otpcode, otpExpires } = await genOtp();
       
+      console.log("otp",otpcode);
+
       // Update or insert OTP document in the database                  
       const salt = await bcrypt.genSalt(10);
       const hashedOtp = await bcrypt.hash(otpcode, salt);
@@ -83,15 +94,14 @@ module.exports = {
         subject: "Your OTP Code",
         text: `Here is your OTP code: ${otpcode}`,
       };
-
+       
       sendEmail(mailOptions);
       // Send the email
       console.log("OTP email sent successfully");
 
       // Render OTP page
+       req.session.checkOtpVerfy =true;
       res.redirect("/otp-page");
-
-
 
       const x = setInterval(() => {
         if (i == 0) {
@@ -141,13 +151,15 @@ module.exports = {
         return res.redirect("/otp-page");
       }
       await otpmodel.deleteOne({ email: email });
+      req.session.user = email;
+      delete req.session.checkOtpVerfy
       res.redirect("/");
     } catch (error) {
       console.log(error);
       if (!res.headersSent) {
 
         req.session.errMess = "An error occurred during OTP verification";
-
+        
         return res.redirect("/otp-page");
       }
     }
@@ -203,17 +215,23 @@ module.exports = {
 
    try{
     const user=await userdb.findOne({email})
+    console.log("userhere" , user);
+
    if(!user){
     req.session.lock = "Invalid Email ID";
      return res.redirect("/login")
    }
     
-   
+   if(!user.status){
+    req.session.blockuser="This Email Id Has Blocked";
+    return res.redirect("/login")
+   }
    const isPassword = await bcrypt.compare(password, user.password);
    console.log("Password match result:", isPassword); 
 
    if(isPassword){
     req.session.user = user.name;
+    req.session.userId = user._id;
     return res.redirect("/")
    }else{
     req.session.lock="Invalid Email Password";
@@ -222,6 +240,8 @@ module.exports = {
    }catch(error){
      res.send("erooor")
    }
- }
+ },
+
+
 
 }

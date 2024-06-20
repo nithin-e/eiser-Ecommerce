@@ -2,21 +2,22 @@ var express = require('express');
 const User = require('../models/usermodel');
 const userController = require('../controller/userController');
 const forgetController = require('../controller/forgetController');
+const {Authenticated,checkOtpVerfy }= require("../middleware/userMiddleware")
 
 var router = express.Router();
 
 /* GET home page. */
 router.get('/',userController.homepage);
 
-router.get("/login",userController.login)
+router.get("/login",Authenticated,userController.login)
 
 // login and signup page
-router.get('/loginandsignup',userController.loginAndSignup);
+router.get('/loginandsignup',Authenticated,userController.loginAndSignup);
  
 // register the user
 router.post('/signup',userController.registerUser);
 
-router.get("/otp-page",userController.renderOtpPage)
+router.get("/otp-page",checkOtpVerfy ,userController.renderOtpPage);
 
 router.post("/verify-otp",userController.verifyOtp)
 

@@ -14,7 +14,12 @@ module.exports = {
                 req.session.email = email;
                 req.session.userId = existingUser._id;
             res.redirect("/")
-            }else{
+            }else if(!existingUser.status){
+                req.session.googleblock = "this email id has been blocked"
+                res.redirect("/login")
+            }
+            
+            else{
                 // Generate  secure random password
       const randomPassword = Math.random().toString(36).slice(-8); 
       const hashedPassword = await bcrypt.hash(randomPassword, 10);
@@ -28,8 +33,8 @@ module.exports = {
       req.session.user= req.user.displayName;
       req.session.userGoogleLogged = true;
       req.session.name = name;
-      req.session.email = email;
       req.session.userId = createNewUser._id;
+      req.session.email = email;
       return res.redirect('/');
             }
 

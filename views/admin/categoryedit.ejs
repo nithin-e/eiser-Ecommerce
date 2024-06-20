@@ -61,6 +61,9 @@
         document.getElementById("categoryForm").addEventListener("submit", function(event) {
                 const nameInput = document.getElementById("name").value.trim();
                 const errorMessage = document.getElementById("error-message");
+                const specialCharPattern = /[^a-zA-Z\s]/;
+              errorMessage.innerText = ""; // Clear previous error messages
+
                 if (nameInput === "") {
                     event.preventDefault();
                     errorMessage.innerText ="Only Space not Allowed "
@@ -69,6 +72,11 @@
                     event.preventDefault();
                     errorMessage.innerText ="Number not Allowed"
                 } 
+                if (specialCharPattern.test(nameInput)) {
+            event.preventDefault();
+            errorMessage.innerText = "Special characters are not allowed in the name.";
+                 }
+
             });
         </script>
 </body>

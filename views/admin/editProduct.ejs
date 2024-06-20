@@ -3,11 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add New Product</title>
+    <title>Edit Product</title>
     <link rel="stylesheet" href="/admin/css/addProduct.css">
     <link rel="stylesheet" href="/cropperjs/cropper.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" rel="stylesheet">
 </head>
+
+<style>
+    .image-row {
+        display: flex;
+        gap: 10px; /* Space between image items */
+    }
+    .image-item {
+        display: flex;
+        flex-direction: column; /* Stack image and button vertically */
+        justify-content: space-around;
+    }
+    .image-item img {
+        margin-bottom: 5px; /* Space between image and button */
+    }
+    .delete-button {
+        width: 50px;
+        height: 20px;
+    }
+</style>
 <body>
     <%- include('../admin/adminpartials/Header') -%>
 
@@ -17,70 +36,149 @@
 
         <div class="form-container">
             <h1>Add New Product</h1>
-            <form id="productForm" action="/pressAddproduct" method="post" enctype="multipart/form-data">
+            <form id="productForm" action="/ediProductSucces" method="post" enctype="multipart/form-data">
                 <div class="form-group">
-                    <label for="productName">Name</label>
-                    <input type="text" id="productName" name="productName" placeholder="Enter product name" >
+                    <label for="productName">productName</label>
+                    <input type="text" id="productName"  value="<%=isProduct.productName  %>"  name="productName" placeholder="Enter product name" >
+                    <input type="text"  hidden value="<%=isProduct._id  %>"  name="_id" placeholder="Enter product name" >
                     <span class="error-message" id="productNameErrMess"></span>
                 </div>
                 <div class="form-group">
                     <label for="productImg">Images</label>
                     <input type="file" id="productImg" name="productImg" accept="image/*" multiple onchange="displaySelectedImages(this)">
+                    <% isProduct.images.forEach((img, index) => { %>
+                        <div class="image-item">
+                            <input type="checkbox" class="image-checkbox" id="imageCheckbox<%= index %>" data-index="<%= index %>" data-img="<%= img %>">
+                            <img src="<%= img %>" width="50px" height="50px" alt="Product Image">
+                            <span class="select-icon" onclick="selectImage()">Select</span>
+                            <span class="delete-icon" onclick="deleteImage()">Delete</span>
+                        </div>
+                    <% }) %>
+                
                     <div id="selectedImagesContainer"></div>
                     <span class="error-message" id="images-error"></span>
+                    <button onclick="sendSelectedImages()">Send Selected Images</button>
                 </div>
+                
+                
                 <div class="form-group">
                     <label for="description">Description</label>
-                    <textarea id="description" name="description" rows="4" placeholder="Enter product description" ></textarea>
+                    <!-- <textarea id="description" name="description" rows="4" placeholder="Enter product description" ></textarea> -->
+                    <input id="description" name="description" rows="4"   placeholder="Enter product description" value="<%=isProduct.description %>" ></input>
                     <span class="error-message" id="description-error"></span>
                 </div>
                 <div class="form-group">
                     <label for="stockQuantity">Stock Quantity</label>
-                    <input type="number" id="stockQuantity" name="stockQuantity" placeholder="Enter stock quantity" >
+                    <input type="number" value="<%=isProduct.stockQuantity  %>"   id="stockQuantity" name="stockQuantity" placeholder="Enter stock quantity" >
                     <span class="error-message" id="quantity-error"></span>
                 </div>
                 <div class="form-group">
+                    
                     <label for="category">Category</label>
-                    <select id="category" name="category" required>
-                        <% allcats.forEach(element => { %>
-                            <option value="<%= element._id %>"><%= element.name %></option>
-                        <% }) %>
+                    
+                    <select id="category" name="category" >
+                    <% allcategory.forEach(cats => { %>
+                        <option value="<%=cats._id%>"  <%= isProduct.name==cats.name?'selected':"" %>><%=cats.name%></option>
+                    <% }) %>
+          
                     </select>
-                    <span class="error-message" id="category-error"></span>
                 </div>
                 <div class="form-group">
+                    
                     <label for="brand">Brand</label>
-                    <select id="brand" name="brand" required>
-                        <% allbrands.forEach(element => { %>
-                            <option value="<%= element._id %>"><%= element.name %></option>
-                        <% }) %>
+                    <select id="brand" name="brand" >
+                        <% allbrands.forEach(brand => { %>
+                            <option value="<%= brand._id %>" <%= allbrands.name==brand.name?'selected':"" %>><%= brand.name %></option>
+                            <% }) %>   
+                        
                     </select>
-                    <span class="error-message" id="brand-error"></span>
-                </div>
+      </div>
                 <div class="form-group">
                     <label for="price">Price</label>
-                    <input type="number" id="price" name="price" placeholder="Enter price" >
+                    <input type="number" id="price"  value="<%= isProduct.price %>"   name="price" placeholder="Enter price" >
                     <span class="error-message" id="price-error"></span>
                 </div>
                 <div class="form-group">
                     <label for="Offerprice">Offer Price (optional)</label>
-                    <input type="number" id="Offerprice" name="Offerprice" placeholder="Enter offer price">
+                    <input type="number"   value="<%= isProduct.Offerprice %>"  id="Offerprice" name="Offerprice" placeholder="Enter offer price">
                     <span class="error-message" id="offer-error"></span>
                 </div>
                 <div class="form-group">
                     <label for="expiryDate">Expiry Date</label>
-                    <input type="date" id="expiryDate" name="expiryDate">
+                    <input type="date"  value="<%= isProduct.expiryDate %>"    id="expiryDate" name="expiryDate">
                     <span class="error-message" id="expiry-error"></span>
                 </div>
                 <div class="form-actions">
-                    <button type="submit">Add Product</button>
+                    <button type="submit">Edit Product</button>
                 </div>
             </form>
         </div>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
+
+
     <script>
+        function sendSelectedImages() {
+    // Array to store selected image data
+    let selectedImages = [];
+
+    // Select all checkboxes with class 'image-checkbox'
+    let checkboxes = document.querySelectorAll('.image-checkbox');
+
+    checkboxes.forEach((checkbox) => {
+        if (checkbox.checked) {
+            // Get data-index attribute to find corresponding image URL
+            let index = checkbox.getAttribute('data-index');
+            let imgUrl = checkbox.getAttribute('data-img');
+            console.log(index);
+            console.log(imgUrl);
+
+            // Push selected image data to the array
+            selectedImages.push({
+                index: index,
+                imgUrl: imgUrl
+            });
+        }
+    });
+    console.log('selectedImages',selectedImages);
+
+    // AJAX re'quest to send selectedImages array to backend
+    if (selectedImages.length > 0) {
+        // Example AJAX request using Fetch API
+        fetch('/ediProductSucces', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                // Add any necessary headers, like authentication token etc.
+            },
+            body: JSON.stringify({ images: selectedImages }),
+        })
+        .then(response => {
+            if (response.ok) {
+                // Handle success (optional)
+                console.log('Images sent successfully');
+            } else {
+                // Handle error
+                console.error('Error sending images');
+            }
+        })
+        .catch(error => {
+            console.error('Error sending images:', error);
+        });
+    } else {
+        // No images selected error handling (optional)
+        document.getElementById('images-error').innerText = 'Please select at least one image.';
+    }
+}
+
+    </script>
+    <script>
+
+
+
+
+
         document.getElementById('productForm').addEventListener('submit', function(event) {
             event.preventDefault();
             validateForm();
@@ -147,10 +245,10 @@
                 isValid = false;
             }
 
-            if (images.length === 0) {
-                displayErrorMessage('Product Image is required', 'images-error');
-                isValid = false;
-            }
+            // if (images.length === 0) {
+            //     displayErrorMessage('Product Image is required', 'images-error');
+            //     isValid = false;
+            // }
 
             if (category === '') {
                 displayErrorMessage('Product Category is required', 'category-error');

@@ -4,8 +4,10 @@ var path = require('path');
 const session=require("express-session")
 var cookieParser = require('cookie-parser');
 const passport = require('passport');
+const nocache = require('nocache');
+const fileUpload = require('express-fileupload');
 require('./config/passport');
-var logger = require('morgan');
+const morgan = require('morgan');
 
 
 const mongoose = require('./config/connectMongo');
@@ -18,6 +20,7 @@ const adminrouter=require("./routes/admin/adminlogin")
 
 var app = express();
 
+app.use(nocache());
 app.use(session({
   secret: 'your_secret_key',
   resave: false,
@@ -26,21 +29,33 @@ app.use(session({
   cookie: { maxAge: 120000 }
 }));
 
+app.use(morgan('dev')); 
+
+app.use((req, res, next) => {
+  res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+  res.setHeader("Pragma", "no-cache");
+  res.setHeader("Expires", "0");
+next();
+});
+
 
 // initialize passport
 app.use(passport.initialize());
 app.use(passport.session());
 
 
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
-app.use(logger('dev'));
+
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
+
 app.use(express.static(path.join(__dirname, 'public')));
+app.use('/uploads',express.static(path.join(__dirname, 'uploads')));
 
 
 app.use('/', indexRouter);

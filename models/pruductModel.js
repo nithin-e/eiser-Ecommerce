@@ -43,7 +43,15 @@ const productSchema = new mongoose.Schema({
     createdAt: {
         type: Date,
         default: Date.now
-    }
+    },
+   offerPrice:{
+    type: Number,
+    
+   },
+   offerDate:{
+    type:Date
+   }
+    
 });
 
 const Product = mongoose.model('Product', productSchema);

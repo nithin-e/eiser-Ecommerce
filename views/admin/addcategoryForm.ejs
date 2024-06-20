@@ -52,19 +52,27 @@
         </form>
     </div>
     <script>
-        document.getElementById("categoryForm").addEventListener("submit",function(event) {
-            const nameInput = document.getElementById("name").value.trim();
-            const err= document.getElementById("error-message")
 
-           if(nameInput===""){
-            event.preventDefault()
-            err.innerText="Only Space not Allowed "
-           } 
-           if(/\d/.test(nameInput)){
-            event.preventDefault()
-            err.innerText="Number not Allowed "
-           }
-        })
-    </script>
+        document.getElementById("categoryForm").addEventListener("submit", function(event) {
+                const nameInput = document.getElementById("name").value.trim();
+                const errorMessage = document.getElementById("error-message");
+                const specialCharPattern = /[^a-zA-Z\s]/;
+              errorMessage.innerText = ""; // Clear previous error messages
+
+                if (nameInput === "") {
+                    event.preventDefault();
+                    errorMessage.innerText ="Only Space not Allowed "
+                } 
+                if (/\d/.test(nameInput)) {
+                    event.preventDefault();
+                    errorMessage.innerText ="Number not Allowed"
+                } 
+                if (specialCharPattern.test(nameInput)) {
+            event.preventDefault();
+            errorMessage.innerText = "Special characters are not allowed in the name.";
+                 }
+
+            });
+        </script>
 </body>
 </html>

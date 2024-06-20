@@ -2,10 +2,15 @@ const Userdb = require("../../models/usermodel");
 const CATMOD = require("../../models/categorymodel");
 const BRANDMOD=require("../../models/brandsModel")
 const Product=require("../../models/pruductModel")
-const cloudinary=require("../../config/cloudinaryConfig")
-const formidable=require("formidable")
+const upload=require("../../config/multerConfig")
+
+
 const fs =require("fs");
 const path = require("path");
+
+
+
+
 
 const credentials = {
   email: "admin@gmail.com",
@@ -17,6 +22,7 @@ module.exports = {
   adminlogin: (req, res) => {
     const lock = req.session.lock;
     req.session.lock = null;
+
     res.render("admin/admin_login", { lock });
   },
 
@@ -24,6 +30,7 @@ module.exports = {
   adminloginSubmit: (req, res) => {
     const { email, password } = req.body;
     if (credentials.email == email && credentials.password == password) {
+      req.session.Admin=true
       res.render("admin/admin-home");
     } else {
       req.session.lock = "INVALID ENTRY";
@@ -341,13 +348,16 @@ blockUnblockbrand:async(req,res)=>{
         
    const Allprod= await Product.find().populate("category").populate('brand')
    
-   console.log('all items',Allprod);
+   console.log('all items');
         const ProIn= req.session.ProIn
         req.session.ProIn=null
      
          const sussAdd=req.session.sussAdd
          req.session.sussAdd=null
-         res.render("admin/pruductsPage",{Allprod,ProIn,sussAdd});
+
+         const editsuss=req.session.editsuss
+         req.session.editsuss=null
+         res.render("admin/pruductsPage",{Allprod,ProIn,sussAdd,editsuss});
       } catch (error) {
         console.error('Error while adding product:', error);
         res.status(500).send('Internal Server Error');
@@ -355,88 +365,142 @@ blockUnblockbrand:async(req,res)=>{
    },
 
 
-//showing add poduct page
+// showing add poduct page
 AddProductPage:async(req,res)=>{
+ 
   const allcats= await CATMOD.find()
   const allbrands= await BRANDMOD.find()
-  res.render("admin/addProduct",{allcats,allbrands})
+  const allpro=await Product.find()
+  // console.log("fdffddffd",allpro)
+  res.render("admin/addProduct",{allcats,allbrands, allpro})
 },
 
+
+
 //storing product datas in db 
- PressAddproductButton : async (req, res) => {
+PressAddproductButton:async (req, res) => {
+const {productName,description,stockQuantity,offerPrice,offerDate,category,brand,price}=req.body
 
-  const form = new formidable.IncomingForm();
-  const uploadDir = path.join(__dirname, '../uploads');
+  try {
 
-  // Check if the upload directory exists, create it if it doesn't
-
-  form.uploadDir = uploadDir;
-  form.keepExtensions = true;
-
-  form.parse(req, async (err, fields, files) => {
-    if (err) {
-      console.error('Error parsing form:', err);
-      return res.status(500).send('Error occurred while parsing the form');
-    }
-    const productName = fields.productName ? fields.productName[0] : '';
-    const description = fields.description ? fields.description[0] : '';
-    const stockQuantity = parseInt(fields.stockQuantity ? fields.stockQuantity[0] : '0', 10);
-    const category = fields.category ? fields.category[0] : '';
-    const brand = fields.brand ? fields.brand[0] : '';
-    const price = parseFloat(fields.price ? fields.price[0] : '0');
+    console.log("req.files",req.files);
+    const filepaths = req.files.map(file => {
+      return `/uploads/${file.filename}`;
+  });
+    const newproduct=new Product({
+      productName,
+      images:filepaths,
+      description,
+      stockQuantity,
+      category,
+      brand,
+      offerPrice,
+      offerDate,
+      price
+    })
+      await newproduct.save()
+      console.log("succesfully added");
+      req.session.sussAdd="Product successfully added."
+      res.redirect("/pruduct-page")
+  } catch (error) {
+    console.log("Controller ERROR", error);
+  }
   
-
-    console.log('productName:', productName);
-    console.log('description:', description);
-    console.log('stockQuantity:', stockQuantity);
-    console.log('category:', category);
-    console.log('brand:', brand);
-    console.log('price:', price);
+},
 
 
 
-    // Ensure `files.productImg` exists and is an array
-    if (!files.productImg || !Array.isArray(files.productImg)) {
-      console.error('Invalid file data:', files.productImg);
-      return res.status(400).send('Invalid file data');
+
+
+
+ adminLOgout:(req,res)=>{
+   // Destroy the session
+   req.session.destroy((err) => {
+    if (err) {
+        console.log(err);
+        // Optionally, handle the error in the response
+        return res.status(500).send("Failed to log out");
+    }else{
+      res.redirect("/admin_login");
     }
+});
+ },
 
-    const imageFile = path.normalize(files.productImg[0].filepath);
 
-    
-      try {
-        console.log('File exists, attempting to upload:', imageFile);
 
-        // Upload image to Cloudinary
-        const result = await cloudinary.uploader.upload(imageFile, { folder: 'uploads' });
-        console.log('Upload successful');
+  //edit product 
+  editProducts:async(req,res)=>{
+    const {id}=req.params
 
-        // Extract the URL from the Cloudinary response
-        const imageUrl = result.secure_url;
-       
+    console.log(id,"edit product id");
+try {
+  
+const isProduct=await Product.findById(id).populate('category').populate('brand')
+const allcategory=await CATMOD.find()
+// console.log("isProduct",isProduct);
+const allbrands=await BRANDMOD.find()
 
-        // Create a new Product instance using the form data
-        const newProduct = new Product({
-          productName,
-          images:[imageUrl],
-          description,
-          stockQuantity,
-          category,
-          brand,
-          price
-        });
+// console.log("gggggggg",allcategory);
 
-        await newProduct.save();
-        console.log("succefully uploaded",newProduct);
-        // Delete the local file after upload
-        fs.unlinkSync(imageFile); 
-        req.session.sussAdd="Product SuccesFully Added"
-           res.redirect("/pruduct-page")
-      } catch (error) {
-        console.error('Error while adding product:', error);
-        res.status(500).send('Internal Server Error');
-      }
-    });
-
- }
+// console.log("fddffdff",isProduct);
+if(isProduct){
+  res.render("admin/editProduct",{isProduct,allcategory,allbrands})
+}else{
+  res.send("not id in there")
 }
+
+} catch (error) {
+  console.error('Error while adding product:', error);
+  res.status(500).send('Internal Server Error');
+}
+},
+
+
+// showing edit succes productpage
+ editBottom: async (req,res)=>{
+  
+  console.log("this is the dat a from update", req.body);
+  console.log('this is req.files',req.files)
+
+  const imgFile=req.files.map((files)=>{
+    return `/uploads/${files.filename}`
+  })
+ 
+
+   try {
+
+    const { _id, ...rest } = req.body;
+    const updateData = {
+      ...rest,
+      imgFile
+    };
+
+    console.log("this is rest ",updateData);
+    
+    const updatedProduct = await Product.findOneAndUpdate(
+      { _id: _id }, 
+      updateData,
+      { new: true, runValidators: true } // Options object
+  );
+
+    console.log("Product successfully updated");
+    req.session.editsuss="SuccesFully ProductEdited"
+     res.redirect("/pruduct-page")
+
+   } catch (error) {
+    console.error('Error while adding product:', error);
+    res.status(500).send('Internal Server Error');
+   }
+
+ 
+},
+
+//show product details page
+ShowProductDetails:(req,res)=>{
+ console.log("hiii");
+  res.render("user/productDetailsPage")
+}
+
+}
+
+
