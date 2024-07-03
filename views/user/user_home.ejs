@@ -4,6 +4,7 @@
   <!--================Header Menu Area =================-->
 
   <!--================Home Banner Area =================-->
+  
   <section class="home_banner_area mb-40">
    
     <div class="banner_inner d-flex align-items-center">
@@ -15,7 +16,7 @@
             <!-- <p class="sub text-uppercase">men Collection</p> -->
             <!-- <h3><span>Show</span> Your <br />Personal <span>Style</span></h3> -->
             <!-- <h4>Fowl saw dry which a above together place.</h4> -->
-            <a class="main_btn mt-40" href="#">View Collection</a>
+            <a class="main_btn mt-40" href="/productPage">View Collection</a>
             
           </div>
         </div>
@@ -337,6 +338,48 @@
   <!--================ End New Product Area =================-->
 
   <!--================ Inspired Product Area =================-->
+  <style>
+    .single-product {
+      width: 200px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      transition: box-shadow 0.3s ease;
+    }
+  
+    .single-product:hover {
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    }
+  
+    .product-img img {
+      transition: transform 0.3s ease;
+    }
+  
+    .product-img:hover img {
+      transform: scale(1.05);
+    }
+  
+    .p_icon a {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      margin-right: 5px;
+      background-color: white;
+      border-radius: 50%;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      transition: background-color 0.3s ease, transform 0.3s ease;
+    }
+  
+    .p_icon a:hover {
+      background-color: #f8f8f8;
+      transform: scale(1.1);
+    }
+  
+    .p_icon a i {
+      color: #333;
+      font-size: 16px;
+    }
+  </style>
   <section class="inspired_product_area section_gap_bottom_custom">
     <div class="container">
       <div class="row justify-content-center">
@@ -348,43 +391,49 @@
         </div>
       </div>
 
-      <div class="row">
-       
-        <% allProduct.forEach(prodetails => { %>
-        
-        <div class="col-lg-3 col-md-6">
-          
-          <div class="single-product">
-            <div class="product-img">
-              <img class="img-fluid w-100" src="<%=prodetails.images%>" alt="" />
-              <div class="p_icon">
-                <a href="/ViewProduct">
-                  <i class="ti-eye"></i>
-                </a>
-                <a href="">
-                  <i class="ti-heart"></i>
-                </a>
-                <a href="#">
-                  <i class="ti-shopping-cart"></i>
-                </a>
-              </div>
-            </div>
-            <div class="product-btm">
-              <a href="#" class="d-block">
-                <h4><%=prodetails.productName  %></h4>
-                          
+
+   
+    
+    <div class="row">
+      <% allProduct.forEach(product => { %>
+      <div class="col-lg-3 col-md-6">
+        <div class="single-product">
+          <div class="product-img">
+            <img class="img-fluid w-100" src="<%=product.images[0]%>" alt="" />
+            <div class="p_icon" style="display: flex;">
+              <a href="/ViewProduct/<%=product._id %>">
+                <i class="ti-eye"></i>
               </a>
-              <div class="mt-3">
-                <span class="mr-4">$<%= prodetails.price %></span>
-               
-              </div>
+              <a href="">
+                <i class="ti-heart"></i>
+              </a>
+              <a href="#">
+                <i class="ti-shopping-cart"></i>
+              </a>
             </div>
           </div>
+          <div class="product-btm">
+            <a href="#" class="d-block">
+              <h4><%=product.productName %></h4>
+            </a>
+            <div style="display: flex;">
+            <div>  <span 
+            style="font-size: 16px; font-weight: 500; color:gray; <% if (product.offerPrice) { %> text-decoration: line-through; text-decoration-color: green;<% } %>" 
+            class="single-price">
+            ₹<%= product.price %>&nbsp;
+          </span>
+            </div>
+            <% if (product.offerPrice) { %>
+              <div class="">
+                <span style="color:green;font-size: 14px;" class="offer-price">&nbsp;&nbsp;&nbsp;&nbsp;₹<%= product.offerPrice %></span >
+              </div>
+            <% } %>
+          </div>
+          </div>
         </div>
-        <% }) %>
       </div>
-      
-    </section>
+      <% }) %>
+    </div>
         <!-- <div class="col-lg-3 col-md-6">
           <div class="single-product">
             <div class="product-img">
@@ -678,126 +727,104 @@
   </section> -->
   <!--================ End Blog Area =================-->
 
-  <!--================ start footer Area  =================-->
-  <footer class="footer-area section_gap">
-    <div class="container">
-      <div class="row">
-        <div class="col-lg-2 col-md-6 single-footer-widget">
-          <h4>Top Products</h4>
-          <ul>
-            <li><a href="#">Managed Website</a></li>
-            <li><a href="#">Manage Reputation</a></li>
-            <li><a href="#">Power Tools</a></li>
-            <li><a href="#">Marketing Service</a></li>
-          </ul>
+ 
+    <!--================ start footer Area  =================-->          
+    <footer class="footer-area section_gap" style="margin-left: -109px; width: 124%;margin-bottom: -10%;">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-2 col-md-6 single-footer-widget">
+            <h4>Top Products</h4>
+            <ul>
+              <li><a href="#">Managed Website</a></li>
+              <li><a href="#">Manage Reputation</a></li>
+              <li><a href="#">Power Tools</a></li>
+              <li><a href="#">Marketing Service</a></li>
+            </ul>
+          </div>
+          <div class="col-lg-2 col-md-6 single-footer-widget">
+            <h4>Quick Links</h4>
+            <ul>
+              <li><a href="#">Jobs</a></li>
+              <li><a href="#">Brand Assets</a></li>
+              <li><a href="#">Investor Relations</a></li>
+              <li><a href="#">Terms of Service</a></li>
+            </ul>
+          </div>
+          <div class="col-lg-2 col-md-6 single-footer-widget">
+            <h4>Features</h4>
+            <ul>
+              <li><a href="#">Jobs</a></li>
+              <li><a href="#">Brand Assets</a></li>
+              <li><a href="#">Investor Relations</a></li>
+              <li><a href="#">Terms of Service</a></li>
+            </ul>
+          </div>
+          <div class="col-lg-2 col-md-6 single-footer-widget">
+            <h4>Resources</h4>
+            <ul>
+              <li><a href="#">Guides</a></li>
+              <li><a href="#">Research</a></li>
+              <li><a href="#">Experts</a></li>
+              <li><a href="#">Agencies</a></li>
+            </ul>
+          </div>
+          <div class="col-lg-4 col-md-6 single-footer-widget">
+            <h4>Newsletter</h4>
+            <p>You can trust us. we only send promo offers,</p>
+            <div class="form-wrap" id="mc_embed_signup">
+              <form target="_blank" action="https://spondonit.us12.list-manage.com/subscribe/post?u=1462626880ade1ac87bd9c93a&amp;id=92a4423d01"
+                method="get" class="form-inline">
+                <input class="form-control" name="EMAIL" placeholder="Your Email Address" onfocus="this.placeholder = ''"
+                  onblur="this.placeholder = 'Your Email Address '" required="" type="email">
+                <button class="click-btn btn btn-default">Subscribe</button>
+                <div style="position: absolute; left: -5000px;">
+                  <input name="b_36c4fd991d266f23781ded980_aefe40901a" tabindex="-1" value="" type="text">
+                </div>
+  
+                <div class="info"></div>
+              </form>
+            </div>
+          </div>
         </div>
-        <div class="col-lg-2 col-md-6 single-footer-widget">
-          <h4>Quick Links</h4>
-          <ul>
-            <li><a href="#">Jobs</a></li>
-            <li><a href="#">Brand Assets</a></li>
-            <li><a href="#">Investor Relations</a></li>
-            <li><a href="#">Terms of Service</a></li>
-          </ul>
-        </div>
-        <div class="col-lg-2 col-md-6 single-footer-widget">
-          <h4>Features</h4>
-          <ul>
-            <li><a href="#">Jobs</a></li>
-            <li><a href="#">Brand Assets</a></li>
-            <li><a href="#">Investor Relations</a></li>
-            <li><a href="#">Terms of Service</a></li>
-          </ul>
-        </div>
-        <div class="col-lg-2 col-md-6 single-footer-widget">
-          <h4>Resources</h4>
-          <ul>
-            <li><a href="#">Guides</a></li>
-            <li><a href="#">Research</a></li>
-            <li><a href="#">Experts</a></li>
-            <li><a href="#">Agencies</a></li>
-          </ul>
-        </div>
-        <div class="col-lg-4 col-md-6 single-footer-widget">
-          <h4>Newsletter</h4>
-          <p>You can trust us. we only send promo offers,</p>
-          <div class="form-wrap" id="mc_embed_signup">
-            <form target="_blank" action="https://spondonit.us12.list-manage.com/subscribe/post?u=1462626880ade1ac87bd9c93a&amp;id=92a4423d01"
-              method="get" class="form-inline">
-              <input class="form-control" name="EMAIL" placeholder="Your Email Address" onfocus="this.placeholder = ''"
-                onblur="this.placeholder = 'Your Email Address '" required="" type="email">
-              <button class="click-btn btn btn-default">Subscribe</button>
-              <div style="position: absolute; left: -5000px;">
-                <input name="b_36c4fd991d266f23781ded980_aefe40901a" tabindex="-1" value="" type="text">
-              </div>
-
-              <div class="info"></div>
-            </form>
+        <div class="footer-bottom row align-items-center">
+          <p class="footer-text m-0 col-lg-8 col-md-12"><!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+Copyright &copy;<script>document.write(new Date().getFullYear());</script> All rights reserved | This template is made with <i class="fa fa-heart-o" aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank">Colorlib</a>
+<!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. --></p>
+          <div class="col-lg-4 col-md-12 footer-social">
+            <a href="#"><i class="fa fa-facebook"></i></a>
+            <a href="#"><i class="fa fa-twitter"></i></a>
+            <a href="#"><i class="fa fa-dribbble"></i></a>
+            <a href="#"><i class="fa fa-behance"></i></a>
           </div>
         </div>
       </div>
-      <div class="footer-bottom row align-items-center">
-        <p class="footer-text m-0 col-lg-8 col-md-12"><!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
-Copyright &copy;<script>document.write(new Date().getFullYear());</script> All rights reserved | This template is made with <i class="fa fa-heart-o" aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank">Colorlib</a>
-<!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. --></p>
-        <div class="col-lg-4 col-md-12 footer-social">
-          <a href="#"><i class="fa fa-facebook"></i></a>
-          <a href="#"><i class="fa fa-twitter"></i></a>
-          <a href="#"><i class="fa fa-dribbble"></i></a>
-          <a href="#"><i class="fa fa-behance"></i></a>
-        </div>
-      </div>
-    </div>
-  </footer>
-  <!--================ End footer Area  =================-->
+    </footer>
+    <!--================ End footer Area  =================-->
 
-  <!-- Optional JavaScript -->
-  <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-
-  <!-- <script src="js/jquery-3.2.1.min.js"></script> -->
-  <script src="/javascripts/js/jquery-3.2.1.min.js"></script>
-
-  <!-- <script src="js/popper.js"></script> -->
-  <script src="/javascripts/js/popper.js"></script>
-
-  <!-- <script src="js/bootstrap.min.js"></script> -->
-  <script src="/javascripts/js/bootstrap.min.js"></script>
-<!-- 
-  <script src="js/stellar.js"></script> -->
-  <script src="/javascripts/js/stellar.js"></script>
-
-  <!-- <script src="vendors/lightbox/simpleLightbox.min.js"></script> -->
-  <script src="/vendors/lightbox/simpleLightbox.min.js"></script>
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="/public/js/jquery-3.2.1.min.js"></script>
+    <script src="/public/js/popper.js"></script>
+    <script src="/public/js/bootstrap.min.js"></script>
+    <script src="/public/js/stellar.js"></script>
+    <script src="/public/vendors/lightbox/simpleLightbox.min.js"></script>
+    <script src="/public/vendors/nice-select/js/jquery.nice-select.min.js"></script>
+    <script src="/public/vendors/isotope/imagesloaded.pkgd.min.js"></script>
+    <script src="/public/vendors/isotope/isotope-min.js"></script>
+    <script src="/public/vendors/owl-carousel/owl.carousel.min.js"></script>
+    <script src="/public/js/jquery.ajaxchimp.min.js"></script>
+    <script src="/public/js/mail-script.js"></script>
+    <script src="/public/vendors/jquery-ui/jquery-ui.js"></script>
+    <script src="/public/vendors/counter-up/jquery.waypoints.min.js"></script>
+    <script src="/public/vendors/counter-up/jquery.counterup.js"></script>
+    <script src="/public/js/theme.js"></script>
 
 
-  <!-- <script src="vendors/nice-select/js/jquery.nice-select.min.js"></script> -->
-  <script src="/vendors/nice-select/js/jquery.nice-select.min.js"></script>
 
-  <!-- <script src="vendors/isotope/imagesloaded.pkgd.min.js"></script> -->
-  <script src="/vendors/isotope/imagesloaded.pkgd.min.js"></script>
 
-  <!-- <script src="vendors/isotope/isotope-min.js"></script> -->
-  <script src="/vendors/isotope/isotope-min.js"></script>
-
-  <!-- <script src="vendors/owl-carousel/owl.carousel.min.js"></script> -->
-  <script src="/vendors/owl-carousel/owl.carousel.min.js"></script>
-
-  <!-- <script src="js/jquery.ajaxchimp.min.js"></script> -->
-  <script src="/javascripts/js/jquery.ajaxchimp.min.js"></script>
-
-  <!-- <script src="vendors/counter-up/jquery.waypoints.min.js"></script> -->
-  <script src="/vendors/counter-up/jquery.waypoints.min.js"></script>
-
-  <!-- <script src="vendors/counter-up/jquery.counterup.js"></script> -->
-  <script src="/vendors/counter-up/jquery.counterup.js"></script>
-
-  <!-- <script src="js/mail-script.js"></script> -->
-  <script src="/javascripts/js/mail-script.js"></script>
-
-  <!-- <script src="js/theme.js"></script> -->
-  <script src="/javascripts/js/theme.js"></script>
-
-      <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-  <%-include('footer')-%>
+   <!-- slide automatically  -->
+   <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+   <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  </body>
+</html>

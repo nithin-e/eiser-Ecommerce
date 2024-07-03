@@ -7,7 +7,8 @@ module.exports = {
             const { name: { givenName: name }, emails: [{ value: email }] } = req.user;
            
             const existingUser= await Userdb.findOne({email})
-            if(existingUser){
+            console.log('req.user.com555555:', existingUser);
+            if(existingUser.status){
                 req.session.user= req.user.displayName;
                 req.session.userGoogleLogged = true;
                 req.session.name=name
@@ -15,6 +16,7 @@ module.exports = {
                 req.session.userId = existingUser._id;
             res.redirect("/")
             }else if(!existingUser.status){
+                console.log("eda mone lock ingpoore")
                 req.session.googleblock = "this email id has been blocked"
                 res.redirect("/login")
             }

@@ -35,7 +35,9 @@ module.exports = {
     try {
       // Checking whether user already exists
       const existingUser = await userdb.findOne({ email: email });
-
+      
+      const userId=  existingUser._id
+      console.log("gggg",userId);
       if (!existingUser) {
        
          req.session.err = "INVALID EMAIL ADDRESS"
@@ -208,7 +210,7 @@ console.log(otpcode);
       await userdb.findOneAndUpdate({email},{password:user.password})
 
       console.log(" pass word change succes fully");
-
+      
       res.redirect("/login");
     } catch (error) {
       res.status(500).json({ message: "Server error", error });

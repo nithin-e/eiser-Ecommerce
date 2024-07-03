@@ -135,4 +135,44 @@ function blockAndUnblock(id) {
 
 
 
-//edit product 
+//block and unblock product
+
+function productBlock(id) {
+  console.log("id here",id);
+  swal.fire({
+    title: "Are you sure?",
+    text: "You won't be able to revert this!",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#3085d6",
+    cancelButtonColor: "#d33",
+    confirmButtonText: "Yes, bolck it!",
+  }).then((result)=>{
+     if(result.isConfirmed){
+      console.log("ajaj is working");
+      $.ajax({
+        url:"/blockproduct/"+`${id}`,
+        method:"patch",
+        success:function(res) {
+          swal.fire({
+            text:res.msg,
+            icon: "success",
+            timer: 3000,
+            showConfirmButton: false,
+          })
+          setTimeout(() => {
+            window.location.reload();
+          }, 1000);
+        },
+        error:function (err) {
+          swal.fire({
+            text: "Something went wrong",
+                  icon: "error",
+                  timer: 3000,
+                  showConfirmButton: false,
+          })
+        }
+      })
+     }
+  })
+}

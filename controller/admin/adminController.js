@@ -7,6 +7,7 @@ const upload=require("../../config/multerConfig")
 
 const fs =require("fs");
 const path = require("path");
+const { search } = require("../../routes");
 
 
 
@@ -23,7 +24,8 @@ module.exports = {
     const lock = req.session.lock;
     req.session.lock = null;
 
-    res.render("admin/admin_login", { lock });
+    console.log(lock);
+    res.render("admin/admin_login",{lock});
   },
 
   // chekking email and pass word
@@ -346,8 +348,8 @@ blockUnblockbrand:async(req,res)=>{
   showProductPage: async(req, res) => {
       try {
         
-   const Allprod= await Product.find().populate("category").populate('brand')
-   
+   const Allprod= await Product.find().populate('category').populate('brand')
+  console.log("fucking",Allprod);
    console.log('all items');
         const ProIn= req.session.ProIn
         req.session.ProIn=null
@@ -357,7 +359,7 @@ blockUnblockbrand:async(req,res)=>{
 
          const editsuss=req.session.editsuss
          req.session.editsuss=null
-         res.render("admin/pruductsPage",{Allprod,ProIn,sussAdd,editsuss});
+        res.render("admin/pruductsPage",{Allprod,ProIn,sussAdd,editsuss});
       } catch (error) {
         console.error('Error while adding product:', error);
         res.status(500).send('Internal Server Error');
@@ -371,6 +373,7 @@ AddProductPage:async(req,res)=>{
   const allcats= await CATMOD.find()
   const allbrands= await BRANDMOD.find()
   const allpro=await Product.find()
+ 
   // console.log("fdffddffd",allpro)
   res.render("admin/addProduct",{allcats,allbrands, allpro})
 },
@@ -379,14 +382,18 @@ AddProductPage:async(req,res)=>{
 
 //storing product datas in db 
 PressAddproductButton:async (req, res) => {
-const {productName,description,stockQuantity,offerPrice,offerDate,category,brand,price}=req.body
+  // console.log('add product req.body',req.body);
+const {productName,description,stockQuantity,Offerprice,expiryDate,category,brand,price}=req.body 
 
+req.session.Admin=true;
   try {
-
-    console.log("req.files",req.files);
+    req.session.Admin=true;
+    // console.log("req.files",req.files);
     const filepaths = req.files.map(file => {
       return `/uploads/${file.filename}`;
+      
   });
+  req.session.Admin=true;
     const newproduct=new Product({
       productName,
       images:filepaths,
@@ -394,13 +401,15 @@ const {productName,description,stockQuantity,offerPrice,offerDate,category,brand
       stockQuantity,
       category,
       brand,
-      offerPrice,
-      offerDate,
+      offerPrice: Offerprice ? parseFloat(Offerprice) : null, 
+      offerDate: expiryDate ? new Date(expiryDate) : null,    
       price
     })
       await newproduct.save()
       console.log("succesfully added");
+     
       req.session.sussAdd="Product successfully added."
+      req.session.Admin=true;
       res.redirect("/pruduct-page")
   } catch (error) {
     console.log("Controller ERROR", error);
@@ -439,9 +448,6 @@ const isProduct=await Product.findById(id).populate('category').populate('brand'
 const allcategory=await CATMOD.find()
 // console.log("isProduct",isProduct);
 const allbrands=await BRANDMOD.find()
-
-// console.log("gggggggg",allcategory);
-
 // console.log("fddffdff",isProduct);
 if(isProduct){
   res.render("admin/editProduct",{isProduct,allcategory,allbrands})
@@ -457,50 +463,90 @@ if(isProduct){
 
 
 // showing edit succes productpage
- editBottom: async (req,res)=>{
-  
-  console.log("this is the dat a from update", req.body);
-  console.log('this is req.files',req.files)
+editBottom: async (req, res) => {
+  const { id } = req.params;
+  const { productName, description, stockQuantity, category, brand, price, Offerprice, expiryDate } = req.body;
+    console.log("req.body id kittando", id);
+  req.session.Admin = true;
 
-  const imgFile=req.files.map((files)=>{
-    return `/uploads/${files.filename}`
-  })
- 
-
-   try {
-
-    const { _id, ...rest } = req.body;
-    const updateData = {
-      ...rest,
-      imgFile
-    };
-
-    console.log("this is rest ",updateData);
+  try {
+    console.log('kittando ithokke',
+      productName, description, stockQuantity, category, brand, price, Offerprice, expiryDate 
+    );
+    console.log("req.body id kittando but randum same ahhno", id);
+    const editPro = await Product.findById(id)
     
-    const updatedProduct = await Product.findOneAndUpdate(
-      { _id: _id }, 
-      updateData,
-      { new: true, runValidators: true } // Options object
-  );
+    if (!editPro) {
+      console.log("No product there");
+      req.session.editfail = "Product not found.";
+      res.redirect("/product-page"); // Ensure this route exists
+    } else {
+      console.log("req.files", req.files);
 
-    console.log("Product successfully updated");
-    req.session.editsuss="SuccesFully ProductEdited"
-     res.redirect("/pruduct-page")
+  
+      const filepaths = req.files.map(file => {
+        return `/uploads/${file.filename}`;
+        
+    });
 
-   } catch (error) {
-    console.error('Error while adding product:', error);
-    res.status(500).send('Internal Server Error');
-   }
+      // Update the product fields
+      editPro.productName = productName;
+      if (filepaths.length > 0) {
+        editPro.images = filepaths; 
+      }
+      editPro.description = description;
+      editPro.stockQuantity = stockQuantity;
+      editPro.category = category;
+      editPro.brand = brand;
+      editPro.offerPrice = Offerprice;
+      editPro.expiryDate = expiryDate
+      editPro.price = price;
+      
+      await editPro.save();
+      console.log("Successfully edited");
 
- 
+      req.session.editsuss = "Product Edit successfully Completed.";
+      req.session.Admin = true;
+      res.redirect("/pruduct-page"); 
+    }
+  } catch (error) {
+    console.log("Controller ERROR", error);
+    req.session.editfail = "Error editing product.";
+    res.redirect("/product-page"); 
+  }
 },
 
-//show product details page
-ShowProductDetails:(req,res)=>{
- console.log("hiii");
-  res.render("user/productDetailsPage")
-}
+
+
+
+ //block product
+blockUnblockProduct:async(req,res)=>{
+  const {id}=req.params
+
+  try {
+  const searchPro= await  Product.findById(id)
+
+ 
+    if(!searchPro){
+      res.send("id is not there")
+    }else{
+      console.log(searchPro.status,"hey hey hey");
+      var msg
+      if(searchPro.status){
+        await Product.findByIdAndUpdate(id,{status:false},{new:true})
+        msg="SuccesFully Blocked"
+        console.log("blocked");
+      }else{
+        await Product.findByIdAndUpdate(id,{status:true},{new:true})
+        msg="SuccesFully UNblocked"
+        console.log("Unblocked");
+      }
+    
+    res.json({msg:`${msg}succesfully...`,success:true})
+   }
+  } catch (error) {
+    
+  }
+},
 
 }
-
-

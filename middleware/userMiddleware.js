@@ -21,6 +21,46 @@ const checkOtpVerfy = (req, res, next) => {
     }
 }
 
+
+
+
+const blockedUser= async(req,res,next)=>{
+   
+    console.log("user hhhhhhhhhhhh ",req.session.userId)
+    const id = req.session.userId
+    
+    
+    const User=await userdb.findById(id)
+    console.log('fdfdfffdffdfdfdfdfff',User);
+    if(!User){
+        console.log("nooo userrr");
+        next()
+    }
+    else if(!User.status){
+        req.session.destroy(err=>{
+            if(err){
+                console.error(err);
+            }else{
+                res.render('user/blockedUser')
+            }
+        })
+      
+    }else{
+        console.log("unblocked");
+        next()
+    }
+
+}
+
+
+function chekkingUser(req,res,next) {
+    if(req.session.user){
+        next()
+    }else{   
+        req.session.noUserFound="Sorry, there was a technical error. Could you please try logging in again?"
+                return res.redirect("/login")
+    }
+}
 //before login
 
 
@@ -50,5 +90,7 @@ const checkOtpVerfy = (req, res, next) => {
 
 module.exports ={
     Authenticated,
-    checkOtpVerfy
+    checkOtpVerfy,
+    blockedUser,
+    chekkingUser,
 }

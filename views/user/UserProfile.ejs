@@ -1,0 +1,505 @@
+<%- include('Header',{user}) %>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f4;
+        margin: 0;
+        justify-content: center;
+    }
+
+    .container1 {
+        display: flex;
+        flex-direction: row;
+        width: 80%;
+        max-width: 1200px;
+        background-color: #fff;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        margin: 20px 0;
+        margin-left: 120px;
+    }
+
+    .sidebar {
+        width: 25%;
+        background-color: #f8f8f8;
+        padding: 20px;
+        border-right: 1px solid #ddd;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .sidebar table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0 10px;
+    }
+    .sidebar table tr:hover,
+    .sidebar table tr.active {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        background-color: #71cd14;
+    }
+
+    .sidebar table tr {
+        background-color: #fff;
+        border-radius: 5px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .sidebar table tr:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .sidebar table td {
+        padding: 10px 20px;
+    }
+
+    .sidebar table td a {
+        text-decoration: none;
+        color: #333;
+        font-weight: bold;
+        display: block;
+        text-align: center;
+    }
+
+    .content {
+        width: 90%;
+        display: flex;
+        align-items: center;
+    }
+
+    .profile {
+        display: flex;
+        align-items: center;
+        width: 100%;
+    }
+
+    .profile-image {
+        flex: 1;
+        text-align: center;
+    }
+
+    .profile-image img {
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        background-color: #ddd;
+    }
+
+    .profile-details {
+        flex: 2;
+        padding-left: 20px;
+    }
+
+    .profile-details h4 {
+        margin-bottom: 10px;
+    }
+
+    .details p {
+        margin-bottom: 10px;
+    }
+
+    .details p strong {
+        display: inline-block;
+        width: 150px;
+    }
+
+    .details p a {
+        color: #007BFF;
+        text-decoration: none;
+    }
+
+    .details p a:hover {
+        text-decoration: underline;
+    }
+
+    .edit-section {
+        display: none;
+        margin-top: 10px;
+    }
+
+    .edit-section input {
+        width: 80%;
+        padding: 5px;
+        margin-bottom: 5px;
+    }
+
+    .edit-section button {
+        margin-right: 10px;
+        padding: 5px 10px;
+        color: white;
+        border: none;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+    .edit-section button.save {
+        background-color: #00b7ff53;
+    }
+
+    .edit-section button.save:hover {
+        background-color: #28a745;
+    }
+
+    .edit-section button.cancel {
+        background-color: #dc3545;
+    }
+
+    .edit-section button.cancel:hover {
+        background-color: #c82333;
+    }
+
+    .error-message {
+        color: red;
+        margin-top: 5px;
+    }
+
+
+</style>
+
+
+
+<style>
+    .modal-content {
+        display: none; 
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 90%;
+        max-width: 400px;
+        height: auto;
+        max-height: 90vh;
+        background-color: white;
+        border-radius: 8px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        padding: 24px;
+        z-index: 1000;
+        overflow-y: auto;
+    }
+    .modal-content .close {
+        position: absolute;
+        top: 16px;
+        right: 16px;
+        cursor: pointer;
+        font-size: 24px;
+        color: #666;
+    }
+    .modal-content form {
+        display: flex;
+        flex-direction: column;
+    }
+    .modal-content form label {
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: #333;
+    }
+    .modal-content form input {
+        padding: 12px;
+        margin-bottom: 16px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 14px;
+    }
+    .modal-content form button {
+        padding: 12px;
+        background-color: #28a745;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.3s, transform 0.1s;
+        font-size: 16px;
+        font-weight: 600;
+    }
+    .modal-content form button:hover {
+        background-color: #155c26; /* Changed to desired hover color */
+    }
+    .modal-content form button:active {
+        transform: scale(0.98);
+    }
+</style>
+
+
+
+
+<div class="container1">
+    <%- include('partials/userProfileSlidebar') %>
+
+    <div class="content">
+        <div class="profile-details">
+            <h4>My Account</h4>
+            <hr>
+            <div class="details">
+                <p><strong>Full Name:</strong> <span id="nameText"><%= userInfo.name %></span> <a style="padding-left: 80px;" href="#" onclick="toggleEdit()">Edit Name</a></p>
+                <div id="nameEdit" class="edit-section">
+                    <input type="hidden" id="userId" value="<%= userInfo._id %>">
+                    <input type="text" id="nameInput" value="<%= userInfo.name %>">
+                    <button class="save" onclick="saveChanges()">Save</button>
+                    <button class="cancel" type="button" onclick="cancelEdit()">Cancel</button>
+                    <div id="errorMessage" class="error-message"></div>
+                </div>
+                <p><strong>Email:</strong> <%= userInfo.email %> </p>
+                <p><strong>Referral link:</strong> <a href="#">Referralcode</a></p>
+                <p><strong>Password:</strong> *********** <a href="#" onclick="openModal()">Change Password</a></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- change Password modal -->
+<div id="passwordModal" class="modal-content">
+    <span class="close" onclick="closeModal()">&times;</span>
+    <h2>Change Password</h2>
+    <form id="changePasswordForm">
+        <label for="currentPassword">Current Password:</label>
+        <input type="password" id="currentPassword" name="currentPassword" required>
+        <span id="currentPasswordError" class="error" style="color: red;"></span>
+
+        <label for="newPassword">New Password:</label>
+        <input type="password" id="newPassword" name="newPassword" required>
+        <span id="newPasswordError" class="error" style="color: red;" ></span>
+
+        <label for="confirmPassword">Confirm New Password:</label>
+        <input type="password" id="confirmPassword" name="confirmPassword" required>
+        <span id="confirmPasswordError" class="error" style="color: red;"></span>
+
+        <button type="submit" onclick="changePass('<%= userInfo._id %>')">Change Password</button>
+    </form>
+</div>
+
+
+<%- include('footer') %>
+<script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+<script>
+    function toggleEdit() {
+        var textElement = document.getElementById('nameText');
+        var editElement = document.getElementById('nameEdit');
+        textElement.style.display = 'none';
+        editElement.style.display = 'block';
+    }
+
+    function saveChanges() {
+        var inputElement = document.getElementById('nameInput');
+        var userIdElement = document.getElementById('userId');
+        var textElement = document.getElementById('nameText');
+        var errorMessageElement = document.getElementById('errorMessage');
+
+        var nameValue = inputElement.value;
+
+        // Check if the name contains numbers or spaces
+        if (/\d/.test(nameValue) || /\s/.test(nameValue)) {
+            errorMessageElement.textContent = 'Name cannot contain numbers or spaces.';
+            return;
+        } else {
+            errorMessageElement.textContent = '';
+        }
+
+        const data = {
+            name: nameValue,
+            userId: userIdElement.value
+        };
+
+        fetch("/update-name", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
+        .then(response => response.json())
+        .then(result => {
+            if (result.success) {
+                textElement.textContent = nameValue;
+                inputElement.parentNode.style.display = 'none';
+                textElement.style.display = 'inline';
+
+                Toastify({
+                    text: result.msg,
+                    duration: 3000,
+                    close: true,
+                    gravity: "top",
+                    position: 'right',
+                    backgroundColor: "linear-gradient(to right, #00b09b, #96c93d)",
+                    offset: {
+                        x: 50,
+                        y: 60
+                    },
+                }).showToast();
+            } else {
+                console.error('Failed to update name:', result.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    }
+
+    function cancelEdit() {
+        var textElement = document.getElementById('nameText');
+        var editElement = document.getElementById('nameEdit');
+        textElement.style.display = 'inline';
+        editElement.style.display = 'none';
+    }
+
+    // Modal functionality
+    function openModal() {
+        var modal = document.getElementById('passwordModal');
+        modal.style.display = 'block';
+    }
+
+    function closeModal() {
+        var modal = document.getElementById('passwordModal');
+        modal.style.display = 'none';
+    }
+
+    // Close modal when clicking outside of it
+    window.onclick = function(event) {
+        var modal = document.getElementById('passwordModal');
+        if (event.target == modal) {
+            modal.style.display = 'none';
+        }
+    }
+
+    //fectch function
+
+    function changePass(id) {
+    console.log(id);
+    var currentPassword = document.getElementById("currentPassword").value;
+    var confirmPassword = document.getElementById("confirmPassword").value;
+    console.log("Current Password:", currentPassword);
+    console.log("New Password:", confirmPassword);
+    
+    const data = {
+        currentPassword,
+        confirmPassword,
+        id
+    };
+
+    fetch("/Update-PassWord", {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(result => {
+        if (result.success) {
+            Toastify({
+                text: result.msg,
+                duration: 3000,
+                close: true,
+                gravity: "top",
+                position: 'right',
+                backgroundColor: "linear-gradient(to right, #00b09b, #96c93d)",
+                offset: {
+                    x: 50,
+                    y: 60
+                },
+            }).showToast();
+            closeModal(); 
+        } else {
+            Toastify({
+                text:'Some Thing Went Wrong',
+                duration: 3000,
+                close: true,
+                gravity: "top",
+                position: 'right',
+                backgroundColor: "linear-gradient(to right, #ff0000, #ff0000)",
+                offset: {
+                    x: 50,
+                    y: 60
+                },
+            }).showToast();
+         
+        }
+    })
+    .catch(error => {
+        console.error('Error updating password:', error);
+        Toastify({
+            text: 'Failed to update password. Please try again later.',
+            duration: 3000,
+            close: true,
+            gravity: "top",
+            position: 'right',
+            backgroundColor: "linear-gradient(to right, #ff0000, #ff0000)",
+            offset: {
+                x: 50,
+                y: 60
+            },
+        }).showToast();
+        closeModal(); 
+    });
+}
+
+</script>
+<script>
+    
+    document.addEventListener('DOMContentLoaded', function() {
+        const changePasswordForm = document.getElementById('changePasswordForm');
+
+        changePasswordForm.addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent form submission
+            
+            const currentPassword = document.getElementById('currentPassword').value.trim();
+            const newPassword = document.getElementById('newPassword').value.trim();
+            const confirmPassword = document.getElementById('confirmPassword').value.trim();
+
+            const currentPasswordError = document.getElementById('currentPasswordError');
+            const newPasswordError = document.getElementById('newPasswordError');
+            const confirmPasswordError = document.getElementById('confirmPasswordError');
+
+            currentPasswordError.textContent = '';
+            newPasswordError.textContent = '';
+            confirmPasswordError.textContent = '';
+
+            let isValid = true;
+
+            // Check if current password is empty
+            if (!currentPassword) {
+                currentPasswordError.textContent = 'Current Password is required';
+                isValid = false;
+            }
+
+            // Check if new password is empty or does not meet criteria
+            const passwordPattern = /^(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,}$/;
+            if (!newPassword) {
+                newPasswordError.textContent = 'New Password is required';
+                isValid = false;
+            } else if (!passwordPattern.test(newPassword)) {
+                newPasswordError.textContent = "Password: 8+ characters, 1 special character."
+                isValid = false;
+            }
+
+            // Check if confirm password matches new password
+            if (!confirmPassword) {
+                confirmPasswordError.textContent = 'Please confirm your new password';
+                isValid = false;
+            } else if (newPassword !== confirmPassword) {
+                confirmPasswordError.textContent = 'Passwords do not match';
+                isValid = false;
+            }
+
+            if (isValid) {
+                Toastify({
+                    text:msg,
+                    duration: 3000,
+                    close: true,
+                    gravity: "top",
+                    position: 'right',
+                    backgroundColor: "linear-gradient(to right, #ff0000, #ff0000)",
+                    offset: {
+                        x: 50,
+                        y: 60
+                    },
+                }).showToast();
+                closeModal(); 
+            }
+        });
+    });
+
+
+</script>

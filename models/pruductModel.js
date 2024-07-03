@@ -50,7 +50,11 @@ const productSchema = new mongoose.Schema({
    },
    offerDate:{
     type:Date
-   }
+   },
+    status: {
+    type: Boolean,
+    default: true,
+  },
     
 });
 

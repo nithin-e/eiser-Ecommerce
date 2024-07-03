@@ -15,6 +15,9 @@
             text-align: center;
             margin: 10px 0;
         }
+        .form-control::placeholder {
+            font-size: 0.700em; /* Adjust this value as needed */
+        }
     </style>
 </head>
 <body>
@@ -35,23 +38,23 @@
                             </div>
                             <form action="/signup" method="post" id='signupForm'>
                                 <div class="form-group">
-                                    <label for="name">Name</label>
-                                    <input type="text" class="form-control" id="name" name="name" required>
+                                    <label for="name"></label>
+                                    <input type="text" class="form-control" id="name" name="name" placeholder="Name" required>
                                     <div class="error-message" id="nameError"></div>
                                 </div>
                                 <div class="form-group">
-                                    <label for="email">Email</label>
-                                    <input type="email" class="form-control" id="email" name="email" required>
+                                    <label for="email"></label>
+                                    <input type="email" class="form-control" id="email" name="email" placeholder="Email" required>
                                     <div class="error-message" id="emailError"></div>
                                 </div>
                                 <div class="form-group">
-                                    <label for="password">Password</label>
-                                    <input type="password" class="form-control" id="password" name="password" required>
+                                    <label for="password"></label>
+                                    <input type="password" class="form-control" id="password" name="password" placeholder="Password" required>
                                     <div class="error-message" id="passwordError"></div>
                                 </div>
                                 <div class="form-group">
-                                    <label for="confirm_password">Confirm Password</label>
-                                    <input type="password" class="form-control" id="confirmPassword" name="confirm_password" required>
+                                    <label for="confirm_password"></label>
+                                    <input type="password" class="form-control" id="confirmPassword" name="confirm_password" placeholder="Confirm Password" required>
                                     <div class="error-message" id="confirmPasswordError"></div>
                                 </div>
                                 <button type="submit" value="Sign Up" class="btn text-white btn-block btn-primary">
@@ -73,7 +76,7 @@
             </div>
         </div>
     </div>
-    <script src="/js/jquery-3.3.1.min.js"></script>
+    <!-- <script src="/js/jquery-3.3.1.min.js"></script> -->
     <script src="/js/popper.min.js"></script>
     <script src="/js/bootstrap.min.js"></script>
     <script src="/js/main.js"></script>

@@ -106,8 +106,8 @@
             if (name === '') {
                 displayErrorMessage('Enter a valid product name', 'productNameErrMess');
                 isValid = false;
-            } else if (/[\d]/.test(name)) {
-                displayErrorMessage('Product name cannot contain numbers', 'productNameErrMess');
+            } else if (/[^a-zA-Z0-9\s]/.test(name)) {
+                displayErrorMessage('Product name cannot contain special characters', 'productNameErrMess');
                 isValid = false;
             }
 
@@ -144,6 +144,9 @@
 
             if (quantity === '' || isNaN(quantity) || parseInt(quantity) <= 0) {
                 displayErrorMessage('Enter a positive number for stock quantity', 'quantity-error');
+                isValid = false;
+            }else if(offerPrice>price){
+                displayErrorMessage('Offer price cannot be greater than the product price', 'offer-error');
                 isValid = false;
             }
 
@@ -182,81 +185,81 @@
 
 // cropperjs
    
+       
+
         function displaySelectedImages(input) {
-            const selectedImagesContainer = document.getElementById("selectedImagesContainer");
-            selectedImagesContainer.innerHTML = "";
+    const selectedImagesContainer = document.getElementById("selectedImagesContainer");
+    selectedImagesContainer.innerHTML = "";
 
-            for (let i = 0; i < input.files.length; i++) {
-                const file = input.files[i];
-                const reader = new FileReader();
-                const cropContainer = document.createElement("div");
-                cropContainer.classList.add("image-crop-container");
-                cropContainer.innerHTML = `
-                    <div class="image-container">
-                        <img id="image${i}" src="" alt="Select an image to crop">
-                    </div>
-                    <button class="crop-button" id="cropButton${i}">Crop Image ${i + 1}</button>
-                `;
-                selectedImagesContainer.appendChild(cropContainer);
+    for (let i = 0; i < input.files.length; i++) {
+        const file = input.files[i];
+        const reader = new FileReader();
+        const cropContainer = document.createElement("div");
+        cropContainer.classList.add("image-crop-container");
+        cropContainer.innerHTML = `
+            <div class="image-container">
+                <img id="image${i}" src="" alt="Select an image to crop">
+            </div>
+            <button class="crop-button" id="cropButton${i}">Crop Image ${i + 1}</button>
+        `;
+        selectedImagesContainer.appendChild(cropContainer);
 
-                const image = cropContainer.querySelector(`#image${i}`);
-                const cropButton = cropContainer.querySelector(`#cropButton${i}`);
+        const image = cropContainer.querySelector(`#image${i}`);
+        const cropButton = cropContainer.querySelector(`#cropButton${i}`);
 
-                reader.onload = () => {
-                    image.src = reader.result;
-                    let cropper = new Cropper(image, {
-                        aspectRatio: 1,
+        reader.onload = () => {
+            image.src = reader.result;
+            let cropper = new Cropper(image, {
+                aspectRatio: 1,
+                viewMode: 1,
+            });
+
+            cropButton.addEventListener("click", (event) => {
+                event.preventDefault();
+                if (cropper) {
+                    const canvas = cropper.getCroppedCanvas();
+                    const croppedImageDataURL = canvas.toDataURL('image/png'); // Use PNG for lossless quality
+                    image.src = croppedImageDataURL;
+                    const croppedImageFile = dataURLToFile(croppedImageDataURL, file.name);
+                    const currentFiles = Array.from(input.files);
+                    currentFiles[i] = croppedImageFile;
+
+                    const newFileList = createFileList(currentFiles);
+                    input.files = newFileList;
+                    cropper.destroy();
+                    cropper = null;
+                } else {
+                    cropper = new Cropper(image, {
+                        aspectRatio: 20/9,
                         viewMode: 1,
+                        minCropBoxWidth: 230,
+                        minCropBoxHeight: 90
                     });
+                }
+            });
+        };
+        reader.readAsDataURL(file);
+    }
+}
 
-                    cropButton.addEventListener("click", (event) => {
-                        event.preventDefault();
-                        if (cropper) {
-                            const canvas = cropper.getCroppedCanvas({
-                                width: 500,
-                                height: 500,
-                            });
-                            const croppedImageDataURL = canvas.toDataURL('image/jpeg', 1.0);
-                            image.src = croppedImageDataURL;
-                            const croppedImageFile = dataURLToFile(croppedImageDataURL, file.name);
-                            const currentFiles = Array.from(input.files);
-                            currentFiles[i] = croppedImageFile;
+function dataURLToFile(dataurl, filename) {
+    const arr = dataurl.split(',');
+    const mime = arr[0].match(/:(.*?);/)[1];
+    const bstr = atob(arr[1]);
+    let n = bstr.length;
+    const u8arr = new Uint8Array(n);
+    while (n--) {
+        u8arr[n] = bstr.charCodeAt(n);
+    }
+    return new File([u8arr], filename, { type: mime });
+}
 
-                            const newFileList = createFileList(currentFiles);
-                            input.files = newFileList;
-                            cropper.destroy();
-                            cropper = null;
-                        } else {
-                            cropper = new Cropper(image, {
-                                aspectRatio:20/9,
-                                viewMode: 1,
-                                minCropBoxWidth: 230,  // Set your desired minimum crop box width
-                                minCropBoxHeight: 90   // Set your desired minimum crop box height
-                            });
-                        }
-                    });
-                };
-                reader.readAsDataURL(file);
-            }
-        }
+function createFileList(files) {
+    const dataTransfer = new DataTransfer();
+    files.forEach(file => dataTransfer.items.add(file));
+    return dataTransfer.files;
+}
 
-        function dataURLToFile(dataurl, filename) {
-            const arr = dataurl.split(',');
-            const mime = arr[0].match(/:(.*?);/)[1];
-            const bstr = atob(arr[1]);
-            let n = bstr.length;
-            const u8arr = new Uint8Array(n);
-            while (n--) {
-                u8arr[n] = bstr.charCodeAt(n);
-            }
-            return new File([u8arr], filename, { type: mime });
-        }
-
-        function createFileList(files) {
-            const dataTransfer = new DataTransfer();
-            files.forEach(file => dataTransfer.items.add(file));
-            return dataTransfer.files;
-        }
     </script>
 
 </body>

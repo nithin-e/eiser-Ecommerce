@@ -20,6 +20,7 @@ const veryfyAdmint=(req,res,next)=>{
         }else{
             console.log("admin  not available");
     res.redirect("/admin_login")
+   
     }
 }
 

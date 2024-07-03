@@ -6,6 +6,8 @@ const genOtp = require("../util/otpgenarate");
 const { sendEmail } = require("../util/nodemailer");
 const bcrypt = require("bcrypt");
 const Product =require("../models/pruductModel")
+const CATMOD = require("../models/categorymodel");
+const BRANDMOD=require("../models/brandsModel")
 
 let i = 150;
 module.exports = {
@@ -14,7 +16,9 @@ module.exports = {
     req.session.nouser = null;
 
     const allProduct= await   Product.find()
-    res.render("user/user_home", { user: user,allProduct});
+      const userinfo=req.session.userinfo
+       console.log("user all info",userinfo)
+    res.render("user/user_home", { user: user,allProduct,userinfo});
   },
 
   login: (req, res) => {
@@ -29,7 +33,10 @@ module.exports = {
 
     const googleblock=req.session.googleblock 
     req.session.googleblock =null
-    res.render("user/user_login" ,{lock,blockuser,googleblock});
+
+     const noUserFound=req.session.noUserFound
+     req.session.noUserFound=null
+    res.render("user/user_login" ,{lock,blockuser,googleblock,noUserFound});
   },
 
   loginAndSignup: (req, res) => {
@@ -52,30 +59,31 @@ module.exports = {
 
   //store user database
   registerUser: async (req, res) => {
+    console.log("ibde ethi")
     const { name, password, email } = req.body;
     try {
+
+      console.log("user  indada")
       // Checking whether user already exists
       const existingUser = await userdb.findOne({ email: email });
 
       if (existingUser) {
-       
+        console.log("user indada athavum seen")
         req.session.nouser = "This email is already registered. You can login with another one.";
+        res.redirect('/loginandsignup')
       } else {
-        req.session.email = email;
+        console.log("user illatta but ")
+        req.session.email=email
+        req.session.temp = {email,name,password}
+        console.log("user illatta but ",req.session.temp)
         req.session.user = name;
-        
-        const salt = await bcrypt.genSalt(10);
-        const hashPassword = await bcrypt.hash(password, salt);
-        const userdata = await userdb.insertMany({ name, password:hashPassword, email });
-      }
+        const { otpcode, otpExpires } = await genOtp();
+        console.log("otp",otpcode);
 
-      const { otpcode, otpExpires } = await genOtp();
-      
-      console.log("otp",otpcode);
-
-      // Update or insert OTP document in the database                  
+         // Update or insert OTP document in the database                  
       const salt = await bcrypt.genSalt(10);
       const hashedOtp = await bcrypt.hash(otpcode, salt);
+ 
 
       await otpmodel.findOneAndUpdate(
         { email },
@@ -83,27 +91,21 @@ module.exports = {
         { upsert: true, new: true }
       );
       console.log("OTP stored in DB");
-
-
-
-
-      // Send OTP email
-      const mailOptions = {
-        from: process.env.AUTH_EMAIL,
-        to: email,
-        subject: "Your OTP Code",
-        text: `Here is your OTP code: ${otpcode}`,
-      };
-       
-      sendEmail(mailOptions);
-      // Send the email
-      console.log("OTP email sent successfully");
-
-      // Render OTP page
+        // Send OTP email
+        const mailOptions = {
+          from: process.env.AUTH_EMAIL,
+          to: email,
+          subject: "Your OTP Code",
+          text: `Here is your OTP code: ${otpcode}`,
+        };
+        sendEmail(mailOptions);
+        // Send the email
+        console.log("OTP email sent successfully");
+              // Render OTP page
        req.session.checkOtpVerfy =true;
-      res.redirect("/otp-page");
+       res.redirect("/otp-page");
 
-      const x = setInterval(() => {
+       const x = setInterval(() => {
         if (i == 0) {
           if (otpmodel.find({ email })) {
             userdb.deleteOne(email);
@@ -115,7 +117,7 @@ module.exports = {
           i--;
         }
       }, 1000);
-      
+      }
     } catch (error) {
       console.error('Error in registerUser:', error);
       if (!res.headersSent) {
@@ -126,17 +128,17 @@ module.exports = {
   },
 
 
-
   //verify otp
   verifyOtp: async (req, res) => {
     const { otp1, otp2, otp3, otp4 } = req.body;
 
-    const email = req.session.email;
+    const {password,email,name}=req.session.temp
 
     const otpcode = [otp1, otp2, otp3, otp4].join("");
     console.log("Received OTP:", otpcode, "for email:", email);
 
     try {
+      //  email = req.session.email
       const user = await otpmodel.findOne({ email });
       if (!user) {
         req.session.errMess = "Not user there";
@@ -150,9 +152,18 @@ module.exports = {
         req.session.errMess = "Invalid OTP";
         return res.redirect("/otp-page");
       }
+      console.log("enthokke ivade nadakkane", req.session.temp);
+    
       await otpmodel.deleteOne({ email: email });
       req.session.user = email;
       delete req.session.checkOtpVerfy
+
+   
+      const salt = await bcrypt.genSalt(10);
+      const hashedPassword = await bcrypt.hash(password, salt);
+      const userdata=await userdb.create({email: email,name: name,password: hashedPassword})
+      req.session.userId=userdata._id
+      console.log("kityada mone",req.session.userId);
       res.redirect("/");
     } catch (error) {
       console.log(error);
@@ -171,8 +182,13 @@ module.exports = {
 
   //resent-otp
   resentOtp: async (req, res) => {
-    const { email } = req.session;
+   
+  
+    const email = req.session.email;
     console.log("this is from email", email);
+       const userId=req.session.userId
+  //  const Usser = await userdb.findById(id)
+  //   console.log("this is from email",Usser);
     try {
       const { otpcode, otpExpires } = await genOtp();
 
@@ -180,7 +196,7 @@ module.exports = {
       const hashedOtp = await bcrypt.hash(otpcode, salt);
 
       await otpmodel.findOneAndUpdate(
-        { email },
+        { email},
         { otpcode: hashedOtp, otpExpires },
         { upsert: true, new: true }
       );
@@ -193,7 +209,7 @@ module.exports = {
       };
       //calling send function
       await sendEmail(mailOptions);
-      console.log("Success: OTP successfully resent");
+      console.log("Success: OTP successfully resent",otpcode);
       i * 2;
       return res.status(200).send("Successfully resent OTP");
     } catch (error) {
@@ -232,6 +248,7 @@ module.exports = {
    if(isPassword){
     req.session.user = user.name;
     req.session.userId = user._id;
+    req.session.userinfo=user
     return res.redirect("/")
    }else{
     req.session.lock="Invalid Email Password";
@@ -243,5 +260,45 @@ module.exports = {
  },
 
 
+
+
+ //show product details page
+ShowProductDetails:async(req,res)=>{
+  console.log("hiii",req.params);
+   const {id}=req.params
+   try{
+    console.log("hiii",id);
+    // const id = req.params.id.replace(':', '');  
+    console.log('qwer',toString(id));
+   const products=await Product.findById(id).populate('brand').populate('category')
+  //  const allcategory= await CATMOD.find()
+   const allBrands= await BRANDMOD.find()
+   const allproducts = await Product.find({ _id: { $ne: id } }).populate('category')
+   const allcategory= await CATMOD.find()
+   console.log("this all category",allproducts);
+
+
+  //  console.log('products',products);
+   const user = req.session.user;
+    res.render("user/productDetailsPage",{products,user,allproducts,allcategory,allBrands})
+  
+   }catch(error){
+    console.error('Error while adding product:', error);
+    res.status(500).send('Internal Server Error');
+   }
+   
+  },
+  
+
+
+  //showing proseperate page
+showProductSeperetPage: async(req,res)=>{
+  const products=await Product.find().populate('category').populate('brand')
+  const allBrands= await BRANDMOD.find()
+  const user = req.session.user;
+  // console.log("allproooooooo",products);
+    res.render("user/productList",{products,user,allBrands})
+  }
+  
 
 }

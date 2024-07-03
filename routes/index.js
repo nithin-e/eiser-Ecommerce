@@ -2,7 +2,8 @@ var express = require('express');
 const User = require('../models/usermodel');
 const userController = require('../controller/userController');
 const forgetController = require('../controller/forgetController');
-const {Authenticated,checkOtpVerfy }= require("../middleware/userMiddleware")
+const userProfileController=require('../controller/userProfileController')
+const {Authenticated,checkOtpVerfy,  blockedUser,chekkingUser }= require("../middleware/userMiddleware")
 
 var router = express.Router();
 
@@ -42,7 +43,7 @@ router.get("/created",forgetController.showOtpPage)
 router.post("/verify-otp-page",forgetController.verifyingOtp)
 
 //resent forget otp
-router.post("/resend",forgetController.resentOtpforget)
+router.post("/resend-otp",forgetController.resentOtpforget)
 
 
 //password change
@@ -64,6 +65,23 @@ router.get("/logout", (req, res) => {
     });
 });
   
+//showing product details
+router.get("/ViewProduct/:id",blockedUser, userController.ShowProductDetails);
+
+
+router.get("/productPage",blockedUser, userController.showProductSeperetPage);
+
+
+
+//user profile
+router.get("/user-profile",chekkingUser, userProfileController.showUserProfile);
+router.get("/Myaccount",chekkingUser,userProfileController.showMyAccound)
+router.get("/Address",chekkingUser,userProfileController.showMyAddress)
+router.post("/update-name",chekkingUser,userProfileController.EditName)
+router.post("/Update-PassWord",chekkingUser,userProfileController.EditPassword)
+router.post("/changeAddress",chekkingUser,userProfileController.getAddressData)
+router.post('/Address-edit/:id',chekkingUser,userProfileController.EditAddress)
+router.delete("/AdressDelete/:id",chekkingUser, userProfileController.REMOVEADDRESS);
 
 
 
