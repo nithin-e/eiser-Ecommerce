@@ -46,7 +46,7 @@ const productSchema = new mongoose.Schema({
     },
    offerPrice:{
     type: Number,
-    
+    default:0
    },
    offerDate:{
     type:Date

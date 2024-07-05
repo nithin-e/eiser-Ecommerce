@@ -8,6 +8,7 @@ const bcrypt = require("bcrypt");
 const Product =require("../models/pruductModel")
 const CATMOD = require("../models/categorymodel");
 const BRANDMOD=require("../models/brandsModel")
+const CARTMOD=require("../models/cartModel")
 
 let i = 150;
 module.exports = {
@@ -17,8 +18,11 @@ module.exports = {
 
     const allProduct= await   Product.find()
       const userinfo=req.session.userinfo
-       console.log("user all info",userinfo)
-    res.render("user/user_home", { user: user,allProduct,userinfo});
+      //  console.log("user all info",userinfo)
+
+      const cartError = req.session.cartError;
+      delete req.session.cartError;
+    res.render("user/user_home", { user: user,allProduct,userinfo,cartError});
   },
 
   login: (req, res) => {
@@ -249,6 +253,7 @@ module.exports = {
     req.session.user = user.name;
     req.session.userId = user._id;
     req.session.userinfo=user
+    
     return res.redirect("/")
    }else{
     req.session.lock="Invalid Email Password";
@@ -266,21 +271,41 @@ module.exports = {
 ShowProductDetails:async(req,res)=>{
   console.log("hiii",req.params);
    const {id}=req.params
+   const userId = req.session.userId;
+   console.log("hiii",userId);
    try{
-    console.log("hiii",id);
+    
     // const id = req.params.id.replace(':', '');  
-    console.log('qwer',toString(id));
+    
    const products=await Product.findById(id).populate('brand').populate('category')
-  //  const allcategory= await CATMOD.find()
+  
    const allBrands= await BRANDMOD.find()
    const allproducts = await Product.find({ _id: { $ne: id } }).populate('category')
+ 
    const allcategory= await CATMOD.find()
-   console.log("this all category",allproducts);
-
-
-  //  console.log('products',products);
+   
+   const FindUser=await CARTMOD.findOne({userId:userId})
+  
+   if(FindUser&&FindUser.userId){
+    console.log(" oke allehe",FindUser);
+    console.log("if ill pettada");
+    var CartExisistIndex= await FindUser.cartProducts.findIndex(p=>p.productId.toString()==id)
+    console.log("this is index inside block",CartExisistIndex);
    const user = req.session.user;
+  
+    res.render("user/productDetailsPage",{products,user,allproducts,allcategory,allBrands,CartExisistIndex})
+   
+   }else{
+    console.log("else ill pettada");
+    console.log("this is index inside block",CartExisistIndex);
+     const user = req.session.user;
+
+   
+
     res.render("user/productDetailsPage",{products,user,allproducts,allcategory,allBrands})
+   }
+
+
   
    }catch(error){
     console.error('Error while adding product:', error);
@@ -291,14 +316,32 @@ ShowProductDetails:async(req,res)=>{
   
 
 
-  //showing proseperate page
-showProductSeperetPage: async(req,res)=>{
-  const products=await Product.find().populate('category').populate('brand')
-  const allBrands= await BRANDMOD.find()
-  const user = req.session.user;
-  // console.log("allproooooooo",products);
-    res.render("user/productList",{products,user,allBrands})
-  }
+  //showing separate page
+  showProductSeperetPage: async (req, res) => {
+    const perPage = 12; // Number of products per page
+    const page = req.query.page || 1; // Current page number, default is 1
   
-
+    try {
+      const products = await Product.find()
+        .skip((perPage * page) - perPage)
+        .limit(perPage)
+        .populate('category')
+        .populate('brand');
+  
+      const count = await Product.countDocuments();
+      const allBrands = await BRANDMOD.find();
+      const user = req.session.user;
+  
+      res.render("user/productList", {
+        products,
+        user,
+        allBrands,
+        current: page,
+        pages: Math.ceil(count / perPage)
+      });
+    } catch (err) {
+      console.error(err);
+      res.status(500).send("Server Error");
+    }
+  }
 }

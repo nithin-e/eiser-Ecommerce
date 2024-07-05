@@ -145,7 +145,7 @@
             if (quantity === '' || isNaN(quantity) || parseInt(quantity) <= 0) {
                 displayErrorMessage('Enter a positive number for stock quantity', 'quantity-error');
                 isValid = false;
-            }else if(offerPrice>price){
+            }else if(parseFloat(offerPrice) > parseFloat(price)){
                 displayErrorMessage('Offer price cannot be greater than the product price', 'offer-error');
                 isValid = false;
             }
@@ -198,7 +198,7 @@
         cropContainer.classList.add("image-crop-container");
         cropContainer.innerHTML = `
             <div class="image-container">
-                <img id="image${i}" src="" alt="Select an image to crop">
+                <img  id="image${i}" src="" alt="Select an image to crop" style=" height: 300px;">
             </div>
             <button class="crop-button" id="cropButton${i}">Crop Image ${i + 1}</button>
         `;
@@ -264,3 +264,9 @@ function createFileList(files) {
 
 </body>
 </html>
+
+<style>
+    .image0{
+        height: 300px;
+    }
+</style>

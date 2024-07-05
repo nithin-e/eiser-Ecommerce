@@ -61,36 +61,37 @@ function chekkingUser(req,res,next) {
                 return res.redirect("/login")
     }
 }
-//before login
 
 
-//checking user exist or not
-
-// const userExisist= async (req,res,next)=>{
-    
-//     try {
-//         const id = req.session?.userId;
-//         console.log("id",id);
-//         if(!id){
-//             return next();
-//          }
-//           const existId=  await userdb.findById(id)
-//           console.log(existId);
-//              if(existId.status==true){
-//                  next()
-//              }else{
-//                  res.redirect("/login");
-//              }
-         
-//     } catch (error) {
-//         console.log(error);
-//     }
-// }
+ function CheckingUserInCart(req,res,next) {
+    if(req.session.user){
+        next()
+    }else{
+        req.session.cartError = "If you want to go to the cart, you must be logged in.";
+        return res.redirect("/");
+    } 
+    }
  
+
+    function CheckingUserInCartBotton(req,res,next) {
+        console.log("kerndd ithil");
+        if(req.session.user){
+            next()
+        }else{
+            console.log("kerndd ithil");
+            req.session.carterr = "If you want to go to the cart, you must be logged in.";
+            return res.redirect("/ViewProduct/:id");
+        } 
+        }
+
+
+        
 
 module.exports ={
     Authenticated,
     checkOtpVerfy,
     blockedUser,
     chekkingUser,
+    CheckingUserInCart,
+    CheckingUserInCartBotton
 }

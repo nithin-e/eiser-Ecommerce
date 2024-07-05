@@ -401,7 +401,7 @@ req.session.Admin=true;
       stockQuantity,
       category,
       brand,
-      offerPrice: Offerprice ? parseFloat(Offerprice) : null, 
+      offerPrice: Offerprice ? parseFloat(Offerprice) : 0, 
       offerDate: expiryDate ? new Date(expiryDate) : null,    
       price
     })

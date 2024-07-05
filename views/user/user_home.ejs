@@ -728,6 +728,34 @@
   <!--================ End Blog Area =================-->
 
  
+  <style>
+    .toastify-custom {
+        font-size: 12px; /* Decrease the font size */
+        padding: 4px; /* Adjust padding if needed */
+    }
+</style>
+
+  <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <script>
+       ` <% if (typeof cartError !== 'undefined') { %>`
+            Toastify({
+                text: "<%= cartError %>",
+                duration: 1000,
+               
+                gravity: "top",
+                position: 'right',
+                backgroundColor: "linear-gradient(to right, #ff5f6d, #ffc371)",
+                offset: {
+                    x: 50,
+                    y: 60
+                },
+                
+            className: "toastify-custom"
+            }).showToast();
+       ` <% } %>`
+    </script>
+
+    
     <!--================ start footer Area  =================-->          
     <footer class="footer-area section_gap" style="margin-left: -109px; width: 124%;margin-bottom: -10%;">
       <div class="container">

@@ -3,7 +3,9 @@ const User = require('../models/usermodel');
 const userController = require('../controller/userController');
 const forgetController = require('../controller/forgetController');
 const userProfileController=require('../controller/userProfileController')
-const {Authenticated,checkOtpVerfy,  blockedUser,chekkingUser }= require("../middleware/userMiddleware")
+const CartController=require('../controller/CartController')
+const CARTMOD=require('../models/cartModel')
+const {Authenticated,checkOtpVerfy,  blockedUser,chekkingUser,CheckingUserInCart ,CheckingUserInCartBotton}= require("../middleware/userMiddleware")
 
 var router = express.Router();
 
@@ -67,8 +69,6 @@ router.get("/logout", (req, res) => {
   
 //showing product details
 router.get("/ViewProduct/:id",blockedUser, userController.ShowProductDetails);
-
-
 router.get("/productPage",blockedUser, userController.showProductSeperetPage);
 
 
@@ -83,6 +83,24 @@ router.post("/changeAddress",chekkingUser,userProfileController.getAddressData)
 router.post('/Address-edit/:id',chekkingUser,userProfileController.EditAddress)
 router.delete("/AdressDelete/:id",chekkingUser, userProfileController.REMOVEADDRESS);
 
+// cart side
+router.get('/View-cart',CheckingUserInCart,CartController.ShowCartPage)
+router.get('/AddToBag/:id',CartController.STOREDATABAG)
+// router.get('/ProductAddingCart/:id',CartController.STOREDATACART)
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 module.exports = router;
+
+

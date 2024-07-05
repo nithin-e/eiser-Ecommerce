@@ -170,13 +170,15 @@
                 isValid = false;
             }
 
-            if (offerPrice !== '' && (isNaN(offerPrice) || parseFloat(offerPrice) <= 0)) {
+            if (offerPrice !== '') {
+                if (isNaN(offerPrice) || parseFloat(offerPrice) <= 0) {
                 displayErrorMessage('Enter a positive number for offer price', 'offer-error');
-                isValid = false;
-            }else if(offerPrice>price){
-                displayErrorMessage('Offer price cannot be greater than the product price', 'offer-error');
-                isValid = false;
-            }
+               isValid = false;
+            } else if (parseFloat(offerPrice) >= parseFloat(price)) {
+                displayErrorMessage('Offer price must be less than the regular price', 'offer-error');
+                 isValid = false;
+                 }
+                      }
 
             if (offerPrice !== '' && expiryDate === '') {
                 displayErrorMessage('Expiry date is required when offer price is set', 'expiry-error');
@@ -188,7 +190,7 @@
                 if (isNaN(expiry.getTime())) {
                     displayErrorMessage('Enter a valid expiry date', 'expiry-error');
                     isValid = false;
-                } else if (expiry <= today) {
+                } else if (parseFloat(offerPrice) > parseFloat(price)) {
                     displayErrorMessage('Expiry date must be in the future', 'expiry-error');
                     isValid = false;
                 }
@@ -235,6 +237,7 @@
 // cropperjs
    
         
+
 function displaySelectedImages(input) {
     const selectedImagesContainer = document.getElementById("selectedImagesContainer");
     selectedImagesContainer.innerHTML = "";
@@ -246,7 +249,7 @@ function displaySelectedImages(input) {
         cropContainer.classList.add("image-crop-container");
         cropContainer.innerHTML = `
             <div class="image-container">
-                <img id="image${i}" src="" alt="Select an image to crop">
+                <img  id="image${i}" src="" alt="Select an image to crop" style=" height: 300px;">
             </div>
             <button class="crop-button" id="cropButton${i}">Crop Image ${i + 1}</button>
         `;
@@ -290,6 +293,7 @@ function displaySelectedImages(input) {
     }
 }
 
+
 function dataURLToFile(dataurl, filename) {
     const arr = dataurl.split(',');
     const mime = arr[0].match(/:(.*?);/)[1];
@@ -311,3 +315,8 @@ function createFileList(files) {
 
 </body>
 </html>
+<style>
+    .image0{
+        height: 300px;
+    }
+</style>

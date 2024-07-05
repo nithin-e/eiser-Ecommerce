@@ -489,7 +489,7 @@
 	.banner_area .banner_inner .banner_content h2 {
 		font-size: 32px;
 	}
-
+	
 	/* Blog Page Area css
 	============================================================================================ */
 	.comments-area .thumb {
@@ -504,6 +504,7 @@
 	.home_banner_area .banner_inner {
 		min-height: 500px;
 	}
+	
 	.total_rate .col-6{
 		flex: 0 0 100%;
 		max-width: 100%;

@@ -78,7 +78,7 @@ module.exports={
       const isMatch = await bcrypt.compare(currentPassword, UserInfo.password);
       console.log("entah avastha",isMatch);
       if(isMatch){
-        console.log("match aadhada muthe");
+        
         const salt = await bcrypt.genSalt(10);
         const ChangedPassword = await bcrypt.hash(confirmPassword, salt);
          UserInfo.password=ChangedPassword
@@ -148,7 +148,7 @@ EditAddress: async(req, res) => {
     const userId = req.session.userId;
     const {id}  = req.params; 
 
-    console.log("manda ith kittando", id);
+    console.log("ith kittando", id);
     const { name, mobile, pincode, state, address, locality, city } = req.body;
     try {
         const AddressData = { name, mobile, pincode, state, address, locality, city };
