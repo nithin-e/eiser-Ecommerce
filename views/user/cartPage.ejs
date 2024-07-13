@@ -1,292 +1,639 @@
 <%- include('Header') %>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css"
+        integrity="sha384-DyZ88mC6Up2uqS4h/KRgHuoeGwBcD4Ng9SiP4dIRy0EXTlnuz47vAwmeGwVChigm" crossorigin="anonymous">
+    <link rel="stylesheet" href="cart.css">
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@200;300;400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300&display=swap" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
 
-<!--================Home Banner Area =================-->
-<section class="banner_area">
-  <div class="banner_inner d-flex align-items-center">
-    <div class="container">
-      <div class="banner_content d-md-flex justify-content-between align-items-center">
-        <div class="mb-3 mb-md-0">
-          <h2>Cart</h2>
-          <p>Very us move be blessed multiply night</p>
-        </div>
-        <div class="page_link">
-          <a href="/">Home</a>
-          <a href="cart.html">Cart</a>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-<!--================End Home Banner Area =================-->
-
-<!--================Cart Area =================-->
-
-<section class="cart_area">
-  <div class="container">
-    <div class="cart_inner">
-      <div class="table-responsive">
-        <table class="table">
-          <!-- Table Headings -->
-          <thead>
-            <tr>
-              <th scope="col">Product</th>
-              <th scope="col">Price</th>
-              <th scope="col">Quantity</th>
-              <th scope="col">Total</th>
-            </tr>
-          </thead>
-          <tbody>
-            <!-- Product Rows -->
-            <% if (productDetails.length === 0) { %>
-              <tr>
-                <td colspan="4">Your cart is empty.</td>
-              </tr>
-            <% } else { %>
-              <% productDetails.forEach(productinfo => { %>
-                <tr id="productRow_<%= productinfo.productId %>">
-                  <td>
-                    <div class="media">
-                      <div class="d-flex">
-                        <img src="<%= productinfo.images[0] %>" alt="Product Image" style="max-width: 100px; max-height: 70px; border-radius: 0px 2pc;">
-                      </div>
-                      <div class="media-body">
-                        <p><%= productinfo.productName %></p>
-                      </div>
-                    </div>
-                  </td>
-                  <td>
-                    <h5>₹<%= productinfo.total %></h5>
-                  </td>
-                  <td>
-                    <div class="product_count">
-                      <input
-                        type="text"
-                        name="qty"
-                        id="sst_<%= productinfo.productId %>"
-                        maxlength="12"
-                        value="<%= productinfo.quantity %>"
-                        title="Quantity:"
-                        class="input-text qty"
-                      />
-                      <button
-                        onclick="changeQuantity('<%= productinfo.productId %>', 1, `<%= productinfo.total %>`)"
-                        class="increase items-count"
-                        type="button"
-                      >
-                        <i class="lnr lnr-chevron-up"></i>
-                      </button>
-                      <button
-                        onclick="changeQuantity('<%= productinfo.productId %>', -1, `<%= productinfo.total %>`)"
-                        class="reduced items-count"
-                        type="button"
-                      >
-                        <i class="lnr lnr-chevron-down"></i>
-                      </button>
-                    </div>
-                  </td>
-                  <td>
-                    <h5 id="total_<%= productinfo.productId %>">₹<%= productinfo.total * productinfo.quantity %></h5>
-                  </td>
-                </tr>
-              <% }); %>
-            <% } %>
-
-            <!-- Subtotal and Total Rows -->
-            <tr class="bottom_button">
-              <td>
-                <a class="gray_btn" href="#">Continue Shopping</a>
-              </td>
-              <td></td>
-              <td></td>
-              <td>
-                <div class="cupon_text">
-                  <input type="text" placeholder="Coupon Code" />
-                  <a class="main_btn" href="#">Apply</a>
-                  <a class="gray_btn" href="#">Close Coupon</a>
-                </div>
-              </td>
-            </tr>
-            <tr class="out_button_area">
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-            </tr>
-          </tbody>
-        </table>
-        <div class="summary-container" style="font-size: 3px;">
-          <div class="summary-item">
-            <div class="summary-label"></div>
-            <div class="summary-value"></div>
-            <div class="summary-label text-right">
-              <h5 style="font-size: 15px;">Subtotal</h5>
-            </div>
-            <div class="summary-value">
-              <h5 id="subtotalPrice" style="font-size: 15px;">₹<%= productDetails.reduce((acc, productinfo) => acc + (productinfo.total * productinfo.quantity), 0) %></h5>
-            </div>
-          </div>
-          <div class="summary-item no-border">
-            <div class="summary-label"></div>
-            <div class="summary-value"></div>
-            <div class="summary-label text-right">
-              <h5 style="font-size: 15px;">Shipping</h5>
-            </div>
-            <div class="summary-value">
-              <h5 id="shippingCost" style="font-size: 15px;">Free</h5>
-            </div>
-          </div>
-          <div class="summary-item no-border">
-            <div class="summary-label"></div>
-            <div class="summary-value"></div>
-            <div class="summary-label text-right">
-              <h5 style="font-size: 15px;">Grand Total</h5>
-            </div>
-            <div class="summary-value">
-              <h5 style="font-size: 15px;" id="grandTotal">₹<%= productDetails.reduce((acc, productinfo) => acc + (productinfo.total * productinfo.quantity), 0) %></h5>
-            </div>
-          </div>
-        </div>
-        <div class="grand_total_section">
-          <div class="shipping_box">
-            <a class="gray_btn" href="#">Proceed to checkout</a>
-          </div>
-        </div>
+    <style>
         
-      </div>
-    </div>
-  </div>
-</section>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Source Sans 3', sans-serif;
+            font-size: 14px;
+            color: #1e1e1e;
+        }
+
+       
+        #navB {
+            position: sticky;
+            top: 0;
+            width: 100%;
+            height: 90px;
+            background-color: white;
+            z-index: 1;
+        }
+
+        
+        #cart_container {
+            display: flex;
+            justify-content: space-between;
+            margin: 20px auto;
+            max-width: 1200px;
+            padding: 0 20px;
+            /* padding-top: 50px; */
+        }
+
+       
+        #card {
+        height: 49vh; 
+        overflow-y: auto; 
+        padding: 20px; 
+        background-color: #f9f9f9; 
+        scrollbar-width: none; 
+        -ms-overflow-style: none;    }
+
+   
+    #pay {
+        width: 48%;
+        padding: 20px;
+        margin-left: 2px;
+        background-color: #f9f9f9;
+        text-align: right;
+    }
+
+        #pay {
+            text-align: right;
+        }
+
+       
+        #product {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+       
+        #btn {
+            padding: 10px 20px;
+            font-weight: bold;
+            background-color: #333;
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        #btn:hover {
+            background-color: #555;
+        }
+
+       
+        .summary-container {
+            font-size: 15px;
+        }
+
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .summary-label {
+            flex: 1;
+        }
+
+        .summary-value {
+            flex: 1;
+            text-align: right;
+        }
+
+        .no-border {
+            border-bottom: none;
+        }
+
+        
+        .grand_total_section {
+            margin-top: 20px;
+            text-align: right;
+        }
+
+        .shipping_box {
+            margin-top: 10px;
+        }
+
+        .gray_btn {
+            padding: 6px 20px;
+            background-color: #ccc;
+            color: #333;
+            border-radius: 5px;
+            display: inline-block;
+        }
+
+        .gray_btn:hover {
+            background-color: #71cd14;
+            text-decoration: none; 
+        }
+
+        hr {
+            opacity: 0.6;
+        }
+           
+    .table {
+        width: 150%; 
+        height: 10px; 
+       
+    }
+    </style>
+   
+
+
+
+<style>
+    .quantity-container {
+    display: flex;
+    align-items: center;
+}
+
+button {
+    background-color: #ffffff;
+    border: 1px solid #dcdcdc;
+    color: #333333;
+    font-size: 16px;
+    padding: 0px 11px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+button:hover {
+    background-color: #f0f0f0;
+}
+
+button:focus {
+    outline: none;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+input[type="text"] {
+    width: 40px;
+    text-align: center;
+    border: 1px solid #dcdcdc;
+    margin: 0 10px;
+    font-size: 16px;
+    padding: 10px 0;
+    background-color: #ffffff;
+    color: #333333;
+}
+
+input[type="text"]:focus {
+    outline: none;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+</style>
+
+ 
+<style>
+ 
+
+/* Style for the buttons */
+button {
+  width: 30px;
+  height: 30px;
+  background-color: #f0f0f0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 18px;
+  color: #333;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #e0e0e0;
+}
+
+/* Style for the input field */
+input[type="number"] {
+  width: 50px;
+  height: 30px;
+  text-align: center;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin: 0 10px;
+  font-size: 16px;
+  color: #333;
+  background-color: #fff;
+  pointer-events: none;
+}
+
+</style>
 
 
 
 
 <style>
-.summary-container {
-  display: flex;
-  flex-direction: column;
-  margin-top: -57px
+    /* Styles for pay div */
+    #pay {
+        border: 1px solid #e7e7e7; /* Border style */
+        padding: 20px;
+        margin-bottom: 20px;
+        background-color: #f9f9f9;
+        /* border-radius: 8px;   */
+        /* box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); */
+    }
+
+    
+    .summary-container {
+        margin-bottom: 20px;
+    }
+
+    .summary-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+
+    .summary-label {
+        flex: 1;
+        text-align: left;
+    }
+
+    .summary-value {
+        flex: 1;
+        text-align: right;
+    }
+
+    .summary-item.no-border {
+        border-bottom: none;
+    }
+
+    /* Styles for buttons */
+    .gray_btn {
+    display: inline-block;
+    padding: 0px 15px; /* Adjust padding for better appearance */
+    background-color: #ccc;
+    color: #333;
+    text-decoration: none;
+    border-radius: 9px;
+    transition: background-color 0.3s ease;
+    margin-right: 5px;
+    margin-left: 20px;
+    margin-top: 5px; 
+
 }
 
-.summary-item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0px 0;
- 
-}
 
-.summary-item.no-border {
-  border: none;
-}
+    .gray_btn:hover {
+        background-color: 71cd14#bbb;
+    }
 
-.summary-label {
-  flex: 1;
-}
-
-.summary-value {
-  flex: 1;
-  text-align: right;
-}
-
-.text-right {
-  text-align: right;
-}
-.grand_total_section {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 10px;
-  border-top: 1px solid #ddd;
-  margin-top: 0px;
-}
-
-.total {
-  font-size: 1.5em;
-  font-weight: bold;
-}
-
-.shipping_box {
-  margin-left: auto;
-}
-
-.gray_btn {
-  background-color: #ccc;
-  color: #333;
-  padding: 10px 20px;
-  text-decoration: none;
-  border-radius: 5px;
-}
-
-.gray_btn:hover {
-  background-color: #bbb;
-}
-/* new css */
-.grand_total_section {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 20px;
-  border-top: 1px solid #ddd;
-  margin-top: 10px;
-}
-
-.total {
-  font-size: 1.1em; /* Reduced font size */
-  font-weight: bold;
-}
-
-.shipping_box {
-  margin-left: auto;
-}
-
-.gray_btn {
-  background-color: #ccc;
-  color: #333;
-  padding: 10px 20px;
-  text-decoration: none;
-  border-radius: 5px;
-}
-
-.gray_btn:hover {
-  background-color: #bbb;
-}
-
+    .shipping_box {
+        text-align: right;
+        margin-top: 10px;
+    }
+    .banner_area{
+        padding-top: 100px;
+    }
 </style>
 
-<!--================End Cart Area =================-->
+</head>
+<body>
+    <!--================Home Banner Area =================-->
+<section class="banner_area" >
+    <div class="banner_inner d-flex align-items-center">
+      <div class="container">
+        <div class="banner_content d-md-flex justify-content-between align-items-center">
+          <div class="mb-3 mb-md-0">
+            <h2>Cart</h2>
+            <p>Very us move be blessed multiply night</p>
+          </div>
+          <div class="page_link">
+            <a href="/">Home</a>
+            <a href="cart.html">Cart</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!--================End Home Banner Area =================-->
+  <div id="cart_container"  style="border: 2px solid #71cd14 ;">
+    <div id="card">
+        <div id="product">
+            <!-- Your product table goes here -->
+            <table class="table">
+                <!-- Table Headings -->
+                <thead>
+                  <tr>
+                    <th scope="col">Product</th>
+                    <th scope="col">Price</th>
+                    <th scope="col">Quantity</th>
+                    <th scope="col">Total</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <!-- Product Rows -->
+                  <% if (!cartItems || cartItems.length === 0) { %>
+                    
+                  <tr>
+                    <h2>Your cart is empty</h2>
+                    <p>Looks like you haven't added anything to your cart yet.</p>
+                    <a href="/productPage" class="gray_btn"   style="margin-left: 153px;">Continue Shopping</a >
+                  
+                </div>
+                  <% } else { %>
+                  <% cartItems.forEach(item => { %>
+                  <% item.cartProducts.forEach(products => { %>
+                  <tr id="productRow_<%= products.productId %>">
+                    <td>
+                      <div class="media">
+                        <div class="d-flex">
+                          <img src="<%= products.images[0] %>" alt="Product Image" style="max-width: 100px; max-height: 70px; border-radius: 0px 2px;">
+                        </div>
+                        <div class="media-body">
+                          <p><%= products.productName %></p>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <h6 style="line-height: 16px;font-size: 12px;">₹<%= products.total %></h6>
+                    </td>
+                    <td>
+                        <div>
+                            <button id="decreaseBtn" onclick="decreseBotton('<%= products.productId %>','<%= products.quantity %>')">-</button>
+                            <input type="number"  class="quantity-input"  id="qty_<%= products.productId %>" value="<%= products.quantity %>" readonly >
+                            <button id="increaseBtn" class="btn-plus"  data-id="<%= products.productId %>"  onclick="updateQuantity('<%= products.productId %>','<%= products.quantity %>','<%= products.stockQuantity %>')">+</button>
+                          </div>
+                    </td>
+                    <td>
+                      <h6 style="line-height: 16px;font-size: 15px;" id="total_<%= products.productId %>">₹<%= products.total * products.quantity %></h6>
+                    </td>
+                    <td>
+                      <a class="delete-link" onclick="deleteCart('<%= products.productId %>')">
+                        <i class="fas fa-trash-alt"></i>
+                      </a>
+                    </td>
+                  </tr>
+                  <% }); %>
+                  <% }); %>
+                  <% } %>
+                </tbody>
+              </table>
+              
+        </div>
+    </div>
+    <% if (!cartItems || cartItems.length === 0) { %>
+
+
+
+        <% } else{%>
+    <div id="pay" style="height: 50%;">
+        <div class="summary-container">
+            <% cartItems.forEach(item => { %>
+            <% 
+              // Calculate subtotal
+              const subtotal = item.cartProducts.reduce((acc, product) => acc + (product.total * product.quantity), 0);
+            %>
+            <div class="summary-item">
+                <div class="summary-label">
+                    <h6 style="font-size: 16px;">Subtotal</h6>
+                </div>
+                <div class="summary-value">
+                    <h6 style="line-height: 16px;font-size: 13px;" class="subtotalPrice">₹<%= subtotal %></h6>
+                </div>
+            </div>
+            <div class="summary-item no-border">
+                <div class="summary-label">
+                    <h6 style="font-size: 15px;">Shipping</h6>
+                </div>
+                <div class="summary-value">
+                    <h6 style="line-height: 16px;font-size: 15px;" class="shippingCost">₹100</h6>
+                </div>
+            </div>
+            <div class="summary-item no-border">
+                <div class="summary-label">
+                    <h6 style="font-size: 16px;">Grand Total</h6>
+                </div>
+                <div class="summary-value">
+                    <h6 style="line-height: 16px;font-size: 17px;" class="grandTotal" id="grandtotal">₹<%= subtotal + 100 %></h6>
+                </div>
+            </div>
+            <% }) %>
+        </div>
+        <div class="grand_total_section">
+            <div class="shipping_box" style="margin-left: 30px;">
+                <a class="gray_btn" href="/CheckOutPage">Proceed to checkout</a>
+            </div>
+        </div>
+        <!-- <a class="gray_btn" href="#">Continue Shopping</a> -->
+    </div>
+    <% } %>
+</div>
+
+
+
+<style>
+    .swal-custom {
+        width: 400px !important;
+        height: auto !important; 
+        max-width: 80%; 
+    }
+    .swal-custom-content {
+        text-align: center; 
+        font-size: 11px; 
+    }
+    .swal-custom-confirm {
+        background-color: #3085d6; 
+        color: white; 
+    }
+    .swal2-styled.swal2-confirm{
+        width: 123px;
+        padding: 5px;
+    }
+    .swal2-styled.swal2-cancel{
+        width: 85px;
+        padding: 5px;
+    }
+</style>
+
+
+
+
+<style>
+    .toastify-custom {
+        font-size: 12px; 
+        padding: 4px; 
+    }
+</style>
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastify-js/1.12.0/toastify.min.js"></script>
 
 <script>
-  function changeQuantity(productId, change, price) {
-    const quantityInput = document.getElementById(`sst_${productId}`);
-    const totalElement = document.getElementById(`total_${productId}`);
 
-    let newQuantity = parseInt(quantityInput.value) + change;
-    if (newQuantity < 1) newQuantity = 1;
+//deleting cart
+//
+// /  ending deleting cart
+function deleteCart(id) {
+    swal.fire({
+        title: "Remove this item?",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, delete it!",
+        customClass: {
+            popup: 'swal-custom',
+            content: 'swal-custom-content',
+            confirmButton: 'swal-custom-confirm'
+        }
+    }).then((result) => {
+        if (result.isConfirmed) {
+            fetch(`/deleteCart/${id}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(result => {
+                if (result.success) {
+                    // Remove the item from the DOM
+                    document.getElementById(`productRow_${id}`).remove();
 
-    quantityInput.value = newQuantity;
+                    // Show success toast
+                    Toastify({
+                        text: result.msg,
+                        duration: 3000,
+                        close: true,
+                        gravity: "top",
+                        position: 'right',
+                        backgroundColor: "linear-gradient(to right, #00b09b, #96c93d)",
+                        offset: {
+                            x: 50,
+                            y: 60
+                        },
+                        className: "toastify-custom"
+                    }).showToast();
 
-    // Update total for this product
-    const newTotal = newQuantity * parseFloat(price);
-    totalElement.textContent = `₹${newTotal.toFixed(2)}`;
-
-    // Update subtotal and grand total
-    updateTotals();
-  }
-
-  function updateTotals() {
-    const totalElements = document.querySelectorAll('[id^="total_"]');
-    let subtotal = 0;
-
-    totalElements.forEach(element => {
-      subtotal += parseFloat(element.textContent.replace('₹', ''));
+                    // Update the subtotal and grand total
+                    updateTotals();
+                } else {
+                    console.error('Failed to delete item:', result.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
     });
+}
+// /  ending deleting cart
 
-    const subtotalElement = document.getElementById('subtotalPrice');
-    const grandTotalElement = document.getElementById('grandTotal');
-    
-    subtotalElement.textContent = `₹${subtotal.toFixed(2)}`;
-    grandTotalElement.textContent = `₹${subtotal.toFixed(2)}`;
-  }
+
+
+
+ // Function to update quantity in backend
+ function updateQuantity( productId,quantity,stockQuantity ) {
+console.log("productId",productId);
+console.log("quantity",quantity);
+console.log("stockQuantity",stockQuantity);
+
+if(quantity>=10){
+            console.log("ehti evde");
+            quantityInput.value=10
+
+            Toastify({
+        text: "Limit is over",
+        duration: 3000, 
+        close: true, 
+        gravity: "top",
+        position: "right",
+        backgroundColor: "linear-gradient(to right, #ff5f6d, #ffc371)", 
+    }).showToast();
+            return
+}else if(stockQuantity==quantity){
+
+    console.log("ithil kerindada kutta");
+    quantityInput.value=stockQuantity
+          Toastify({
+        text: "Limit is over",
+        duration: 3000, 
+        close: true, 
+        gravity: "top",
+        position: "right",
+        backgroundColor: "linear-gradient(to right, #ff5f6d, #ffc371)", 
+    }).showToast();
+    return  
+}     
+
+          fetch(`/updateCart/${productId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ quantity: 1 }) 
+            })
+            .then(response => response.json())
+            .then(result => {
+                if (result.success) {
+                       location.reload()
+                } else {
+                    // Handle error if needed
+                    console.error('Failed to update quantity:', result.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+
+        // Function to handle quantity change event
+        function handleQuantityChange(productId) {
+            const newQuantity = document.getElementById(`qty_${productId}`).value;
+            updateQuantity(productId, newQuantity);
+        }
+
+//send in backened quentyty
+
+//decrese botton
+function decreseBotton(productId,quantity) {
+
+    if(quantity<=0){
+            console.log("ehti evde mone");
+            return   quantityInput.value=0
+    }
+
+
+    console.log("productId",productId);
+            fetch(`/decreseBotton/${productId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ quantity: -1 }) 
+            })
+            .then(response => response.json())
+            .then(result => {
+                if (result.success) {
+                       location.reload()
+                } else {
+                    // Handle error if needed
+                    console.error('Failed to update quantity:', result.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+}
+
+
+///botton descerse
+
+
+   
 </script>
+<div style="height: 15vh; width: 98vw; background-color: #ffffff;">
+
+</div>
 
 <%- include('footer') %>
+<!-- </body>
+
+</html> -->

@@ -2,8 +2,11 @@ const express = require("express");
 const adminController = require("../../controller/admin/adminController");
 const { adminAuth, veryfyAdmint } = require("../../middleware/adminmiddleware");
 const upload=require("../../config/multerConfig")
+const OrderManageMent=require('../../controller/admin/OrderManageMent')
+
 
 const multer = require("multer");
+const orderController = require("../../controller/orderController");
 
 
 const adminrouter = express.Router();
@@ -77,7 +80,9 @@ adminrouter.post("/ediProductSucces/:id", veryfyAdmint,upload.array("productImg"
 
 adminrouter.patch("/blockproduct/:id", veryfyAdmint, adminController.blockUnblockProduct);
 
-
+//order Management
+adminrouter.get('/Order-Page',OrderManageMent.ShowOrderPage)
+adminrouter.post('/update-order-status',OrderManageMent.ChangeOrderStatus)
 
 
 

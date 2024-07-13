@@ -1,0 +1,804 @@
+<%- include('Header') %>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f4;
+        /* margin: 0; */
+        /* margin-top: 145px; */
+    }
+
+    .container1 {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        max-width: 1200px;
+        background-color: #fff;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        margin: 20px auto;
+        margin-top: 140px;
+    }
+
+    .sidebar {
+        width: 100%;
+        background-color: #f8f8f8;
+        padding: 20px;
+        border-bottom: 1px solid #ddd;
+    }
+
+    .sidebar table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0 10px;
+    }
+
+    .sidebar table tr {
+        background-color: #fff;
+        border-radius: 5px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        transition: all 0.2s ease;
+    }
+
+    .sidebar table tr:hover,
+    .sidebar table tr.active {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        background-color: #71cd14;
+    }
+
+    .sidebar table td {
+        padding: 15px 20px;
+    }
+
+    .sidebar table td a {
+        text-decoration: none;
+        color: #333;
+        font-weight: bold;
+        display: block;
+        text-align: center;
+    }
+
+    .content {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        padding: 30px;
+        border-top: 2px solid green
+    }
+
+    .address-section {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        width: 90%;
+        max-width: 400px;
+        border: 1px solid #ddd;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        border-radius: 5px;
+    }
+
+    .icon {
+        width: 100px;
+        height: 100px;
+        position: relative;
+        margin: -35px;
+    }
+
+    .location-pin {
+        width: 100%;
+        height: 100%;
+        background-color: #ffebee;
+        border-radius: 50% 50% 50% 0;
+        transform: rotate(-45deg);
+    }
+
+    .location-pin::after {
+        content: "";
+        width: 30px;
+        height: 30px;
+        background-color: white;
+        position: absolute;
+        border-radius: 50%;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) rotate(45deg);
+    }
+
+    .arrow {
+        width: 30px;
+        height: 30px;
+        background-color: #ff4081;
+        position: absolute;
+        right: -5px;
+        bottom: -5px;
+        border-radius: 4px;
+    }
+
+    .arrow::before {
+        content: "←";
+        color: white;
+        font-size: 20px;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+
+    .address-info {
+        text-align: center;
+        margin: 0 20px;
+    }
+
+    .address-info h1 {
+        font-size: 20px;
+    }
+
+    .add-button {
+        background-color: white;
+        color: #28a745;
+        border: 1px solid #28a745;
+        padding: 9px 20px;
+        font-size: 16px;
+        cursor: pointer;
+        border-radius: 4px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        transition: background-color 0.3s, color 0.3s;
+        margin-top: 20px;
+    }
+
+    .add-button:hover {
+        background-color: #71cd14;
+        color: white;
+    }
+
+    .modal {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: white;
+        border-radius: 4px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        width: 90%;
+        max-width: 400px;
+        max-height: 80vh;
+        overflow-y: auto;
+        z-index: 1000;
+        display: none;
+    }
+
+    .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(0, 0, 0, 0.5);
+        display: none;
+        z-index: 999;
+    }
+
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+    label {
+        display: block;
+        margin-bottom: 5px;
+        font-size: 14px;
+    }
+
+    input[type="text"],
+    input[type="tel"] {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+    }
+
+    .form-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 15px;
+    }
+
+    .form-row .form-group {
+        flex: 1 1 100%;
+    }
+
+    .form-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+        margin-top: 20px;
+    }
+
+    .btn-cancel,
+    .btn-save {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    .btn-cancel {
+        background-color: #f0f0f0;
+        color: #333;
+    }
+
+    .btn-save {
+        background-color: #ff3f6c;
+        color: white;
+    }
+
+    .address-container {
+        font-family: 'Assistant', sans-serif;
+        font-size: 14px;
+        width: 95%;
+        max-width: 600px;
+        margin: 0 auto;
+        color: #696E79;
+    }
+
+    .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 8px;
+    }
+
+    .addd-button {
+        background-color: white;
+        color: blue;
+        border: 3px solid blue;
+        padding: 10px 14px;
+        cursor: pointer;
+        font-size: 16px;
+    }
+
+    .address-card {
+        border: 1px solid #ccc;
+        padding: 8px;
+        margin-top: 20px;
+        box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .name-type {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 4px;
+    }
+
+    .type {
+        color: #888;
+        font-size: 12px;
+    }
+
+    .actions {
+        display: flex;
+        justify-content: flex-end;
+        margin-top: 6px;
+    }
+
+    .edit-button,
+    .remove-button {
+        border: none;
+        color: white;
+        cursor: pointer;
+        margin-right: 4px;
+        padding: 4px 8px;
+        font-size: 12px;
+        border-radius: 5px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .edit-button {
+        background-color: green;
+    }
+
+    .remove-button {
+        background-color: red;
+    }
+
+    .main-heading {
+        text-align: center;
+        margin-top: 15px;
+    }
+
+    .address-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 20px;
+        margin-top: -10px;
+    }
+
+    .add-address-card {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: #f9f9f9;
+        padding: 20px;
+        margin-bottom: 20px;
+    }
+
+    .address-details {
+        width: 100%;
+    }
+
+    @media (min-width: 768px) {
+        .container1 {
+            flex-direction: row;
+        }
+
+        .sidebar {
+            width: 25%;
+            border-right: 1px solid #ddd;
+            border-bottom: none;
+        }
+
+        .content {
+            width: 75%;
+        }
+
+        .form-row .form-group {
+            flex: 1 1 45%;
+        }
+    }
+
+    @media (max-width: 767px) {
+        .address-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .add-address-card {
+            margin-left: 0;
+        }
+    }
+
+/* alert */
+
+</style>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 20px;
+        background-color: #f0f0f0;
+    }
+    .container2 {
+        background-color: white;
+        border-radius: 8px;
+        padding: 20px;
+        width: 861px;
+        height: 182px;
+        margin: 0 auto;
+        margin-top: 80px;
+        scrollbar-width: none;
+    }
+    /* .breadcrumb {
+        color: #777;
+        margin-bottom: 10px;
+    } */
+    .order-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+    .order-id {
+      
+        font-weight: bold;
+        font-size: 14px;
+     
+    }
+    .buttons {
+        display: flex;
+        gap: 10px;
+    }
+    .btn {
+        padding: 2px 10px;
+        border-radius: 4px;
+        text-decoration: none;
+    }
+    .btn-secondary {
+        background-color: #f0f0f0;
+        color: #333;
+    }
+    .btn-primary {
+        background-color: #007bff;
+        color: white;
+    }
+    .order-info {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 20px;
+    }
+    .estimated-delivery {
+        color: #28a745;
+    }
+    .product {
+        display: flex;
+        align-items: center;
+        margin-bottom: 20px;
+        width: 460px;
+    }
+    .product-image {
+        width: 80px;
+        height: 80px;
+        background-color: #f0f0f0;
+        margin-right: 20px;
+    }
+    .product-details {
+        flex-grow: 1;
+    }
+    .product-name {
+        font-weight: bold;
+    }
+    .product-specs {
+        color: #777;
+        font-size: 14px;
+    }
+    .product-price {
+        font-weight: bold;
+    }
+</style>
+
+<style>
+.product-list {
+    display: flex;
+    flex-direction: column;
+    width: 525px;
+            height: 120px;
+            overflow-y: scroll;
+            border: 1px solid rgb(229, 229, 229);
+            margin-top: -28px;
+        scrollbar-width: none;
+
+}
+
+.product-row {
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid #f2f2f2;
+    padding: 10px 0;
+    width: 500px;
+    
+}
+
+.product-image {
+    margin-right: 20px;
+}
+
+.product-details {
+    flex: 1;
+}
+
+.product-price {
+    font-weight: bold;
+    margin-left: 20px;
+}
+/* .scrollbar-container {
+    height: 100vh;
+    overflow-y: auto;
+} */
+.container2 {
+
+    margin-top: 32px;
+}
+
+.btnn {
+    padding: 0px 7px;
+    border-radius: 3px;
+    text-decoration: none;
+    color: red;
+}
+
+</style>
+
+<style>
+    /* CSS styles for modal */
+    #modalContent {
+        display: none; /* Initially hidden */
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: #f9f9f9;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        max-width: 400px;
+        z-index: 1000;
+    }
+
+    .close {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+    .close:hover,
+    .close:focus {
+        color: #000;
+        text-decoration: none;
+    }
+
+    #userInput {
+        width: calc(100% - 22px); /* Adjusted for padding and borders */
+        padding: 10px;
+        margin: 10px 0;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        box-sizing: border-box;
+    }
+
+    .modal-buttons {
+        display: flex;
+        justify-content: flex-end;
+        margin-top: 20px;
+    }
+
+    .button {
+        background-color: #4CAF50;
+        border: none;
+        color: white;
+        padding: 10px 20px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        margin-left: 10px;
+        cursor: pointer;
+        border-radius: 4px;
+        transition: background-color 0.3s;
+    }
+
+    .button:hover {
+        background-color: #45a049;
+    }
+</style>
+
+
+
+
+</head>
+<body>
+<div class="container1">
+    <%- include('./partials/userProfileSlidebar') %>
+
+    <% 
+    function addDaysKeepingMonth(date, days) {
+        let result = new Date(date);
+        result.setDate(result.getDate() + days);
+        return result.toLocaleDateString('en-GB');
+    }
+    %>
+
+    <% if (orderInfo && orderInfo.length > 0) { %>
+        <div class="container2" style="border: 1px solid #28a745; height: 70vh; overflow-y: auto;">
+            <% orderInfo.forEach(order => { %>
+            <div class="order-header">
+                <div class="buttons">
+                    <!-- <a href="#" class="btn btn-primary">Invoice</a> -->
+                </div>
+            </div>
+            <div class="order-info">
+                <!-- Render additional order info if needed -->
+            </div>
+            <div class="order-section" style="margin-bottom: 20px;">
+                <div class="product-list" style="max-height: 350px; overflow-y: auto;">
+                    <% order.products.forEach(product => { %>
+                        <div class="product-row" style="display: flex; align-items: center; margin-bottom: 10px;">
+                            <div class="product-image" style="width: 100px; height: 100px; flex-shrink: 0;">
+                                <img src="<%= product.productImage[0] %>" alt="<%= product.productName %>" style="width: 100px; height: 100px;" />
+                            </div>
+                            <div class="product-details" style="flex-grow: 1; padding-left: 10px;">
+                                <div class="product-name"><%= product.productName %></div>
+                                <!-- <a  class="btn btn-secondary" onclick="showModal('<%= product._id %>')" >Cancel Product</a> -->
+
+                            </div>
+                            <div class="product-price" style="flex-shrink: 0;">₹<%= product.productPrice %></div>
+                        </div>
+                    <% }) %>
+                </div>
+                <div class="summary" style="width: 242px; height: 150px; margin-left: 531px; margin-top: -122px;">
+                    <div class="order-id">Order ID: <%= order.orderID %></div>
+                    <div class="order-id">Grand Total: ₹<%= order.totalprice %></div>
+                    <div style="font-size: smaller;">Order date: <%= new Date(order.orderDate).toLocaleDateString('en-GB') %></div>
+                    <div class="estimated-delivery" style="font-size: smaller;">Estimated delivery: <%= addDaysKeepingMonth(order.orderDate, 10) %></div>
+                    <div class="order-status" style="color: #28a745; font-size: smaller;">Status: <%= order.status %></div>
+                    <% if ( order.status  !== "Cancelled") { %>
+                     
+                        <a id="cancelOrderButton" class="btnn btn-secondary" onclick="openModal('<%= order.orderID %>')" style="color: red;">Cancel Order</a>
+                    <% }%>
+
+                        
+                </div>
+            </div>
+            <% }) %>
+        </div>
+    <% } else { %>
+        <div class="no-orders" style="width: 100%; height: 80vh; display: flex; justify-content: center; align-items: center;">
+            <p style="font-weight: bold; font-size: 20px; position: absolute;">No orders found.</p>
+            <div style="border: 3px solid rgb(240, 238, 238);">
+                <span><img src="/img/cards@3x.png" alt=""></span>
+            </div>
+        </div>
+    <% } %>
+</div>
+
+<!-- Modal code -->
+<div id="modalContent">
+    <span class="close" onclick="toggleModal(false)">&times;</span>
+    <p>Please enter your input:</p>
+    <input type="text" id="userInput" value="">
+    <div class="modal-buttons">
+        <div class="button" onclick="save()">OK</div>
+        <div class="button" onclick="toggleModal(false)">Cancel</div>
+    </div>
+</div>
+<!-- End modal code -->
+
+
+<script>
+
+    let CurrrentOrderId
+  
+    function openModal(OrderId) {
+     CurrrentOrderId=OrderId
+
+        var modal = document.getElementById('modalContent');
+        modal.style.display = 'block';
+    }
+
+    function toggleModal(visible) {
+        var modal = document.getElementById('modalContent');
+        if (!visible) {
+            modal.style.display = 'none';
+        }
+    }
+
+
+
+
+    function save() {
+        var userInput = document.getElementById('userInput').value;
+        console.log('Saving input:', CurrrentOrderId);
+        console.log('OrderId:', userInput);
+        // toggleModal(false); 
+       
+
+        fetch('/CancellOrder', {
+        method: 'post',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({input: userInput, OrderId: CurrrentOrderId})
+    })
+    .then(response => response.json())
+    .then(result => {
+        console.log("settallle", result.message);
+        if (result.success) {
+            Swal.fire({
+                text: result.message,
+                icon: "success",
+                timer: 3000,
+                showConfirmButton: false,
+                customClass: {
+                  popup: 'custom-swal-popup'
+             }
+            });
+            toggleModal(false);
+            const cancelButton = document.getElementById("cancelOrderButton");
+        cancelButton.disabled = true;
+        cancelButton.classList.add("disabled");
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        Swal.fire({
+            text: "An error occurred while processing your request.",
+            icon: "error",
+            timer: 3000,
+            showConfirmButton: false,
+        });
+    });
+    }
+
+
+
+
+
+
+
+
+// //cancell each product
+// let CorrectproductId
+// function showModal(productId) {
+//    CorrectproductId=productId
+
+// var modal = document.getElementById('modalContent');
+// modal.style.display = 'block';
+
+// }
+
+
+
+
+// function toggleModal(visible) {
+//         var modal = document.getElementById('modalContent');
+//         if (!visible) {
+//             modal.style.display = 'none';
+//         }
+//     }
+
+
+
+
+
+//     function save() {
+//         var userInput = document.getElementById('userInput').value;
+//         console.log('Saving input:', CorrectproductId);
+//         console.log('OrderId:', userInput);
+//         // toggleModal(false); 
+       
+
+//         fetch('/CancellEachProduct', {
+//         method: 'post',
+//         headers: {'Content-Type': 'application/json'},
+//         body: JSON.stringify({input: userInput, OrderId: CorrectproductId})
+//     })
+//     .then(response => response.json())
+//     .then(result => {
+//         console.log("settallle", result.message);
+//         if (result.success) {
+//             Swal.fire({
+//                 text: result.message,
+//                 icon: "success",
+//                 timer: 3000,
+//                 showConfirmButton: false,
+//                 customClass: {
+//                   popup: 'custom-swal-popup'
+//              }
+//             });
+//             // toggleModal(false);
+//             const cancelButton = document.getElementById("cancelOrderButton");
+//         cancelButton.disabled = true;
+//         cancelButton.classList.add("disabled");
+//         }
+//     })
+//     .catch(error => {
+//         console.error('Error:', error);
+//         Swal.fire({
+//             text: "An error occurred while processing your request.",
+//             icon: "error",
+//             timer: 3000,
+//             showConfirmButton: false,
+//         });
+//     });
+//     }
+
+</script>
+
+<style>
+    .custom-swal-popup {
+    width: 450px !important; 
+    height: 200px !important; 
+    padding: 20px !important; 
+}
+.btn-secondary.disabled {
+    pointer-events: none;
+    opacity: 0.5;
+}
+</style>
+
+<script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+<%- include('footer') %>
+
+
+

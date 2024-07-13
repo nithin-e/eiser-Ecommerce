@@ -349,7 +349,7 @@ blockUnblockbrand:async(req,res)=>{
       try {
         
    const Allprod= await Product.find().populate('category').populate('brand')
-  console.log("fucking",Allprod);
+  console.log("oke alle",Allprod);
    console.log('all items');
         const ProIn= req.session.ProIn
         req.session.ProIn=null

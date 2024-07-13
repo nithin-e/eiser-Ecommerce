@@ -13,17 +13,44 @@ const CARTMOD=require("../models/cartModel")
 let i = 150;
 module.exports = {
   homepage: async (req, res) => {
+    const perPage = 8; // Number of products per page
+    let page = parseInt(req.query.page) || 1; // Current page number, default is 1
+
+    if (page < 1) {
+        page = 1;
+    }
+
     const user = req.session.user;
     req.session.nouser = null;
 
-    const allProduct= await   Product.find()
-      const userinfo=req.session.userinfo
-      //  console.log("user all info",userinfo)
+    try {
+        const allProduct = await Product.find()
+            .skip((perPage * page) - perPage)
+            .limit(perPage)
+            .populate('category')
+            .populate('brand');
 
-      const cartError = req.session.cartError;
-      delete req.session.cartError;
-    res.render("user/user_home", { user: user,allProduct,userinfo,cartError});
-  },
+        const userinfo = req.session.userinfo;
+        const count = await Product.countDocuments();
+        const cartError = req.session.cartError;
+        delete req.session.cartError;
+
+        res.render("user/user_home", {
+            user: user,
+            allProduct: allProduct,
+            userinfo: userinfo,
+            cartError: cartError,
+            current: page,
+            pages: Math.ceil(count / perPage)
+        });
+
+
+    } catch (err) {
+        console.error('Error fetching products:', err);
+        res.status(500).send('Internal Server Error');
+    }
+},
+
 
   login: (req, res) => {
     const lock=req.session.lock
@@ -286,7 +313,7 @@ ShowProductDetails:async(req,res)=>{
    
    const FindUser=await CARTMOD.findOne({userId:userId})
   
-   if(FindUser&&FindUser.userId){
+   if(FindUser){
     console.log(" oke allehe",FindUser);
     console.log("if ill pettada");
     var CartExisistIndex= await FindUser.cartProducts.findIndex(p=>p.productId.toString()==id)
@@ -299,8 +326,6 @@ ShowProductDetails:async(req,res)=>{
     console.log("else ill pettada");
     console.log("this is index inside block",CartExisistIndex);
      const user = req.session.user;
-
-   
 
     res.render("user/productDetailsPage",{products,user,allproducts,allcategory,allBrands})
    }
@@ -318,7 +343,7 @@ ShowProductDetails:async(req,res)=>{
 
   //showing separate page
   showProductSeperetPage: async (req, res) => {
-    const perPage = 12; // Number of products per page
+    const perPage = 13; // Number of products per page
     const page = req.query.page || 1; // Current page number, default is 1
   
     try {

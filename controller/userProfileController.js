@@ -33,7 +33,8 @@ module.exports={
       const user=  req.session.user
       var userId = req.session.userId;
       const alladress= await Address.find({ userId });
-    console.log("hoooohii",alladress);
+
+    console.log("all address are here kittando",alladress);
         res.render('user/UserAdress',{user,alladress})
     },
 
@@ -118,6 +119,7 @@ module.exports={
                 city
             } 
             var userAddresses =await Address.findOne({ userId });
+            console.log("okaaale",userAddresses)
             if (!userAddresses) {
                 console.log("No addresses found, creating a new one");
                userAddresses = new Address({

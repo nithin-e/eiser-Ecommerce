@@ -1,0 +1,298 @@
+<!-- <%- include('Header') %>
+
+<!--================Home Banner Area =================-->
+<section class="banner_area">
+  <div class="banner_inner d-flex align-items-center">
+    <div class="container">
+      <div class="banner_content d-md-flex justify-content-between align-items-center">
+        <div class="mb-3 mb-md-0">
+          <h2>Cart</h2>
+          <p>Very us move be blessed multiply night</p>
+        </div>
+        <div class="page_link">
+          <a href="/">Home</a>
+          <a href="cart.html">Cart</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!--================End Home Banner Area =================-->
+
+<!--================Cart Area =================-->
+
+<section class="cart_area">
+  <div class="container">
+    <div class="cart_inner">
+      <div class="table-responsive">
+        <table class="table">
+          <!-- Table Headings -->
+          <thead>
+            <tr>
+              <th scope="col">Product</th>
+              <th scope="col">Price</th>
+              <th scope="col">Quantity</th>
+              <th scope="col">Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Product Rows -->
+            <% if (!cartItems||cartItems.length === 0) { %>
+              <tr>
+                <td colspan="4">Your cart is empty.</td>
+              </tr>
+            <% } else { %>
+              <% cartItems.forEach(product => { %>
+                <% product.cartProducts.forEach(products => { %>
+                <tr id="productRow_<%= products.productId %>">
+                  <td>
+                    <div class="media">
+                      <div class="d-flex">
+                        <img src="<%= products.images[0] %>" alt="Product Image" style="max-width: 100px; max-height: 70px; border-radius: 0px 2pc;">
+                      </div>
+                      <div class="media-body">
+                        <p><%= products.productName %></p>
+                      </div>
+                    </div>
+                  </td>
+                  <td>
+                    <h5>₹<%= products.total %></h5>
+                  </td>
+                  <td>
+                    <div class="product_count">
+                      <input
+                        type="text"
+                        name="qty"
+                        id="sst_<%= products.productId %>"
+                        maxlength="12"
+                        value="<%= products.quantity %>"
+                        title="Quantity:"
+                        class="input-text qty"
+                      />
+                      <button
+                        onclick="changeQuantity('<%= products.productId %>', 1, `<%= products.total %>`)"
+                        class="increase items-count"
+                        type="button"
+                      >
+                        <i class="lnr lnr-chevron-up"></i>
+                      </button>
+                      <button
+                        onclick="changeQuantity('<%= products.productId %>', -1, `<%= products.total %>`)"
+                        class="reduced items-count"
+                        type="button"
+                      >
+                        <i class="lnr lnr-chevron-down"></i>
+                      </button>
+                    </div>
+                  </td>
+                  <td>
+                    <h5 id="total_<%= products.productId %>">₹<%= products.total * products.quantity %></h5>
+                  </td>
+                </tr>
+                <% }); %>
+              <% }); %>
+            <% } %>
+
+            <!-- Subtotal and Total Rows -->
+            <tr class="bottom_button">
+              <td>
+                <a class="gray_btn" href="#">Continue Shopping</a>
+              </td>
+              <td></td>
+              <td></td>
+              <td>
+                <div class="cupon_text">
+                  <input type="text" placeholder="Coupon Code" />
+                  <a class="main_btn" href="#">Apply</a>
+                  <a class="gray_btn" href="#">Close Coupon</a>
+                </div>
+              </td>
+            </tr>
+            <tr class="out_button_area">
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+            </tr>
+          </tbody>
+        </table>
+
+
+        <div class="summary-container" style="font-size: 15px;">
+          <% cartItems.forEach(item => { %>
+            <% 
+              // Calculate subtotal
+              const subtotal = item.cartProducts.reduce((acc, product) => acc + (product.total * product.quantity), 0);
+            %>
+            <div class="summary-item">
+              <div class="summary-label"></div>
+              <div class="summary-value"></div>
+              <div class="summary-label text-right">
+                <h5>Subtotal</h5>
+              </div>
+              <div class="summary-value">
+                <h5 class="subtotalPrice" style="font-size: 15px;">₹<%= subtotal %></h5>
+              </div>
+            </div>
+            <div class="summary-item no-border">
+              <div class="summary-label"></div>
+              <div class="summary-value"></div>
+              <div class="summary-label text-right">
+                <h5>Shipping</h5>
+              </div>
+              <div class="summary-value">
+                <h5 class="shippingCost" style="font-size: 15px;">Free</h5>
+              </div>
+            </div>
+            <div class="summary-item no-border">
+              <div class="summary-label"></div>
+              <div class="summary-value"></div>
+              <div class="summary-label text-right">
+                <h5>Grand Total</h5>
+              </div>
+              <div class="summary-value">
+                <h5 class="grandTotal" style="font-size: 15px;">
+                  ₹<%= subtotal+100 %>
+                </h5>
+              </div>
+            </div>
+          <% }) %>
+        </div>
+        <div class="grand_total_section">
+          <div class="shipping_box">
+            <a class="gray_btn" href="#">Proceed to checkout</a>
+          </div>
+        </div>
+        
+
+
+<style>
+.summary-container {
+  display: flex;
+  flex-direction: column;
+  margin-top: -57px
+}
+
+.summary-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0px 0;
+ 
+}
+
+.summary-item.no-border {
+  border: none;
+}
+
+.summary-label {
+  flex: 1;
+}
+
+.summary-value {
+  flex: 1;
+  text-align: right;
+}
+
+.text-right {
+  text-align: right;
+}
+.grand_total_section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  border-top: 1px solid #ddd;
+  margin-top: 0px;
+}
+
+.total {
+  font-size: 1.5em;
+  font-weight: bold;
+}
+
+.shipping_box {
+  margin-left: auto;
+}
+
+.gray_btn {
+  background-color: #ccc;
+  color: #333;
+  padding: 10px 20px;
+  text-decoration: none;
+  border-radius: 5px;
+}
+
+.gray_btn:hover {
+  background-color: #bbb;
+}
+/* new css */
+.grand_total_section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  border-top: 1px solid #ddd;
+  margin-top: 10px;
+}
+
+.total {
+  font-size: 1.1em; /* Reduced font size */
+  font-weight: bold;
+}
+
+.shipping_box {
+  margin-left: auto;
+}
+
+.gray_btn {
+  background-color: #ccc;
+  color: #333;
+  padding: 10px 20px;
+  text-decoration: none;
+  border-radius: 5px;
+}
+
+.gray_btn:hover {
+  background-color: #bbb;
+}
+
+</style>
+
+<!--================End Cart Area =================-->
+
+<script>
+  function changeQuantity(productId, change, price) {
+    const quantityInput = document.getElementById(`sst_${productId}`);
+    const totalElement = document.getElementById(`total_${productId}`);
+
+    let newQuantity = parseInt(quantityInput.value) + change;
+    if (newQuantity < 1) newQuantity = 1;
+
+    quantityInput.value = newQuantity;
+
+    // Update total for this product
+    const newTotal = newQuantity * parseFloat(price);
+    totalElement.textContent = `₹${newTotal.toFixed(2)}`;
+
+    // Update subtotal and grand total
+    updateTotals();
+  }
+
+  function updateTotals() {
+    const totalElements = document.querySelectorAll('[id^="total_"]');
+    let subtotal = 0;
+
+    totalElements.forEach(element => {
+      subtotal += parseFloat(element.textContent.replace('₹', ''));
+    });
+
+    const subtotalElement = document.getElementById('subtotalPrice');
+    const grandTotalElement = document.getElementById('grandTotal');
+    
+    subtotalElement.textContent = `₹${subtotal.toFixed(2)}`;
+    grandTotalElement.textContent = `₹${subtotal.toFixed(2)}`;
+  }
+</script>
+
+ 

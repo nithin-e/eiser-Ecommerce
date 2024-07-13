@@ -5,7 +5,10 @@ const forgetController = require('../controller/forgetController');
 const userProfileController=require('../controller/userProfileController')
 const CartController=require('../controller/CartController')
 const CARTMOD=require('../models/cartModel')
-const {Authenticated,checkOtpVerfy,  blockedUser,chekkingUser,CheckingUserInCart ,CheckingUserInCartBotton}= require("../middleware/userMiddleware")
+const CheckOutController=require('../controller/ChekOutController')
+const ORDERCONTROLLER=require('../controller/orderController')
+
+const {Authenticated,checkOtpVerfy,  blockedUser,userthere}= require("../middleware/userMiddleware")
 
 var router = express.Router();
 
@@ -15,7 +18,7 @@ router.get('/',userController.homepage);
 router.get("/login",Authenticated,userController.login)
 
 // login and signup page
-router.get('/loginandsignup',Authenticated,userController.loginAndSignup);
+router.get('/loginandsignup',userController.loginAndSignup);
  
 // register the user
 router.post('/signup',userController.registerUser);
@@ -67,36 +70,51 @@ router.get("/logout", (req, res) => {
     });
 });
   
-//showing product details
+
+
+//showing product details...............
 router.get("/ViewProduct/:id",blockedUser, userController.ShowProductDetails);
 router.get("/productPage",blockedUser, userController.showProductSeperetPage);
 
 
 
-//user profile
-router.get("/user-profile",chekkingUser, userProfileController.showUserProfile);
-router.get("/Myaccount",chekkingUser,userProfileController.showMyAccound)
-router.get("/Address",chekkingUser,userProfileController.showMyAddress)
-router.post("/update-name",chekkingUser,userProfileController.EditName)
-router.post("/Update-PassWord",chekkingUser,userProfileController.EditPassword)
-router.post("/changeAddress",chekkingUser,userProfileController.getAddressData)
-router.post('/Address-edit/:id',chekkingUser,userProfileController.EditAddress)
-router.delete("/AdressDelete/:id",chekkingUser, userProfileController.REMOVEADDRESS);
+//user profile.............
+router.get("/user-profile",userthere, userProfileController.showUserProfile);
+router.get("/Myaccount",userthere,userProfileController.showMyAccound)
+router.get("/Address",userthere,userProfileController.showMyAddress)
+router.post("/update-name",userthere,userProfileController.EditName)
+router.post("/Update-PassWord",userthere,userProfileController.EditPassword)
+router.post("/changeAddress",userthere,userProfileController.getAddressData)
+router.post('/Address-edit/:id',userthere,userProfileController.EditAddress)
+router.delete("/AdressDelete/:id",userthere, userProfileController.REMOVEADDRESS);
 
-// cart side
-router.get('/View-cart',CheckingUserInCart,CartController.ShowCartPage)
+
+
+// cart side..............
+router.get('/View-cart',userthere,CartController.ShowCartPage)
 router.get('/AddToBag/:id',CartController.STOREDATABAG)
-// router.get('/ProductAddingCart/:id',CartController.STOREDATACART)
+router.post('/deleteCart/:id',userthere,CartController.deleteCart)
+router.post('/updateCart/:id',userthere,CartController.updateQuantity)
+router.post('/decreseBotton/:id',userthere,CartController.decreseBotton)
 
 
 
 
+//ckeckout.................
+router.get('/CheckOutPage',userthere,CheckOutController.ShowCheckOutPage)
+router.post('/AddAdress',userthere,CheckOutController.AddnewAdress)
+router.post('/EDIT-ADDRESS/:id',userthere,CheckOutController.addresEditing)
+router.delete('/REMOVE-ADDRESS/:id',userthere,CheckOutController.REMOVEADDRESS)
 
 
 
 
-
-
+//User Oder................//this we reridecting frond end second rout
+router.post('/OrderInfo',userthere,ORDERCONTROLLER.OrderInfo)
+router.get('/orderSuccessPage',userthere,ORDERCONTROLLER.renderOrderSuccessPage)
+router.get('/userOrder',userthere,ORDERCONTROLLER.orderPageRendering)
+router.post('/CancellOrder',userthere,ORDERCONTROLLER.CancellAllOrder)
+// router.post('CancellEachProduct',ORDERCONTROLLER.SingleOrderRemove)
 
 
 

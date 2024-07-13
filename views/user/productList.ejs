@@ -151,13 +151,13 @@
   </style>
 
 
-<div class="search-container" style="margin-left: 850px; margin-top:x;">
+<!-- <div class="search-container" style="margin-left: 850px; margin-top:x;background-color: #fbb72c;">
   <input type="text" id="searchInput" class="search-box" placeholder="Search...">
-  <!-- <button id="searchButton" class="search-button">Search</button> -->
-</div>
+  <button id="searchButton" class="search-button">Search</button>
+</div> -->
 
     <!-- sidebar + content --> 
-  <section class="" style="margin-top: 90px;">
+  <section class="" style="margin-top: 210px;">
     <div class="container">
       <div class="row" style="margin: -80px;padding-bottom: 100px;">
         <!-- sidebar --> 
@@ -354,8 +354,15 @@
           </div>
         </div>
         <!-- sidebar -->
+
+
+        
         <!-- content -->
-        <div class="col-lg-9">
+        <div class="col-lg-9" style="border-top: 2px solid green;">
+          <div class="search-container" style="margin-left: 700px; margin-top:8px;">
+            <input type="text" id="searchInput" class="search-box" placeholder="Search...">
+            <!-- <button id="searchButton" class="search-button">Search</button> -->
+          </div>
           <header class="d-sm-flex align-items-center border-bottom mb-4 pb-3" >
             <!-- <strong class="d-block py-2">   Items found </strong> -->
             <div class="ms-auto">
@@ -1193,4 +1200,4 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
       <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-  <%-include('footer')-%>
+ 

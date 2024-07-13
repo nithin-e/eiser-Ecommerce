@@ -4,6 +4,7 @@
         font-family: Arial, sans-serif;
         background-color: #f4f4f4;
         margin: 0;
+        margin-top: 140px;
     }
 
     .container1 {
@@ -61,6 +62,7 @@
         justify-content: center;
         width: 100%;
         padding: 30px;
+        border-top: 2px solid green
     }
 
     .address-section {
@@ -473,6 +475,8 @@
 </div>
 <!-- end of addmodal -->
 
+
+
 <div id="addressEditModal" class="modal">
     <h2>EDIT ADDRESS</h2>
     <form id="addressEditForm">
@@ -589,6 +593,10 @@ document.getElementById('addressForm').addEventListener('submit', function(event
                 },
             }).showToast();
             closeModal();
+            setTimeout(() => {
+                location.reload();
+            }, 1000);
+            
         } else {
             console.error('Failed to update address:', result.message);
         }
@@ -597,6 +605,8 @@ document.getElementById('addressForm').addEventListener('submit', function(event
         console.error('Error:', error);
     });
 });
+
+
 
 function showModal(button) {
     const idd = button.getAttribute("data-id");
@@ -643,6 +653,10 @@ document.addEventListener("click", function(event) {
     }
 });
 
+
+
+
+//edit address
 document.getElementById("addressEditForm").addEventListener("submit", function(event) {
     event.preventDefault();
 
@@ -668,7 +682,7 @@ document.getElementById("addressEditForm").addEventListener("submit", function(e
 
     console.log("Editing address with ID:", id);
 
-    fetch(`/Address-edit/${id}`, {
+    fetch(`/REMOVE-ADDRESS/${id}`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -690,6 +704,9 @@ document.getElementById("addressEditForm").addEventListener("submit", function(e
                     y: 60,
                 },
             }).showToast();
+            setTimeout(() => {
+                location.reload();
+            }, 1000);
             stopModal();
         } else {
             console.error('Failed to update address:', result.message);
@@ -736,6 +753,9 @@ function deletingAddress(id) {
                             y: 60
                         }
                     }).showToast();
+                    setTimeout(() => {
+                location.reload();
+            }, 1000);
                 } else {
                     console.error('Failed to delete address:', result.message);
                 }

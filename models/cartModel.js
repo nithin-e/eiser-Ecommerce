@@ -21,10 +21,6 @@ const cartSchema = new mongoose.Schema({
                 type: Number,
                 default: 0
             },
-            Grandtotal: {
-                type: Number,
-                default: 0
-            },
             productName: {
                 type: String
             },
@@ -32,8 +28,15 @@ const cartSchema = new mongoose.Schema({
               type: [String],
               required: true,
           },
+          stockQuantity:{
+            type: Number
+          }
         }
-    ]
+    ],
+    Grandtotal: {
+        type: Number,
+        default: 0
+    },
 });
 
 const Carts = mongoose.model("Carts", cartSchema);
