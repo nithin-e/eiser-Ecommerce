@@ -39,11 +39,12 @@ const orderSchema = new mongoose.Schema({
         type: Number,
         required: true,
       },
-      status: {
-        type: String,
-        enum: ['Pending', 'Processing', 'Shipped', 'Delivered', 'Cancelled', 'PaymentFailed'],
-        default: 'Pending',
-      },
+      // status: {
+      //   type: String,
+      //   enum: ['Pending', 'Processing', 'Shipped', 'Delivered', 'Cancelled', 'PaymentFailed'],
+      //   default: 'Pending',
+      // },
+      
     },
   ],
   address: {
@@ -86,9 +87,23 @@ const orderSchema = new mongoose.Schema({
   },
   paymentMethod: {
     type: String,
-    enum: ['Wallet', 'RazorPay', 'Cash on Delivery'], 
+    enum: ['Wallet', 'Razor Pay', 'Cash on Delivery'], 
     required: true,
   },
+   CouponAmound:{
+      type: Number
+    },
+    Itemstatus: {
+      type: String,
+      enum: ['Approved', 'Reject','Pending'],
+       default: 'Pending'
+    },
+  returnReason:{type:String,default:'not Returned'},
+  userRequest: {
+    type: String,
+    enum: ['Requested For Return', 'No Request Yet','Return Done','Return Rejected'],
+    default: 'No Request Yet'
+  }
 });
 
 // Create the Order model from the schema

@@ -35,17 +35,19 @@ module.exports = {
     try {
       // Checking whether user already exists
       const existingUser = await userdb.findOne({ email: email });
+      console.log('existingUser',existingUser);
       
-      const userId=  existingUser._id
-      console.log("gggg",userId);
+   
       if (!existingUser) {
        
          req.session.err = "INVALID EMAIL ADDRESS"
        
          return res.redirect("/forgetpass");
       } else {
-        
+        const userId=  existingUser._id
         req.session.email = email;
+           
+      console.log("gggg",userId);
         
       }
 

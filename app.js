@@ -7,6 +7,7 @@ const passport = require("passport");
 const nocache = require("nocache");
 const fileUpload = require("express-fileupload");
 require("./config/passport");
+const cors = require('cors');
 // const morgan = require("morgan");
 
 const mongoose = require("./config/connectMongo");
@@ -73,7 +74,7 @@ app.use("/", indexRouter);
 app.use("/users", usersRouter);
 app.use("/auth", authRouter);
 app.use("/", adminrouter);
-
+app.use(cors())
 
 
 

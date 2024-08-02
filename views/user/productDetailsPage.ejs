@@ -156,7 +156,7 @@ body {
 <!--================Home Banner Area =================-->
 <section class="banner_area" >
   <div class="banner_inner d-flex align-items-center">
-    <div class="container">
+    <div class="container" style="margin-top: 80px;">
       <div class="banner_content d-md-flex justify-content-between align-items-center">
         <div class="mb-3 mb-md-0">
           <h2>Product Details</h2>
@@ -235,19 +235,25 @@ body {
               <% }%>
           </ul>
           <p>Description:<br> <%= products.description %></p>
-          <div class="card_area">
-            <% if (locals.CartExisistIndex === -1 || locals.CartExisistIndex == undefined) { %>
-              <a class="main_btn" onclick="AddToBag('<%= products._id %>')">Add to Cart</a>
+          <div class="card_area"> 
+            <% if (products.stockQuantity > 0) { %>
+              <% if (locals.CartExisistIndex === -1 || locals.CartExisistIndex == undefined) { %>
+                <a class="main_btn" onclick="AddToBag('<%= products._id %>')">Add to Cart</a>
+              <% } else { %>
+                <a class="main_btn" href="/View-cart">GO TO BAG</a>
+              <% } %>
             <% } else { %>
-              <a class="main_btn" href="/View-cart">GO TO BAG</a>
+              <a class="main_btn" style="pointer-events: none; opacity: 0.5;">Out of Stock</a>
             <% } %>
-                      
-            <a class="icon_btn" href="#">
-              <i class="lnr lnr lnr-diamond"></i>
-            </a>
-            <a class="icon_btn" href="#">
-              <i class="lnr lnr lnr-heart"></i>
-            </a>
+            
+              
+
+            <% if (isProductInWishlist) { %>
+              <a class="main_btn" href="/GotoWishList">Wishlist</a>
+            <% } else { %>
+              <a class="main_btn" onclick="ADDWISHLIST('<%= products._id %>')">Add to Wishlist</a>
+            <% } %>
+             
           </div>
         </div>
       </div>
@@ -255,6 +261,8 @@ body {
   </div>
 </div>
 <!--================End Single Product Area =================-->
+
+
 
 <!--================Product Description Area =================-->
 <style>
@@ -480,9 +488,9 @@ body {
         <p>
           Beryl Cook is one of Britain’s most talented and amusing artists .Beryl’s pictures feature women of all shapes and sizes enjoying themselves .Born between the two world wars, Beryl Cook eventually left Kendrick School in Reading at the age of 15, where she went to secretarial school and then into an insurance office. After moving to London and then Hampton, she eventually married her next door neighbour from Reading, John Cook. He was an officer in the Merchant Navy and after he left the sea in 1956, they bought a pub for a year before John took a job in Southern Rhodesia with a motor company. Beryl bought their young son a box of watercolours, and when showing him how to use it, she decided that she herself quite enjoyed painting. John subsequently bought her a child’s painting set for her birthday and it was with this that she produced her first significant work, a half-length portrait of a dark-skinned lady with a vacant expression and large drooping breasts. It was aptly named ‘Hangover’ by Beryl’s husband and
         </p>
-        <p>
+        <!-- <p>
           It is often frustrating to attempt to plan meals that are designed for one. Despite this fact, we are seeing more and more recipe books and Internet websites that are dedicated to the act of cooking for one. Divorce and the death of spouses or grown children leaving for college are all reasons that someone accustomed to cooking for more than one would suddenly need to learn how to adjust all the cooking practices utilized before into a streamlined plan of cooking that is more efficient for one person creating less
-        </p>
+        </p> -->
       </div>
       <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
         <div class="row">
@@ -581,6 +589,72 @@ function AddToBag(id) {
 }
 
 </script>
+
+
+
+
+<script>
+
+///
+function ADDWISHLIST(ProId) {
+  
+  
+  
+    console.log('kittando:',ProId );
+    
+    fetch(`/AddWishlist/${ProId}`, {
+      method: 'post',
+      headers: {'Content-Type': 'application/json'}
+    })
+    .then(response => response.json())
+    .then(res => {
+      if (res.success) {
+        Toastify({
+                text: res.msng,
+                duration: 3000,
+                close: true,
+                gravity: "top",
+                position: 'center',
+                backgroundColor: "#71cd14",
+                offset: {
+                    x: 50,
+                    y: 60
+                },
+              
+            }).showToast();
+
+            setTimeout(() => {
+              window.location.reload();
+            }, 2000);
+      }else{
+        Toastify({
+                text: res.msng,
+                duration: 3000,
+                close: true,
+                gravity: "top",
+                position: 'center',
+                backgroundColor: "#71cd14",
+                offset: {
+                    x: 50,
+                    y: 60
+                },
+              
+            }).showToast();
+      }
+    })
+    .catch(error => {
+      console.error('Error:', error);
+    });
+  
+
+
+
+}
+
+
+
+</script>
+
 
 <style>
   .toastify-custom {

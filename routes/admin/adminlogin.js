@@ -3,10 +3,12 @@ const adminController = require("../../controller/admin/adminController");
 const { adminAuth, veryfyAdmint } = require("../../middleware/adminmiddleware");
 const upload=require("../../config/multerConfig")
 const OrderManageMent=require('../../controller/admin/OrderManageMent')
-
+const CouponManageMent=require('../../controller/admin/couponManageMentController')
+const ReturnManageMent=require('../../controller/admin/returnProductManageMent')
+const adminChartController=require('../../controller/admin/adminChartController')
 
 const multer = require("multer");
-const orderController = require("../../controller/orderController");
+// const orderController = require("../../controller/orderController");
 
 
 const adminrouter = express.Router();
@@ -60,13 +62,9 @@ adminrouter.patch("/blockbrand/:id", veryfyAdmint, adminController.blockUnblockb
 //showing addproducr page
 adminrouter.get("/addProducts",veryfyAdmint, adminController.AddProductPage);
 
-
-
 //getting product details in post method
 
 adminrouter.post( "/pressAddproduct",upload.array("productImg", 3),veryfyAdmint, adminController.PressAddproductButton);
-
- 
 
 
 ///logout  admin
@@ -74,20 +72,36 @@ adminrouter.get("/adminlogout", adminController.adminLOgout);
 
 //edit product  passing is queryparams
 adminrouter.get("/editProduct/:id",veryfyAdmint, adminController.editProducts);
+// adminrouter.post('/editImage/:id',adminController.editImages)
+adminrouter.post('/replaceProductImage',upload.single('croppedImage'),adminController.replaceProductImage)
+
 
 //succes editproduct botton
 adminrouter.post("/ediProductSucces/:id", veryfyAdmint,upload.array("productImg", 6), adminController.editBottom);
-
 adminrouter.patch("/blockproduct/:id", veryfyAdmint, adminController.blockUnblockProduct);
 
 //order Management
-adminrouter.get('/Order-Page',OrderManageMent.ShowOrderPage)
-adminrouter.post('/update-order-status',OrderManageMent.ChangeOrderStatus)
+adminrouter.get('/Order-Page',veryfyAdmint,OrderManageMent.ShowOrderPage)
+adminrouter.post('/update-order-status',veryfyAdmint,OrderManageMent.ChangeOrderStatus)
+    
+
+//coupon mangement
+adminrouter.get('/Coupon-page',CouponManageMent.ShowCouponPage)
+adminrouter.post('/Add-Coupon',CouponManageMent.AddCoupon)
+adminrouter.post('/delete-Coupon/:id',CouponManageMent.DeleteCoupon)
+adminrouter.post('/edit-Coupon',CouponManageMent.EDITCOUPON)
 
 
+//return Management
+adminrouter.get('/ReturnProduct',ReturnManageMent.ShowReturnProduct)
+adminrouter.post('/updateOrderStatus/:id',ReturnManageMent.UpdateOrderStatus)
 
 
+//admindashboard
 
+adminrouter.get('/api/sales-data',adminChartController.AdminChart)
+
+adminrouter.post('/salesreport', adminChartController.downloadSalesReport);
 
 
 

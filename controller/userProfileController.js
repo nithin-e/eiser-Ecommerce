@@ -3,6 +3,7 @@ const bcrypt=require("bcrypt")
 const Address=require("../models/UserAddressModel")
 const mongoose = require('mongoose');
 const { findById } = require('../models/otpmodel');
+const Wallet=require('../models/walletModel')
 
 module.exports={
     showUserProfile: async (req, res) => {
@@ -209,7 +210,20 @@ try {
     console.log(error);
     res.status(500).json({ message: "An error occurred while updating the address" });
 }
-}
+},
+
+
+
+USERWALLET: async (req, res) => {
+    const userId = req.session.userId;
+    const user = req.session.user;
+    
+    // Fetch all wallet records for the user
+    const Walletbalance = await Wallet.find({ user: userId });
+    console.log('.......edaa.....', Walletbalance, '.......edaa.....');
+    
+    res.render('user/userWallet', { Walletbalance, user });
+  }
 
 
     

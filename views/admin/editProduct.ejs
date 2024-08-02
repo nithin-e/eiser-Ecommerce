@@ -10,17 +10,17 @@
 </head>
 
 <style>
-    .image-row {
+    /* .image-row {
         display: flex;
         gap: 10px;
-    }
-    .image-item {
+    } */
+    /* .image-item {
         display: flex;
         flex-direction: column;
         justify-content: space-around;
-    }
+    } */
     .image-item img {
-        margin-bottom: 5px; 
+        margin-bottom: 20px; 
     }
     .delete-button {
         width: 50px;
@@ -46,14 +46,21 @@
                 <div class="form-group ">
                     <label for="productImg">Images</label>
                     <input type="file" id="productImg" name="productImg" accept="image/*" multiple onchange="displaySelectedImages(this)">
-                    <% isProduct.images.forEach((img, index) => { %>
-                        <div class="image-item">
-                            <img src="<%= img,index %>" width="50px" height="50px" alt="Product Image">
-                            <!-- <span class="select-icon" >Select</span>
-                            <span class="delete-icon" >Delete</span> -->
-                        </div>
-                    <% }) %>
-                
+
+                    
+    <% isProduct.images.forEach((img, index) => { %>
+        <div class="image-item d-flex">
+            <img src="<%= img %>" width="50px" height="50px" alt="Product Image">
+            <input type="file" id="fileInput<%= index %>" style="display: none;" onchange="handleFileSelect(event, '<%= index %>')">
+            <i class="fas fa-edit edit-icon"
+               style="margin-left: 20px; padding-top: 20px;"
+               onclick="document.getElementById('fileInput<%= index %>').click()">
+            </i>
+            <button id="cropButton<%= index %>" class="crop-button" style="display: none; height: 20px; width: 50px; margin-top: 19px; margin-left: 8px; padding-bottom: 20px;">Crop</button>
+        </div>
+        <img id="imagePreview<%= index %>" src="" alt="Image preview" style="display: none; margin-top: 20px; height: 250px; width: 250px;">
+    <% }) %>
+                    
                     <div id="selectedImagesContainer"></div>
                     <span class="error-message" id="images-error"></span>
                     <!-- <button onclick="sendSelectedImages()">Send Selected Images</button> -->
@@ -123,13 +130,93 @@
 
 
 
+    <script>
+       let croppers = {};
+
+function handleFileSelect(event, index) {
+    const file = event.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const imagePreview = document.getElementById(`imagePreview${index}`);
+            imagePreview.src = e.target.result;
+            imagePreview.style.display = 'block';
+            
+            if (croppers[index]) {
+                croppers[index].destroy();
+            }
+            
+            croppers[index] = new Cropper(imagePreview, {
+                aspectRatio: 1,
+                viewMode: 1,
+            });
+            
+            document.getElementById(`cropButton${index}`).style.display = 'inline-block';
+        }
+        reader.readAsDataURL(file);
+    }
+}
+
+document.querySelectorAll('.crop-button').forEach(button => {
+    button.addEventListener('click', function(e) {
+        e.preventDefault();
+        const index = this.id.replace('cropButton', '');
+        if (croppers[index]) {
+            const croppedCanvas = croppers[index].getCroppedCanvas();
+            croppedCanvas.toBlob(function(blob) {
+                const formData = new FormData();
+                formData.append('croppedImage', blob, 'cropped_image.png');
+                formData.append('index', index);
+                formData.append('productId', '<%= isProduct._id %>');
+
+                fetch('/replaceProductImage', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        console.log('Image successfully updated');
+
+                        // Use the returned image URL from the server if available
+                        const imageURL = data.imageURL || URL.createObjectURL(blob);
+
+                        console.log('Index:', index);
+                        console.log('Image URL:', imageURL);
+
+                        const imageItem = document.querySelector(`.image-item:nth-of-type(${parseInt(index) + 1}) img`);
+                        console.log('Image Item:', imageItem);
+
+                        if (imageItem) {
+                            console.log('Updating image src');
+                            imageItem.src = imageURL;
+                            window.location.reload()
+                        } else {
+                            console.error('Image item not found');
+                        }
+
+                        // Hide preview and crop button
+                        document.getElementById(`imagePreview${index}`).style.display = 'none';
+                        document.getElementById(`cropButton${index}`).style.display = 'none';
+                    } else {
+                        console.error('Failed to update image:', data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+            });
+        }
+    });
+});
+
+    </script>
+    
+
+
+
 
     <script>
-
-
-
-
-
         document.getElementById('productForm').addEventListener('submit', function(event) {
             event.preventDefault();
             validateForm();

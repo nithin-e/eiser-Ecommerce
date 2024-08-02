@@ -2341,6 +2341,7 @@ textarea.form-control {
 }
 
 .form-inline {
+    width: 100%;
     display: -ms-flexbox;
     display: flex;
     -ms-flex-flow: row wrap;

@@ -87,88 +87,97 @@
         });
 
         function validateForm() {
-            const form = document.getElementById('productForm');
-            const name = form.elements['productName'].value.trim();
-            const description = form.elements['description'].value.trim();
-            const price = form.elements['price'].value.trim();
-            const offerPrice = form.elements['Offerprice'].value.trim();
-            const expiryDate = form.elements['expiryDate'].value.trim();
-            const quantity = form.elements['stockQuantity'].value.trim();
-            const images = form.elements['productImg'].files;
-            const category = form.elements['category'].value;
-            const brand = form.elements['brand'].value;
+    const form = document.getElementById('productForm');
+    const name = form.elements['productName'].value.trim();
+    const description = form.elements['description'].value.trim();
+    const price = form.elements['price'].value.trim();
+    const offerPrice = form.elements['Offerprice'].value.trim();
+    const expiryDate = form.elements['expiryDate'].value.trim();
+    const quantity = form.elements['stockQuantity'].value.trim();
+    const images = form.elements['productImg'].files;
+    const category = form.elements['category'].value;
+    const brand = form.elements['brand'].value;
 
-            const errorMessages = document.querySelectorAll('.error-message');
-            errorMessages.forEach(error => error.textContent = '');
+    const errorMessages = document.querySelectorAll('.error-message');
+    errorMessages.forEach(error => error.textContent = '');
 
-            let isValid = true;
+    let isValid = true;
 
-            if (name === '') {
-                displayErrorMessage('Enter a valid product name', 'productNameErrMess');
+    if (name === '') {
+        displayErrorMessage('Enter a valid product name', 'productNameErrMess');
+        isValid = false;
+    } else if (/[^a-zA-Z0-9\s]/.test(name)) {
+        displayErrorMessage('Product name cannot contain special characters', 'productNameErrMess');
+        isValid = false;
+    }
+
+    if (description === '') {
+        displayErrorMessage('Enter a valid description', 'description-error');
+        isValid = false;
+    }
+
+    if (price === '' || isNaN(price) || parseFloat(price) <= 0) {
+        displayErrorMessage('Enter a positive number for price', 'price-error');
+        isValid = false;
+    }
+
+    if (offerPrice !== '' && (isNaN(offerPrice) || parseFloat(offerPrice) <= 0)) {
+        displayErrorMessage('Enter a positive number for offer price', 'offer-error');
+        isValid = false;
+    }
+
+    if (offerPrice !== '' && expiryDate === '') {
+        displayErrorMessage('Expiry date is required when offer price is set', 'expiry-error');
+        isValid = false;
+    } else if (expiryDate !== '') {
+        const expiry = new Date(expiryDate);
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        if (isNaN(expiry.getTime())) {
+            displayErrorMessage('Enter a valid expiry date', 'expiry-error');
+            isValid = false;
+        } else if (expiry <= today) {
+            displayErrorMessage('Expiry date must be in the future', 'expiry-error');
+            isValid = false;
+        }
+    }
+
+    if (quantity === '' || isNaN(quantity) || parseInt(quantity) <= 0) {
+        displayErrorMessage('Enter a positive number for stock quantity', 'quantity-error');
+        isValid = false;
+    } else if (offerPrice !== '' && parseFloat(offerPrice) > parseFloat(price)) {
+        displayErrorMessage('Offer price cannot be greater than the product price', 'offer-error');
+        isValid = false;
+    }
+
+    if (images.length === 0) {
+        displayErrorMessage('Product Image is required', 'images-error');
+        isValid = false;
+    } else {
+        const allowedTypes = ['image/png', 'image/jpeg'];
+        for (const image of images) {
+            if (!allowedTypes.includes(image.type)) {
+                displayErrorMessage('Only PNG and JPG images are allowed', 'images-error');
                 isValid = false;
-            } else if (/[^a-zA-Z0-9\s]/.test(name)) {
-                displayErrorMessage('Product name cannot contain special characters', 'productNameErrMess');
-                isValid = false;
-            }
-
-            if (description === '') {
-                displayErrorMessage('Enter a valid description', 'description-error');
-                isValid = false;
-            }
-
-            if (price === '' || isNaN(price) || parseFloat(price) <= 0) {
-                displayErrorMessage('Enter a positive number for price', 'price-error');
-                isValid = false;
-            }
-
-            if (offerPrice !== '' && (isNaN(offerPrice) || parseFloat(offerPrice) <= 0)) {
-                displayErrorMessage('Enter a positive number for offer price', 'offer-error');
-                isValid = false;
-            }
-
-            if (offerPrice !== '' && expiryDate === '') {
-                displayErrorMessage('Expiry date is required when offer price is set', 'expiry-error');
-                isValid = false;
-            } else if (expiryDate !== '') {
-                const expiry = new Date(expiryDate);
-                const today = new Date();
-                today.setHours(0, 0, 0, 0);
-                if (isNaN(expiry.getTime())) {
-                    displayErrorMessage('Enter a valid expiry date', 'expiry-error');
-                    isValid = false;
-                } else if (expiry <= today) {
-                    displayErrorMessage('Expiry date must be in the future', 'expiry-error');
-                    isValid = false;
-                }
-            }
-
-            if (quantity === '' || isNaN(quantity) || parseInt(quantity) <= 0) {
-                displayErrorMessage('Enter a positive number for stock quantity', 'quantity-error');
-                isValid = false;
-            }else if(parseFloat(offerPrice) > parseFloat(price)){
-                displayErrorMessage('Offer price cannot be greater than the product price', 'offer-error');
-                isValid = false;
-            }
-
-            if (images.length === 0) {
-                displayErrorMessage('Product Image is required', 'images-error');
-                isValid = false;
-            }
-
-            if (category === '') {
-                displayErrorMessage('Product Category is required', 'category-error');
-                isValid = false;
-            }
-
-            if (brand === '') {
-                displayErrorMessage('Product Brand is required', 'brand-error');
-                isValid = false;
-            }
-
-            if (isValid) {
-                form.submit();
+                break;
             }
         }
+    }
+
+    if (category === '') {
+        displayErrorMessage('Product Category is required', 'category-error');
+        isValid = false;
+    }
+
+    if (brand === '') {
+        displayErrorMessage('Product Brand is required', 'brand-error');
+        isValid = false;
+    }
+
+    if (isValid) {
+        form.submit();
+    }
+}
 
         function displayErrorMessage(message, elementId) {
             const errorSpan = document.getElementById(elementId);
@@ -176,11 +185,7 @@
             errorSpan.style.color = 'red';
         }
 
-        function displayErrorMessage(message, elementId) {
-            const errorSpan = document.getElementById(elementId);
-            errorSpan.textContent = message;
-            errorSpan.style.color = 'red';
-        }
+       
 
 
 // cropperjs

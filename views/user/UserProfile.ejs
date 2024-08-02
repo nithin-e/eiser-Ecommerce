@@ -5,7 +5,7 @@
         background-color: #f4f4f4;
         margin: 0;
         justify-content: center;
-        margin-top: 140px;
+        margin-top: 99px;
     }
 
     .container1 {
@@ -257,20 +257,30 @@
     <h2>Change Password</h2>
     <form id="changePasswordForm">
         <label for="currentPassword">Current Password:</label>
-        <input type="password" id="currentPassword" name="currentPassword" required>
+        <div class="password-container">
+            <input type="password" id="currentPassword" name="currentPassword" required>
+            <button type="button" class="toggle-password" onclick="togglePassword('currentPassword')">&#128065;</button>
+        </div>
         <span id="currentPasswordError" class="error" style="color: red;"></span>
 
         <label for="newPassword">New Password:</label>
-        <input type="password" id="newPassword" name="newPassword" required>
-        <span id="newPasswordError" class="error" style="color: red;" ></span>
+        <div class="password-container">
+            <input type="password" id="newPassword" name="newPassword" required>
+            <button type="button" class="toggle-password" onclick="togglePassword('newPassword')">&#128065;</button>
+        </div>
+        <span id="newPasswordError" class="error" style="color: red;"></span>
 
         <label for="confirmPassword">Confirm New Password:</label>
-        <input type="password" id="confirmPassword" name="confirmPassword" required>
+        <div class="password-container">
+            <input type="password" id="confirmPassword" name="confirmPassword" required>
+            <button type="button" class="toggle-password" onclick="togglePassword('confirmPassword')">&#128065;</button>
+        </div>
         <span id="confirmPasswordError" class="error" style="color: red;"></span>
 
         <button type="submit" onclick="changePass('<%= userInfo._id %>')">Change Password</button>
     </form>
 </div>
+
 
 
 <%- include('footer') %>
@@ -503,5 +513,13 @@
         });
     });
 
+
+</script>
+<script>
+    function togglePassword(inputId) {
+    const input = document.getElementById(inputId);
+    const type = input.getAttribute('type') === 'password' ? 'text' : 'password';
+    input.setAttribute('type', type);
+}
 
 </script>

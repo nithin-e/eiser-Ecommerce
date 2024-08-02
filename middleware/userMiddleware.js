@@ -15,10 +15,10 @@ const Authenticated = (req, res, next) => {
 
 const userthere= (req, res, next) => {
     if(req.session.user){
-       next()
+      return next()
     }else{
         
-        req.session.cartError = "If you want to go to the cart, you must be logged in.";
+        // req.session.cartError = "If you want to go to the cart, you must be logged in.";
         return res.redirect("/");
     }
 }
@@ -65,36 +65,6 @@ const blockedUser= async(req,res,next)=>{
 }
 
 
-// function chekkingUser(req,res,next) {
-//     if(req.session.user){
-//         next()
-//     }else{   
-//         req.session.noUserFound="Sorry, there was a technical error. Could you please try logging in again?"
-//                 return res.redirect("/login")
-//     }
-// }
-
-
-//  function CheckingUserInCart(req,res,next) {
-//     if(req.session.user){
-//         next()
-//     }else{
-//         req.session.cartError = "If you want to go to the cart, you must be logged in.";
-//         return res.redirect("/");
-//     } 
-//     }
- 
-
-    // function CheckingUserInCartBotton(req,res,next) {
-    //     console.log("kerndd ithil");
-    //     if(req.session.user){
-    //         next()
-    //     }else{
-    //         console.log("kerndd ithil");
-    //         req.session.carterr = "If you want to go to the cart, you must be logged in.";
-    //         return res.redirect("/ViewProduct/:id");
-    //     } 
-    //     }
 
 
         

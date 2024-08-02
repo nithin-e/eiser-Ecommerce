@@ -26,45 +26,45 @@
             <div class="error-message"><%= nouser %></div>
         <% } %>
         <div class="container">
-            <div class="row">
+            <div class="row py-4 shadow p-3 mb-5 bg-body rounded" style="width: 100%; margin-left:0px; margin-right: -100px;">
                 <div class="col-md-6 order-md-2">
-                    <img src="/img/undraw_file_sync_ot38.svg" alt="Image" class="img-fluid">
+                    <img src="/img/undraw_file_sync_ot38.svg" alt="Image" class="img-fluid" style="max-width: 65%;margin-top: 85px;">
                 </div>
                 <div class="col-md-6 contents">
                     <div class="row justify-content-center">
-                        <div class="col-md-8">
-                            <div class="mb-4">
-                                <h3>Sign Up</h3>
+                        <div class="col-md-8" style="margin-left: 220px;">
+                            <div class="mb-2">
+                                <h3 style="margin-bottom: -7px; font-family: fantasy;">Sign Up</h3>
                             </div>
                             <form action="/signup" method="post" id='signupForm'>
                                 <div class="form-group">
                                     <label for="name"></label>
-                                    <input type="text" class="form-control" id="name" name="name" placeholder="Name" required>
+                                    <input type="text" class="form-control" id="name" name="name" placeholder="Name" style="font-size: 15px;font-family: ui-monospace;" required>
                                     <div class="error-message" id="nameError"></div>
                                 </div>
                                 <div class="form-group">
                                     <label for="email"></label>
-                                    <input type="email" class="form-control" id="email" name="email" placeholder="Email" required>
+                                    <input type="email" class="form-control" id="email" name="email" placeholder="Email" style="font-size: 15px; font-family: ui-monospace;"  required>
                                     <div class="error-message" id="emailError"></div>
                                 </div>
                                 <div class="form-group">
                                     <label for="password"></label>
-                                    <input type="password" class="form-control" id="password" name="password" placeholder="Password" required>
+                                    <input type="password" class="form-control" id="password" name="password" placeholder="Password"  style="font-size: 15px; font-family: ui-monospace;" required>
                                     <div class="error-message" id="passwordError"></div>
                                 </div>
                                 <div class="form-group">
                                     <label for="confirm_password"></label>
-                                    <input type="password" class="form-control" id="confirmPassword" name="confirm_password" placeholder="Confirm Password" required>
+                                    <input type="password" class="form-control" id="confirmPassword" name="confirm_password" placeholder="Confirm Password" style="font-size: 15px;font-family: ui-monospace;" required>
                                     <div class="error-message" id="confirmPasswordError"></div>
                                 </div>
-                                <button type="submit" value="Sign Up" class="btn text-white btn-block btn-primary">
+                                <button type="submit" value="Sign Up" class="btn text-white btn-block btn-primary" style="margin-bottom: -17px;">
                                     Sign Up
                                 </button>
                                 <br>
-                                <span class="label__sign-in">Already have an account?</span>
+                                <span class="label__sign-in" style="font-family:'icomoon';">Already have an account?</span>
                                 <a href="/login" class="a__sign-in" style="color: green;">Log In</a>
-                                <span class="d-block text-left my-4 text-muted"> or sign up with</span> 
-                                <div class="social-login">
+                                <span class="d-block text-left my-1 text-muted" style="font-family: cursive;"> or sign up with</span> 
+                                <div class="social-login" style="display: flex;justify-content: center;">
                                     <a href="/auth/google" class="google">
                                         <span class="icon-google mr-3"></span> 
                                     </a>

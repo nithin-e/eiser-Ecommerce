@@ -256,6 +256,7 @@ textarea.form-control {
 // default HTML form controls and our custom form controls (e.g., input groups).
 
 .form-inline {
+  width: 100%;
   display: flex;
   flex-flow: row wrap;
   align-items: center; // Prevent shorter elements from growing to same height as others (e.g., small buttons growing to normal sized button height)

@@ -1,197 +1,412 @@
 <%- include('../admin/adminpartials/Header') -%>
 
-    <div class="container-xxl position-relative bg-white d-flex p-0">
-        <!-- Spinner Start -->
-        <div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
-            <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
-                <span class="sr-only">Loading...</span>
-            </div>
+<div class="container-xxl position-relative bg-white d-flex p-0">
+    <!-- Spinner Start -->
+    <div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+        <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+            <span class="sr-only">Loading...</span>
         </div>
-        <!-- Spinner End -->
-
-
-        <!-- Sidebar Start -->
-       
-        <%- include('../admin/adminpartials/adminSidebar') -%>
-
-        <!-- Sidebar End -->
-
-
-        <!-- Content Start -->
-        <div class="content">
-            <!-- Navbar Start -->
-            
-            <%- include('../admin/adminpartials/adminNav') -%>
-
-            <!-- Navbar End -->
-
-
-            <!-- Sale & Revenue Start -->
-            <div class="container-fluid pt-4 px-4">
-                <div class="row g-4">
-                    <div class="col-sm-6 col-xl-3">
-                        <div class="bg-light rounded d-flex align-items-center justify-content-between p-4">
-                            <i class="fa fa-chart-line fa-3x text-primary"></i>
-                            <div class="ms-3">
-                                <p class="mb-2">Today Sale</p>
-                                <h6 class="mb-0">$1234</h6>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-sm-6 col-xl-3">
-                        <div class="bg-light rounded d-flex align-items-center justify-content-between p-4">
-                            <i class="fa fa-chart-bar fa-3x text-primary"></i>
-                            <div class="ms-3">
-                                <p class="mb-2">Total Sale</p>
-                                <h6 class="mb-0">$1234</h6>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-sm-6 col-xl-3">
-                        <div class="bg-light rounded d-flex align-items-center justify-content-between p-4">
-                            <i class="fa fa-chart-area fa-3x text-primary"></i>
-                            <div class="ms-3">
-                                <p class="mb-2">Today Revenue</p>
-                                <h6 class="mb-0">$1234</h6>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-sm-6 col-xl-3">
-                        <div class="bg-light rounded d-flex align-items-center justify-content-between p-4">
-                            <i class="fa fa-chart-pie fa-3x text-primary"></i>
-                            <div class="ms-3">
-                                <p class="mb-2">Total Revenue</p>
-                                <h6 class="mb-0">$1234</h6>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- Sale & Revenue End -->
-
-
-            <!-- Sales Chart Start -->
-            <div class="container-fluid pt-4 px-4">
-                <div class="row g-4">
-                    <div class="col-sm-12 col-xl-6">
-                        <div class="bg-light text-center rounded p-4">
-                            <div class="d-flex align-items-center justify-content-between mb-4">
-                                <h6 class="mb-0">Worldwide Sales</h6>
-                                <a href="">Show All</a>
-                            </div>
-                            <canvas id="worldwide-sales"></canvas>
-                        </div>
-                    </div>
-                    <div class="col-sm-12 col-xl-6">
-                        <div class="bg-light text-center rounded p-4">
-                            <div class="d-flex align-items-center justify-content-between mb-4">
-                                <h6 class="mb-0">Salse & Revenue</h6>
-                                <a href="">Show All</a>
-                            </div>
-                            <canvas id="salse-revenue"></canvas>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- Sales Chart End -->
-
-
-            <!-- Recent Sales Start -->
-            <div class="container-fluid pt-4 px-4">
-                <div class="bg-light text-center rounded p-4">
-                    <div class="d-flex align-items-center justify-content-between mb-4">
-                        <h6 class="mb-0">Recent Salse</h6>
-                        <a href="">Show All</a>
-                    </div>
-                    <div class="table-responsive">
-                        <table class="table text-start align-middle table-bordered table-hover mb-0">
-                            <thead>
-                                <tr class="text-dark">
-                                    <th scope="col"><input class="form-check-input" type="checkbox"></th>
-                                    <th scope="col">Date</th>
-                                    <th scope="col">Invoice</th>
-                                    <th scope="col">Customer</th>
-                                    <th scope="col">Amount</th>
-                                    <th scope="col">Status</th>
-                                    <th scope="col">Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td><input class="form-check-input" type="checkbox"></td>
-                                    <td>01 Jan 2045</td>
-                                    <td>INV-0123</td>
-                                    <td>Jhon Doe</td>
-                                    <td>$123</td>
-                                    <td>Paid</td>
-                                    <td><a class="btn btn-sm btn-primary" href="">Detail</a></td>
-                                </tr>
-                                <tr>
-                                    <td><input class="form-check-input" type="checkbox"></td>
-                                    <td>01 Jan 2045</td>
-                                    <td>INV-0123</td>
-                                    <td>Jhon Doe</td>
-                                    <td>$123</td>
-                                    <td>Paid</td>
-                                    <td><a class="btn btn-sm btn-primary" href="">Detail</a></td>
-                                </tr>
-                                <tr>
-                                    <td><input class="form-check-input" type="checkbox"></td>
-                                    <td>01 Jan 2045</td>
-                                    <td>INV-0123</td>
-                                    <td>Jhon Doe</td>
-                                    <td>$123</td>
-                                    <td>Paid</td>
-                                    <td><a class="btn btn-sm btn-primary" href="">Detail</a></td>
-                                </tr>
-                                <tr>
-                                    <td><input class="form-check-input" type="checkbox"></td>
-                                    <td>01 Jan 2045</td>
-                                    <td>INV-0123</td>
-                                    <td>Jhon Doe</td>
-                                    <td>$123</td>
-                                    <td>Paid</td>
-                                    <td><a class="btn btn-sm btn-primary" href="">Detail</a></td>
-                                </tr>
-                                <tr>
-                                    <td><input class="form-check-input" type="checkbox"></td>
-                                    <td>01 Jan 2045</td>
-                                    <td>INV-0123</td>
-                                    <td>Jhon Doe</td>
-                                    <td>$123</td>
-                                    <td>Paid</td>
-                                    <td><a class="btn btn-sm btn-primary" href="">Detail</a></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-            <!-- Recent Sales End -->
-
-
-            <!-- Widgets Start -->
-          
-            <!-- Widgets End -->
-
-
-            <!-- Footer Start -->
-            <div class="container-fluid pt-4 px-4">
-                <div class="bg-light rounded-top p-4">
-                    <div class="row">
-                        <div class="col-12 col-sm-6 text-center text-sm-start">
-                            &copy; <a href="#">Your Site Name</a>, <h3>eiser</h3>. 
-                        </div>
-                       
-                    </div>
-                </div>
-            </div>
-            <!-- Footer End -->
-        </div>
-        <!-- Content End -->
-
-        <!-- Back to Top -->
-        <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
     </div>
+    <!-- Spinner End -->
 
-    <%- include('../admin/adminpartials/footer') -%>
+    <!-- Sidebar Start -->
+    <%- include('../admin/adminpartials/adminSidebar') -%>
+    <!-- Sidebar End -->
+
+    <!-- Content Start -->
+    <div class="content">
+        <!-- Navbar Start -->
+        <%- include('../admin/adminpartials/adminNav') -%>
+        <!-- Navbar End -->
+
+        <!-- Sale & Revenue Start -->
+        <div class="container-fluid pt-4 px-4">
+            <div class="row g-4">
+                <div class="col-sm-6 col-xl-3">
+                    <div class="bg-light rounded d-flex align-items-center justify-content-between p-4">
+                        <i class="fa fa-chart-bar fa-3x text-primary"></i>
+                        <div class="ms-3">
+                            <p class="mb-2" id="totalSaleLabel">Total Sale</p>
+                            <h6 class="mb-0" id="totalSaleAmount">₹</h6>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-xl-3">
+                    <div class="bg-light rounded d-flex align-items-center justify-content-between p-4">
+                        <i class="fa fa-chart-area fa-3x text-primary"></i>
+                        <div class="ms-3">
+                            <p class="mb-2" id="todayRevenueLabel">Today Revenue</p>
+                            <h6 class="mb-0" id="todayRevenueAmount">₹</h6>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-xl-3">
+                    <div class="bg-light rounded d-flex align-items-center justify-content-between p-4">
+                        <i class="fa fa-chart-pie fa-3x text-primary"></i>
+                        <div class="ms-3">
+                            <p class="mb-2" id="totalRevenueLabel">Total Revenue</p>
+                            <h6 class="mb-0" id="totalRevenueAmount">₹</h6>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-xl-3">
+                    <div class="bg-light rounded d-flex align-items-center justify-content-between p-4">
+                        <i class="fa fa-chart-line fa-3x text-primary"></i>
+                        <div class="ms-3">
+                            <button class="mb-2" data-bs-toggle="modal" data-bs-target="#salesReportModal" style="color: #009CFF;">DownLoad SalesReport</button>
+                  
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Sale & Revenue End -->
+
+        <!-- Sales Charts Start -->
+        <div class="container-fluid pt-4 px-4">
+            <div class="row g-4">
+                <div class="col-sm-12 col-xl-6">
+                    <div class="bg-light text-center rounded p-4" style="height: 515px;">
+                        <div class="d-flex align-items-center justify-content-between mb-4">
+                            <h6 class="mb-0">total Sales</h6>
+                            <div class="btn-group" role="group" aria-label="Basic example">
+                                <button class="btn btn-primary" data-filter="day">Day</button>
+                                <button class="btn btn-primary" data-filter="week">Week</button>
+                                <button class="btn btn-primary" data-filter="month">Month</button>
+                                <button class="btn btn-primary" data-filter="year">Year</button>
+                                <button class="btn btn-primary" data-filter="all">All Time</button>
+                            </div>
+                        </div>
+                        <canvas id="reportsChart" style="height: 530px;"></canvas>
+                    </div>
+                </div>
+                <div class="col-sm-12 col-xl-6">
+                    <div class="bg-light text-center rounded p-4">
+                        <h6 class="mb-4">Sales Distribution</h6>
+                        <canvas id="pieChart" style="height: 200px;"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Sales Charts End -->
+
+        <!-- Recent Sales Start -->
+        <div class="container-fluid pt-4 px-4">
+            <div class="bg-light text-center rounded p-4">
+                <div class="d-flex align-items-center justify-content-between mb-4">
+                    <h6 class="mb-0">Recent Sales</h6>
+                    <a href="">Show All</a>
+                </div>
+                <div class="table-responsive">
+                    <table class="table text-start align-middle table-bordered table-hover mb-0">
+                        <thead>
+                            <tr class="text-dark">
+                                <th scope="col"><input class="form-check-input" type="checkbox"></th>
+                                <th scope="col">Date</th>
+                                <th scope="col">Invoice</th>
+                                <th scope="col">Customer</th>
+                                <th scope="col">Amount</th>
+                                <th scope="col">Status</th>
+                                <th scope="col">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Table rows here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <!-- Recent Sales End -->
+
+        <!-- Footer Start -->
+        <div class="container-fluid pt-4 px-4">
+            <div class="bg-light rounded-top p-4">
+                <div class="row">
+                    <div class="col-12 col-sm-6 text-center text-sm-start">
+                        &copy; <a href="#">Your Site Name</a>, <h3>eiser</h3>.
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+    
+
+    <!-- Back to Top -->
+    <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
+</div>
+
+
+<!-- Sales Report Modal -->
+<div class="modal fade" id="salesReportModal" tabindex="-1" aria-labelledby="salesReportModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="salesReportForm" action="/salesreport" method="POST">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="salesReportModalLabel">Sales Report</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Input fields for start date, end date, and download format -->
+                    <div class="mb-3">
+                        <label for="startDate" class="form-label">Start Date</label>
+                        <input type="date" class="form-control" id="startDate" name="startdate" oninput="validateForm()">
+                        <small id="startDateError" class="text-danger"></small>
+                    </div>
+                    <div class="mb-3">
+                        <label for="endDate" class="form-label">End Date</label>
+                        <input type="date" class="form-control" id="endDate" name="enddate" oninput="validateForm()">
+                        <small id="endDateError" class="text-danger"></small>
+                    </div>
+                    <div class="mb-3">
+                        <label for="downloadFormat" class="form-label">Download Format</label>
+                        <select class="form-select" id="downloadFormat" name="downloadformat" oninput="validateForm()">
+                            <option value="">Select Format</option>
+                            <option value="pdf">PDF</option>
+                            <!-- <option value="excel">Excel</option> -->
+                        </select>
+                        <small id="downloadFormatError" class="text-danger"></small>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary" id="generateReportBtn" disabled>Generate Report</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+let salesChart;
+let pieChart;
+
+async function fetchSalesData(period = 'all') {
+    try {
+        const response = await fetch(`/api/sales-data?period=${period}`);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return await response.json();
+    } catch (error) {
+        console.error("Could not fetch sales data:", error);
+        return [];
+    }
+}
+
+async function createOrUpdateSalesChart(period = 'all') {
+    const salesData = await fetchSalesData(period);
+
+    if (!Array.isArray(salesData) || salesData.length === 0) {
+        console.warn('Sales data is empty or not in the expected format:', salesData);
+        return;
+    }
+
+    // Update dynamic labels and amounts
+    updateDynamicLabels(salesData);
+
+    const labels = salesData.map(item => item._id);
+    const values = salesData.map(item => item.totalSales);
+
+    const ctxLine = document.getElementById('reportsChart').getContext('2d');
+    const chartConfig = {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Sales',
+                data: values,
+                fill: false,
+                borderColor: 'rgb(75, 192, 192)',
+                tension: 0.1
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Total Sales'
+                    }
+                },
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Date'
+                    }
+                }
+            }
+        }
+    };
+
+    if (salesChart) {
+        salesChart.data = chartConfig.data;
+        salesChart.update();
+    } else {
+        salesChart = new Chart(ctxLine, chartConfig);
+    }
+
+    // Create or update pie chart
+    const pieLabels = salesData.map(item => item._id);
+    const pieValues = salesData.map(item => item.totalSales);
+
+    const ctxPie = document.getElementById('pieChart').getContext('2d');
+    const pieConfig = {
+        type: 'pie',
+        data: {
+            labels: pieLabels,
+            datasets: [{
+                data: pieValues,
+                backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF'],
+                borderColor: '#fff',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'top',
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(tooltipItem) {
+                            return tooltipItem.label + ': $' + tooltipItem.raw;
+                        }
+                    }
+                }
+            }
+        }
+    };
+
+    if (pieChart) {
+        pieChart.data = pieConfig.data;
+        pieChart.update();
+    } else {
+        pieChart = new Chart(ctxPie, pieConfig);
+    }
+}
+
+function updateDynamicLabels(salesData) {
+    // Calculate total sale
+    const totalSale = salesData.reduce((sum, item) => sum + item.totalSales, 0);
+    document.getElementById('totalSaleLabel').textContent = 'Total Sale';
+    document.getElementById('totalSaleAmount').textContent = `₹${totalSale.toFixed(2)}`;
+
+   
+    const todayRevenue = salesData[salesData.length - 1]?.totalSales || 0;
+    document.getElementById('todayRevenueLabel').textContent = 'Today Revenue';
+    document.getElementById('todayRevenueAmount').textContent = `₹${todayRevenue.toFixed(2)}`;
+
+
+    const totalRevenue = totalSale; // In this example, total revenue is the same as total sale
+    document.getElementById('totalRevenueLabel').textContent = 'Total Revenue';
+    document.getElementById('totalRevenueAmount').textContent = `₹${totalRevenue.toFixed(2)}`;
+}
+
+function updateCharts(period) {
+    createOrUpdateSalesChart(period);
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    createOrUpdateSalesChart();
+});
+
+document.querySelectorAll('[data-filter]').forEach(button => {
+    button.addEventListener('click', () => {
+        const period = button.getAttribute('data-filter');
+        updateCharts(period);
+    });
+});
+</script>
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // Get the button and the modal
+        var downloadSalesReportBtn = document.getElementById("downloadSalesReportBtn");
+        var salesReportModal = new bootstrap.Modal(document.getElementById("salesReportModal"));
+    
+        // Add click event listener to the button
+        downloadSalesReportBtn.addEventListener("click", function() {
+            // Show the modal
+            salesReportModal.show();
+        });
+    });
+    </script>
+
+
+
+
+
+
+<script>
+    function validateForm() {
+        const startDate = document.getElementById('startDate').value;
+        const endDate = document.getElementById('endDate').value;
+        const downloadFormat = document.getElementById('downloadFormat').value;
+
+        const startDateError = document.getElementById('startDateError');
+        const endDateError = document.getElementById('endDateError');
+        const downloadFormatError = document.getElementById('downloadFormatError');
+        const generateReportBtn = document.getElementById('generateReportBtn');
+
+        // Reset error messages
+        startDateError.innerHTML = "";
+        endDateError.innerHTML = "";
+        downloadFormatError.innerHTML = "";
+
+        // Validate Start Date
+        const currentDate = new Date().toISOString().split('T')[0];
+        if (startDate === "") {
+            startDateError.innerHTML = "Start Date is required";
+        } else if (startDate > currentDate) {
+            startDateError.innerHTML = "Start Date must be less than or equal to the current date";
+        }
+
+        // Validate End Date
+        if (endDate === "") {
+            endDateError.innerHTML = "End Date is required";
+        } else if (endDate > currentDate) {
+            endDateError.innerHTML = "End Date must be less than or equal to the current date";
+        } else if (endDate < startDate) {
+            endDateError.innerHTML = "End Date cannot be less than Start Date";
+        }
+
+        // Validate Download Format
+        if (downloadFormat === "") {
+            downloadFormatError.innerHTML = "Download Format is required";
+        }
+
+        // Enable or disable the Generate Report button based on validation
+        if (!startDateError.innerHTML && !endDateError.innerHTML && !downloadFormatError.innerHTML) {
+            generateReportBtn.disabled = false;
+        } else {
+            generateReportBtn.disabled = true;
+        }
+    }
+
+    function generateReport() {
+        
+        $('#salesReportModal').modal('hide');
+    }
+</script>
+
+
+
+<%- include('../admin/adminpartials/footer') -%>

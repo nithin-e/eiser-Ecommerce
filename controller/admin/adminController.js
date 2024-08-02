@@ -385,6 +385,8 @@ PressAddproductButton:async (req, res) => {
   // console.log('add product req.body',req.body);
 const {productName,description,stockQuantity,Offerprice,expiryDate,category,brand,price}=req.body 
 
+
+
 req.session.Admin=true;
   try {
     req.session.Admin=true;
@@ -442,6 +444,7 @@ req.session.Admin=true;
     const {id}=req.params
 
     console.log(id,"edit product id");
+
 try {
   
 const isProduct=await Product.findById(id).populate('category').populate('brand')
@@ -469,11 +472,13 @@ editBottom: async (req, res) => {
     console.log("req.body id kittando", id);
   req.session.Admin = true;
 
+  console.log('..........................',req.files);
+
   try {
-    console.log('kittando ithokke',
-      productName, description, stockQuantity, category, brand, price, Offerprice, expiryDate 
-    );
-    console.log("req.body id kittando but randum same ahhno", id);
+    // console.log('kittando ithokke',
+    //   productName, description, stockQuantity, category, brand, price, Offerprice, expiryDate 
+    // );
+    // console.log("req.body id kittando but randum same ahhno", id);
     const editPro = await Product.findById(id)
     
     if (!editPro) {
@@ -481,7 +486,7 @@ editBottom: async (req, res) => {
       req.session.editfail = "Product not found.";
       res.redirect("/product-page"); // Ensure this route exists
     } else {
-      console.log("req.files", req.files);
+      // console.log("req.files", req.files);
 
   
       const filepaths = req.files.map(file => {
@@ -549,4 +554,99 @@ blockUnblockProduct:async(req,res)=>{
   }
 },
 
+
+
+
+
+
+
+
+editImages:async(req,res)=>{
+  console.log('index kitttando',req.body);
+  console.log('idyoooooooooo kitttando',req.params);
+
+  const {index}=req.body
+  const {id}=req.params
+  try {
+    
+    const EditImage=await Product.findById(id)
+
+      
+const indexToFind = parseInt(index, 10); 
+const IndexFind = EditImage.images.findIndex((image, i) => i === indexToFind);
+console.log('just look bro this ',IndexFind);
+
+EditImage.images.splice(IndexFind,1)
+   await EditImage.save()
+   res.json({success:true})
+
+  } catch (error) {
+    console.log(error);
+  }
+},
+
+
+replaceProductImage: async (req, res) => {
+  const { index, productId } = req.body;
+  console.log('Request file:', req.file);
+  console.log('index kitttando', index);
+
+
+
+
+
+  try {
+    let filepaths;
+
+    if (Array.isArray(req.file)) {
+       console.log('image file array aaahlla');
+      filepaths = req.file.map(file => `/uploads/${file.filename}`);
+    } else {
+      console.log('image file array aaah');
+      filepaths = [`/uploads/${req.file.filename}`];
+    }
+
+    console.log("File paths:", filepaths);
+
+    const product=await Product.findById(productId)
+
+
+    console.log("entha avastha", product.images);
+
+
+     product.images[index] =filepaths[0]
+     await product.save();
+    
+
+    console.log("entha aaaaaaaaaaaaaaaaaaaaaaaaaaaaavastha", product.images);
+
+    res.json({success:true})
+    
+    // console.log('just look bro this ',IndexFind);
+
+  } catch (error) {
+    console.error('Error processing files:', error);
+    res.status(500).send('Server error');
+  }
 }
+}
+
+
+
+//     const EditImage=await Product.findById(id)
+
+      
+// const indexToFind = parseInt(index, 10); 
+// const IndexFind = EditImage.images.findIndex((image, i) => i === indexToFind);
+// console.log('just look bro this ',IndexFind);
+
+// EditImage.images.splice(IndexFind,1)
+//    await EditImage.save()
+//    res.json({success:true})
+
+//   } catch (error) {
+//     console.log(error);
+//   }
+// }
+
+// }

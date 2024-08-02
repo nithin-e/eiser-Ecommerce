@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>All Products</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  
+  <%- include('Header') %>
+  
+  <style>
+    @import url('https://fonts.googleapis.com/css?family=Roboto:400,500,700');
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: 'Roboto', sans-serif;
+    }
+    a {
+      text-decoration: none;
+    }
+    .product-card {
+      margin-top: 13px;
+      width: 300px;
+      box-shadow: 0 2px 7px #dfdfdf;
+      background: #fafafa;
+    }
+    .badge {
+      position: absolute;
+      left: 0;
+      text-transform: uppercase;
+      font-size: 13px;
+      font-weight: 700;
+      background: red;
+      color: #fff;
+      padding: 3px 10px;
+    }
+    .product-tumb {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 300px;
+      padding: 50px;
+      background: #f0f0f0;
+      overflow: hidden;
+    }
+    .product-tumb img {
+      max-width: 100%;
+      max-height: 100%;
+      width: auto;
+      height: auto;
+      display: block;
+      margin: 0 auto;
+    }
+    .product-details {
+      padding: 30px;
+    }
+    .product-catagory {
+      display: block;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: #ccc;
+      margin-bottom: 18px;
+    }
+    .product-details h4 a {
+      font-weight: 500;
+      display: block;
+      margin-bottom: 18px;
+      text-transform: uppercase;
+      color: #363636;
+      text-decoration: none;
+      transition: 0.3s;
+    }
+    .product-details h4 a:hover {
+      color: #fbb72c;
+    }
+    .product-details p {
+      font-size: 15px;
+      line-height: 22px;
+      margin-bottom: 18px;
+      color: #999;
+    }
+    .product-bottom-details {
+      overflow: hidden;
+      border-top: 1px solid #eee;
+      padding-top: 20px;
+    }
+    .product-bottom-details div {
+      float: left;
+      width: 50%;
+    }
+    .product-price {
+      font-size: 18px;
+      color: #fbb72c;
+      font-weight: 600;
+    }
+    .product-price small {
+      font-size: 80%;
+      font-weight: 400;
+      text-decoration: line-through;
+      display: inline-block;
+      margin-right: 5px;
+    }
+    .product-links {
+      text-align: right;
+    }
+    .product-links a {
+      display: inline-block;
+      margin-left: 5px;
+      color: #e1e1e1;
+      transition: 0.3s;
+      font-size: 17px;
+    }
+    .product-links a:hover {
+      color: #fbb72c;
+    }
+    .single-product {
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      transition: box-shadow 0.3s ease;
+      margin-bottom: 15px;
+      position: relative; /* Ensure positioning for the badge and icon */
+    }
+    .single-product:hover {
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    }
+    .product-img {
+      height: 200px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      position: relative; /* Ensure positioning for the icon */
+    }
+    .product-img img {
+      max-width: 100%;
+      max-height: 100%;
+      width: auto;
+      height: auto;
+      transition: transform 0.3s ease;
+    }
+    .product-img:hover img {
+      transform: scale(1.05);
+    }
+    .p_icon {
+      display: flex;
+      justify-content: center;
+      margin-top: 10px;
+    }
+    .p_icon a {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      margin-right: 5px;
+      background-color: white;
+      border-radius: 50%;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      transition: background-color 0.3s ease, transform 0.3s ease;
+    }
+    .p_icon a:hover {
+      background-color: #f8f8f8;
+      transform: scale(1.1);
+    }
+    .p_icon a i {
+      color: #333;
+      font-size: 16px;
+    }
+    .products-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr); 
+      gap: 20px;
+      width: 80%; 
+      margin-left: auto;
+      margin-right: auto;
+      margin-top: 35px;
+    }
+    .products-grid .single-product {
+      background: #fff;
+      border-radius: 10px;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .products-grid .single-product:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    }
+    .offer-price {
+      color: #ff4500;
+      font-size: 1.2em;
+      font-weight: 100;
+      margin-left: 10px;
+    }
+    .border-bottom {
+      border-bottom: 2px solid #f0f0f0; 
+      
+    }
+    .remove-icon {
+      cursor: pointer; 
+      color: #fff; 
+      background-color: rgba(0, 0, 0, 0.5); 
+      border-radius: 50%; 
+      width: 30px; 
+      height: 30px; 
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px; 
+      z-index: 10; 
+    }
+    .pagination {
+      justify-content: center;
+      margin-top: 20px;
+    }
+    .page-item.active .page-link {
+      background-color: #fbb72c;
+      border-color: #fbb72c;
+      color: #fff;
+    }
+    .page-link {
+      color: #fbb72c;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Banner Section -->
+  <section class="banner_area border-bottom">
+    <div class="banner_inner d-flex align-items-center">
+      <div class="container" style="margin-top: 110px;">
+        <div class="banner_content d-md-flex justify-content-between align-items-center">
+          <div class="mb-3 mb-md-0">
+            <h2>WISHLIST </h2>
+            <p>Very us move be blessed multiply night</p>
+          </div>
+          <div class="page_link">
+            <a href="/">Home</a>
+            <a href="/productPage">Products</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- End Banner Section -->
+
+
+
+
+  <% if (products && products.length > 0){ %>
+  
+  <!-- Product Grid Section -->
+  <div class="products-grid">
+    <% products.forEach(product => { %>
+      <% if (product.status === true) { %>
+        <div class="single-product">
+          <div class="product-img position-relative">
+            <img class="img-fluid w-100" src="<%= product.images[0] %>" alt="" />
+            <!-- Remove Icon -->
+            <div class="remove-icon position-absolute top-0 end-0 m-2">
+             <i class="fas fa-times" onclick="DeleteWishlist('<%= product._id %>')"></i>
+            </div>
+            <div class="p_icon">
+              <a href="/ViewProduct/<%= product._id %>">
+                <i class="ti-eye"></i>
+              </a>
+              <a href="#">
+                <i class="ti-heart"></i>
+              </a>
+              <a href="#">
+                <i class="ti-shopping-cart"></i>
+              </a>
+            </div>
+          </div>
+          <div class="product-btm">
+            <a href="#" class="d-block">
+              <h4><%= product.productName %></h4>
+            </a>
+            <div style="display: flex;">
+              <div class="mt-3">
+                <span 
+                  style="font-size: 16px; font-weight: 500; color: gray; <% if (product.offerPrice) { %> text-decoration: line-through; text-decoration-color: green;<% } %>" 
+                  class="single-price">
+                  ₹<%= product.price %>&nbsp;&nbsp;
+                </span>
+              </div>
+              <% if (product.offerPrice) { %>
+                <div class="mt-3">
+                  <span style="color: green; font-size: 14px;" class="offer-price">₹<%= product.offerPrice %></span>
+                </div>
+              <% } %>
+            </div>
+          </div>
+          <!-- Badge positioned at the bottom left -->
+          <% if (product.stockQuantity == 0) { %>
+            <div class="bg-danger rounded text-white position-absolute end-0 bottom-0 m-2 py-1 px-2" style="font-size: 0.75rem;">
+              Out of 
+            </div>
+          <% } else if (product.stockQuantity < 10) { %>
+            <div class="bg-warning rounded text-dark position-absolute end-0 bottom-0 m-2 py-1 px-2" style="font-size: 0.75rem;">
+              Limited 
+            </div>
+          <% } else { %>
+            <div class="bg-success rounded text-white position-absolute end-0 bottom-0 m-2 py-1 px-2" style="font-size: 0.75rem;">
+              In Stock
+            </div>
+          <% } %>
+        </div>
+      <% } %>
+    <% }) %>
+  </div>
+  <!-- End Product Grid Section -->
+    
+  <% }else{ %>
+    <div class="flex flex-col items-center justify-center min-h-screen bg-white p-4" style="min-height: 55vh;">
+
+        <h1 class="text-2xl font-bold text-gray-800 mb-4">YOUR WISHLIST IS EMPTY</h1>
+        <p class="text-gray-500 text-center mb-6 max-w-md">
+            Add items that you like to your wishlist. Review them anytime and easily move them to the bag.
+        </p>
+        <div class="mb-6">
+            <div class="w-24 h-24 border-2 border-teal-400 rounded-lg flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-yellow-400">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="12" y1="8" x2="12" y2="16"></line>
+                    <line x1="8" y1="12" x2="16" y2="12"></line>
+                </svg>
+            </div>
+        </div>
+        <a 
+    href="/productPage" 
+    class="bg-white text-blue-600 border border-blue-600 rounded-md py-2 px-4 font-semibold hover:bg-blue-50 transition-colors"
+>
+    CONTINUE SHOPPING
+</a>
+    </div>
+  
+  <% } %>
+
+<style>
+    /* Container */
+.flex {
+  display: flex;
+}
+.flex-col {
+  flex-direction: column;
+}
+.items-center {
+  align-items: center;
+}
+.justify-center {
+  justify-content: center;
+}
+.min-h-screen {
+  min-height: 100vh;
+}
+.bg-white {
+  background-color: white;
+}
+.p-4 {
+  padding: 1rem;
+}
+
+/* Heading */
+.text-2xl {
+  font-size: 1.5rem;
+}
+.font-bold {
+  font-weight: 700;
+}
+.text-gray-800 {
+  color: #2d3748;
+}
+.mb-4 {
+  margin-bottom: 1rem;
+}
+
+/* Paragraph */
+.text-gray-500 {
+  color: #a0aec0;
+}
+.text-center {
+  text-align: center;
+}
+.mb-6 {
+  margin-bottom: 1.5rem;
+}
+.max-w-md {
+  max-width: 28rem;
+}
+
+/* Icon container */
+.w-24 {
+  width: 6rem;
+}
+.h-24 {
+  height: 6rem;
+}
+.border-2 {
+  border-width: 2px;
+}
+.border-teal-400 {
+  border-color: #38b2ac;
+}
+.rounded-lg {
+  border-radius: 0.5rem;
+}
+.flex {
+  display: flex;
+}
+.items-center {
+  align-items: center;
+}
+.justify-center {
+  justify-content: center;
+}
+
+/* Icon */
+.text-yellow-400 {
+  color: #ecc94b;
+}
+
+/* Button */
+.bg-white {
+  background-color: white;
+}
+.text-blue-600 {
+  color: #3182ce;
+}
+.border {
+  border-width: 1px;
+}
+.border-blue-600 {
+  border-color: #3182ce;
+}
+.rounded-md {
+  border-radius: 0.375rem;
+}
+.py-2 {
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+}
+.px-4 {
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+.font-semibold {
+  font-weight: 600;
+}
+.hover\:bg-blue-50:hover {
+  background-color: #ebf8ff;
+}
+.transition-colors {
+  transition: background-color 0.3s;
+}
+
+</style>
+
+  <!-- Pagination Controls -->
+  <div class="container">
+    <nav aria-label="Page navigation">
+      <ul class="pagination">
+        <% if (currentPage > 1) { %>
+          <li class="page-item">
+            <a class="page-link" href="?page=<%= currentPage - 1 %>&limit=<%= limit %>">Previous</a>
+          </li>
+        <% } %>
+        <% for (let i = 1; i <= totalPages; i++) { %>
+          <li class="page-item <%= i === currentPage ? 'active' : '' %>">
+            <a class="page-link" href="?page=<%= i %>&limit=<%= limit %>"><%= i %></a>
+          </li>
+        <% } %>
+        <% if (currentPage < totalPages) { %>
+          <li class="page-item">
+            <a class="page-link" href="?page=<%= currentPage + 1 %>&limit=<%= limit %>">Next</a>
+          </li>
+        <% } %>
+      </ul>
+    </nav>
+  </div>
+
+
+  <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+<script>
+function DeleteWishlist(proId) {
+  console.log("amount", proId);
+  swal.fire({
+    title: "Do you want to remove the product?",
+    showCancelButton: true,
+    confirmButtonColor: "#3085d6",
+    cancelButtonColor: "#d33",
+    confirmButtonText: "Yes, delete it!",
+    customClass: {
+      popup: 'swal-custom',
+      content: 'swal-custom-content',
+      confirmButton: 'swal-custom-confirm'
+    }
+  })
+  .then((result) => {
+    if (result.isConfirmed) {
+      fetch(`/DeleteWishList/${proId}`,{
+        method: 'post',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+      })
+      .then(response => response.json())
+      .then(response => {
+        if (response.success) {
+          Toastify({
+            text:response.msng,
+            duration: 3000,
+            close: true,
+            gravity: "top",
+            position: "center",
+            backgroundColor: "linear-gradient(to right, #00b09b, #96c93d)",
+            stopOnFocus: true,
+          }).showToast();
+          setTimeout(() => {
+            window.location.reload();
+          }, 2000);
+        } else {
+          // Handle the case where the response indicates failure
+          console.error("Failed to remove coupon");
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+      });
+    }
+  });
+}
+</script>
+
+  <%- include('footer') %>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-dh3GsKNHh80L6+qQHjNYQ8AoXpt0D2j+Y0u3+v+fJt6ZNTzHh3I72PEf9y7pHrM" crossorigin="anonymous"></script>
+</body>
+</html>

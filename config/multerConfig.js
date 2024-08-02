@@ -10,9 +10,10 @@ const storage = multer.diskStorage({
 
     destination: (req, file, cb) => {
         req.session.Admin=true;
-        cb(null, "uploads"); // Ensure "uploads" folder exists
+        cb(null, "uploads"); 
     },
     filename: (req, file, cb) => {
+        console.log('......................kittando...................................................');
         const name = path.parse(file.originalname).name;
         console.log("nnnname",name); // Get the original file name without extension
         console.log("parse",path.parse(file.originalname)); 

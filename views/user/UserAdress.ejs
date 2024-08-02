@@ -4,7 +4,7 @@
         font-family: Arial, sans-serif;
         background-color: #f4f4f4;
         margin: 0;
-        margin-top: 140px;
+        margin-top: 99px;
     }
 
     .container1 {
@@ -477,6 +477,9 @@
 
 
 
+
+
+<!-- edit modal -->
 <div id="addressEditModal" class="modal">
     <h2>EDIT ADDRESS</h2>
     <form id="addressEditForm">
@@ -682,7 +685,7 @@ document.getElementById("addressEditForm").addEventListener("submit", function(e
 
     console.log("Editing address with ID:", id);
 
-    fetch(`/REMOVE-ADDRESS/${id}`, {
+    fetch(`/Address-edit/${id}`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'

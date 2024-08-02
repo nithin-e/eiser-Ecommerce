@@ -1,6 +1,7 @@
 const Address=require("../models/UserAddressModel")
 const CARTMOD=require('../models/cartModel')
 const ORDERMOD=require('../models/orderModel')
+const Coupon=require('../models/CouponModel')
 
 
 
@@ -23,10 +24,12 @@ module.exports={
                 const userAddresses = await Address.findOne({ userId: userId }).populate('addresses');
                 const AllAdress = userAddresses ? userAddresses.addresses : [];
         
-                res.render('user/CheckoutPage', { user, AllAdress, cartItems: [cartItems] });
-        
-    
-           
+
+                const CouponInfo= await  Coupon.find()
+                const Amount=req.session.Amount
+                req.session.Amount=null
+                console.log("hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh",Amount);
+                res.render('user/CheckoutPage', { user, AllAdress, cartItems: [cartItems] ,CouponInfo,Amount});
         } catch (error) {
             console.error("Error fetching addresses:", error);
         }
@@ -115,6 +118,7 @@ addresEditing: async(req, res) => {
         }
     },
 
+    
 
     
 REMOVEADDRESS: async(req,res)=>{

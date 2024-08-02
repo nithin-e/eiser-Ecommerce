@@ -19,33 +19,35 @@ module.exports={
     },
 
 
-    ChangeOrderStatus:async(req,res)=>{
-        console.log("yhha status getting perfectly",req.body);
-     const {orderId,status}=req.body
-     console.log("Received orderId:", orderId);
-
-     // Check the type (you mentioned it's a string)
-     console.log(typeof orderId);
-     
-     try {
-         const order = await orderModel.findOne({ orderID: orderId });
-         if (!order) {
-             console.log(`Order with orderId ${orderId} not found.`);
-             return res.status(404).send('Order not found');
-         }
-         console.log('Found Order:', order.status);
-
-           order.status=status
-           await order.save()
-           console.log("successfullu Updated");
-           res.status(200).json({ success: true, message: "Status updated successfully", status:status});
-     } catch (error) {
-         console.log('Error finding order:', error);
-         res.status(500).send('Error finding order');
-     }
-     
-
-    }
+    ChangeOrderStatus: async (req, res) => {
+      console.log("Received request body:", req.body);
+      const { orderId, status } = req.body;
+      console.log("Received orderId:", orderId);
+  
+      try {
+          // Find the order by orderId
+          const order = await orderModel.findOne({ orderID: orderId });
+          if (!order) {
+              console.log(`Order with orderId ${orderId} not found.`);
+              return res.status(404).send('Order not found');
+          }
+  
+          // Log the current status
+          console.log('Found Order status:', order.status);
+  
+          // Update the order status
+          order.status = status;
+          await order.save();
+          console.log("Successfully updated status");
+  
+          // Send success response
+          res.status(200).json({ success: true, message: "Status updated successfully", status });
+      } catch (error) {
+          console.error('Error updating order status:', error);
+          res.status(500).send('Error updating order status');
+      }
+  }
+  
 
 
 }

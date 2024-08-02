@@ -7,6 +7,8 @@ const CartController=require('../controller/CartController')
 const CARTMOD=require('../models/cartModel')
 const CheckOutController=require('../controller/ChekOutController')
 const ORDERCONTROLLER=require('../controller/orderController')
+const RazorPayController=require('../controller/RazorPayController')
+const WishlistController=require('../controller/wishlistController')
 
 const {Authenticated,checkOtpVerfy,  blockedUser,userthere}= require("../middleware/userMiddleware")
 
@@ -57,15 +59,12 @@ router.post("/changepassword",forgetController.passchange)
 
 
 router.get("/logout", (req, res) => {
-    // Destroy the session
+    console.log('disstoy session............................disstoy session...........................');
     req.session.destroy((err) => {
         if (err) {
             console.log(err);
-            // Optionally, handle the error in the response
             return res.status(500).send("Failed to log out");
         }
-        
-        // Redirect to the homepage
         res.redirect("/");
     });
 });
@@ -74,7 +73,9 @@ router.get("/logout", (req, res) => {
 
 //showing product details...............
 router.get("/ViewProduct/:id",blockedUser, userController.ShowProductDetails);
-router.get("/productPage",blockedUser, userController.showProductSeperetPage);
+router.get("/productPage",blockedUser, userController.showProductSeperetPage);  
+router.get('/filterProduct',userController.filterProducts)
+router.get('/SearchProduct',userController.SearchingProduct)
 
 
 
@@ -87,6 +88,7 @@ router.post("/Update-PassWord",userthere,userProfileController.EditPassword)
 router.post("/changeAddress",userthere,userProfileController.getAddressData)
 router.post('/Address-edit/:id',userthere,userProfileController.EditAddress)
 router.delete("/AdressDelete/:id",userthere, userProfileController.REMOVEADDRESS);
+router.get('/UserWallet',userthere,userProfileController.USERWALLET)
 
 
 
@@ -114,7 +116,31 @@ router.post('/OrderInfo',userthere,ORDERCONTROLLER.OrderInfo)
 router.get('/orderSuccessPage',userthere,ORDERCONTROLLER.renderOrderSuccessPage)
 router.get('/userOrder',userthere,ORDERCONTROLLER.orderPageRendering)
 router.post('/CancellOrder',userthere,ORDERCONTROLLER.CancellAllOrder)
+router.post('/returnOrder',userthere,ORDERCONTROLLER.ReturnProduct)
+router.post('/OrderFullDetails/:id',userthere,ORDERCONTROLLER.FullOrderDetails)
+
 // router.post('CancellEachProduct',ORDERCONTROLLER.SingleOrderRemove)
+
+//coupon
+router.post('/couponDiscount',userthere,ORDERCONTROLLER.discountCoupon)
+router.post('/DeleteCoupon',userthere,ORDERCONTROLLER.DeleteCoupon)
+
+
+//razor pay
+router.get('/razor-key',userthere,RazorPayController.RazorKey)
+router.post('/razor-order',userthere,RazorPayController.RazorOrder)
+
+
+//wishlist
+router.post('/AddWishlist/:id',userthere,WishlistController.ADDWISHLIST)
+router.get('/GotoWishList',userthere,WishlistController.GetWishLIst)
+router.post('/DeleteWishList/:id',userthere,WishlistController.DeleteWishlist)
+
+//generate invoice
+router.post('/GenerateInvoice/:id',ORDERCONTROLLER.GenerateInvoice)
+router.get('/downloadinvoice/:id',ORDERCONTROLLER.DownLoadInvoice)
+
+
 
 
 

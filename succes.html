@@ -1,83 +1,70 @@
+<!-- <script>
+
+downloadInvoice : async (req, res) => {
+    try {
+        const invoicePath = req.params.path;
+        const filePath = path.join(__dirname, '../invoices', invoicePath);
+        res.download(filePath, (err) => {
+            if (err) {
+                console.log(err);
+                res.status(500).send('Error in downloading invoice');
+            }
+        });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ success: false, message: "Error in downloading Invoice" });
+    }
+}
+
+
+</script> -->
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cancel Order Modal</title>
-<style>
-  /* Basic CSS for modal */
-  .modal {
-    display: none;
-    position: fixed;
-    z-index: 1000;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    justify-content: center;
-    align-items: center;
-  }
-  .modal-content {
-    background-color: #fefefe;
-    padding: 20px;
-    border-radius: 8px;
-    max-width: 400px;
-    text-align: center;
-  }
-  .modal input {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 10px;
-    box-sizing: border-box;
-  }
-  .modal button {
-    padding: 10px 20px;
-    margin: 5px;
-    cursor: pointer;
-  }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
 </head>
 <body>
+<!-- =>    image validation in file uploads 
+drop down should have a place holder and validation -->
+<!-- delete function from the server  -->
+session handling is not proper 
+<!-- cart page UI  -->
+<!-- Proper error messages -->
+handle failed payments 
+<!-- Apply coupon button  -->
+<!-- remove coupon ui  -->
+<!-- app crashed on orders after removing coupon - handle crash -->
+charts are invalid with the data represented in x axis and y axis 
+date format in chart - timestamp not allowed 
+PDF - redesign
+<!-- Proper error msg display in create coupon form  -->
+date validation in create coupon
 
-<!-- Modal -->
-<div id="cancelOrderModal" class="modal">
-  <div class="modal-content">
-    <h2>Cancel Order</h2>
-    <p>Please provide a reason for cancelling:</p>
-    <input type="text" id="cancelReason" placeholder="Reason...">
-    <br><br>
-    <button onclick="cancelOrder()">Ok</button>
-    <button onclick="closeModal()">Cancel</button>
-  </div>
-</div>
 
-<script>
-  const modal = document.getElementById('cancelOrderModal');
 
-  function openModal() {
-    modal.style.display = 'flex'; // Display the modal
-  }
 
-  function closeModal() {
-    modal.style.display = 'none'; // Hide the modal
-  }
 
-  function cancelOrder() {
-    const reason = document.getElementById('cancelReason').value;
-    // Perform cancel order logic here (e.g., send reason to server, update UI)
-    console.log('Order cancelled with reason:', reason);
-    closeModal(); // Close the modal after processing
-  }
 
-  // Example function to trigger modal (replace with your actual trigger logic)
-  function triggerCancelOrderModal() {
-    openModal();
-  }
+<!-- next week -->
 
-  // Example of triggering the modal (you can replace this with your actual logic)
-  triggerCancelOrderModal();
-</script>
+
+
+User side :
+<!-- Invoice download (Pdf) -->
+<!-- Order above Rs 1000 should not be allowed for COD -->
+<!-- Delivery charge can be applied according to location / fixed charges (optional) -->
+Handle error for failed payments (update status as payment pending), 
+Should be able to continue payment from my order page in case of failed payment
+Admin side :
+Admin Dashboard - Chart with filter(yearly,monthly etc.)
+Best selling product (top 10) 
+Best selling category (top 10) 
+Best selling brands (top 10) 
+Generate ledger book (optional)
 
 </body>
 </html>

@@ -1,0 +1,160 @@
+<style>
+    .single-product {
+      width: 200px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      transition: box-shadow 0.3s ease;
+    }
+  
+    .single-product:hover {
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    }
+  
+    .product-img img {
+      transition: transform 0.3s ease;
+    }
+  
+    .product-img:hover img {
+      transform: scale(1.05);
+    }
+  
+    .p_icon a {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      margin-right: 5px;
+      background-color: white;
+      border-radius: 50%;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      transition: background-color 0.3s ease, transform 0.3s ease;
+    }
+  
+    .p_icon a:hover {
+      background-color: #f8f8f8;
+      transform: scale(1.1);
+    }
+  
+    .p_icon a i {
+      color: #333;
+      font-size: 16px;
+    }
+  </style>
+  <section class="inspired_product_area section_gap_bottom_custom">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-lg-12">
+          <div class="main_title">
+            <h2><span> New Arrivals</span></h2>
+            <p>Bring called seed first of third give itself now ment</p>
+          </div>
+        </div>
+      </div>
+    <div class="row">
+      <% allProduct.forEach(product => { %>
+      <div class="col-lg-3 col-md-6">
+        <div class="single-product">
+          <div class="product-img">
+            <img class="img-fluid w-100" src="<%=product.images[0]%>" alt="" />
+            <div class="p_icon" style="display: flex;">
+              <a href="/ViewProduct/<%=product._id %>">
+                <i class="ti-eye"></i>
+              </a>
+              <a href="">
+                <i class="ti-heart"></i>
+              </a>
+              <a href="#">
+                <i class="ti-shopping-cart"></i>
+              </a>
+            </div>
+          </div>
+          <div class="product-btm">
+            <a href="#" class="d-block">
+              <h4><%=product.productName %></h4>
+            </a>
+            <div style="display: flex;">
+            <div>  <span 
+            style="font-size: 16px; font-weight: 500; color:gray; <% if (product.offerPrice) { %> text-decoration: line-through; text-decoration-color: green;<% } %>" 
+            class="single-price">
+            ₹<%= product.price %>&nbsp;
+          </span>
+            </div>
+            <% if (product.offerPrice) { %>
+              <div class="">
+                <span style="color:green;font-size: 14px;" class="offer-price">&nbsp;&nbsp;&nbsp;&nbsp;₹<%= product.offerPrice %></span >
+              </div>
+            <% } %>
+            
+          </div>
+          
+          </div>
+          
+        </div>
+
+        
+      </div>
+      <% }) %>
+    </div>
+  </section>
+
+
+
+
+
+
+
+  
+
+    <style>
+   
+.pagination {
+    margin-top: 20px;
+    text-align: center; 
+    margin-left: 500px;
+}
+
+.pagination ul {
+    list-style-type: none;
+    padding: 0;
+    display: inline-block;
+}
+
+.pagination li {
+    display: inline-block;
+    margin-right: 5px;
+    border: 1px solid #ccc; 
+    border-radius: 3px; 
+    padding: 5px 10px;
+}
+
+.pagination li a {
+    text-decoration: none;
+    color: #333;
+    display: block;
+    padding: 5px 10px;
+}
+
+.pagination li.active {
+    background-color: #007bff; 
+}
+
+.pagination li.active a {
+    color: white; 
+}
+
+.pagination li:hover {
+    background-color: #f2f2f2; 
+}
+
+  </style>
+<div class="pagination">
+    <% if (pages > 1) { %>
+        <ul>
+            <% for (let i = 1; i <= pages; i++) { %>
+                <li class="<%= i === current ? 'active' : '' %>">
+                    <a href="?page=<%= i %>"><%= i %></a>
+                </li>
+            <% } %>
+        </ul>
+    <% } %>
+  </div>

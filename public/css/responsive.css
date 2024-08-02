@@ -212,9 +212,9 @@
 	}
 	/* Footer Area css
 	============================================================================================ */
-	.footer-area .col-sm-6{
+	/* .footer-area .col-sm-6{
 		margin-bottom: 30px;
-	}
+	} */
 	/* End End Footer Area css
 	============================================================================================ */
 	.home_banner_area {
@@ -254,6 +254,7 @@
 	}
 	.home_banner_area .banner_inner {
 		min-height: 500px;
+		/* margin-top: 70px; */
 	}
 	.home_banner_area .banner_inner .banner_content {
 		margin-top: 0px;

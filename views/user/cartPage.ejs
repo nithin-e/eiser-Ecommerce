@@ -6,326 +6,488 @@
     <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300&display=swap" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
 
+    
+
+
+
+  
+
+ 
+
+ 
+
+
+
+
+
     <style>
-        
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        :root {
+          /* --primary-color: #3498db; */
+           --primary-color: #71cd14;
+          --secondary-color: #2ecc71;
+          --text-color: #333;
+          --background-color: #f8f8f8;
+          --border-color: #e0e0e0;
+          --shadow-color: rgba(0, 0, 0, 0.1);
         }
-
+      
+        /* General styles */
         body {
-            font-family: 'Source Sans 3', sans-serif;
-            font-size: 14px;
-            color: #1e1e1e;
+          font-family: 'Roboto', sans-serif;
+          font-size: 16px;
+          color: var(--text-color);
+          background-color: var(--background-color);
+          margin: 0;
+          padding: 0;
+          line-height: 1.6;
         }
-
-       
-        #navB {
-            position: sticky;
-            top: 0;
-            width: 100%;
-            height: 90px;
-            background-color: white;
-            z-index: 1;
-        }
-
-        
+      
+        /* Container styles */
         #cart_container {
-            display: flex;
-            justify-content: space-between;
-            margin: 20px auto;
-            max-width: 1200px;
-            padding: 0 20px;
-            /* padding-top: 50px; */
+          display: flex;
+          justify-content: space-between;
+          max-width: 1200px;
+          margin: 40px auto;
+          padding: 30px;
+          background-color: #fff;
+          border-radius: 12px;
+          box-shadow: 0 6px 12px var(--shadow-color);
         }
-
-       
+      
+        /* Product list styles */
         #card {
-        height: 49vh; 
-        overflow-y: auto; 
-        padding: 20px; 
-        background-color: #f9f9f9; 
-        scrollbar-width: none; 
-        -ms-overflow-style: none;    }
-
-   
-    #pay {
-        width: 48%;
-        padding: 20px;
-        margin-left: 2px;
-        background-color: #f9f9f9;
-        text-align: right;
-    }
-
+          flex-grow: 1;
+          overflow-y: auto;
+          max-height: calc(90vh - 200px);
+          padding: 20px;
+          background-color: #ffffff;
+          border-radius: 8px;
+        }
+      
+        /* Table styles */
+        .table {
+          width: 100%;
+          border-collapse: separate;
+          border-spacing: 0 15px;
+        }
+      
+        .table th {
+          background-color: var(--primary-color);
+          color: #fff;
+          padding: 15px;
+          text-align: left;
+          font-weight: 600;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+          border-radius: 6px 6px 0 0;
+        }
+      
+        .table td {
+          padding: 20px 15px;
+          vertical-align: middle;
+          background-color: #ffffff;
+          transition: all 0.3s ease;
+        }
+      
+        .table tr {
+          box-shadow: 0 2px 5px var(--shadow-color);
+          border-radius: 8px;
+          transition: all 0.3s ease;
+        }
+      
+        .table tr:hover {
+          transform: translateY(-3px);
+          box-shadow: 0 5px 15px var(--shadow-color);
+        }
+      
+        /* Product image styles */
+        .table .media img {
+          max-width: 80px;
+          max-height: 80px;
+          object-fit: cover;
+          border-radius: 6px;
+          transition: transform 0.3s ease;
+        }
+      
+        .table .media img:hover {
+          transform: scale(1.1);
+        }
+      
+        /* Product name styles */
+        .table .media-body p {
+          margin: 15px;
+          font-weight: 500;
+          color: var(--text-color);
+        }
+      
+        /* Price and total styles */
+        .table h6 {
+          margin: 0;
+          font-size: 16px;
+          font-weight: 600;
+          color: var(--primary-color);
+        }
+      
+        /* Quantity controls - New unique style */
+        .quantity-container {
+          display: flex;
+          align-items: center;
+          background-color: #f0f0f0;
+          border-radius: 20px;
+          padding: 5px;
+          width: fit-content;
+          position: relative;
+          overflow: hidden;
+          box-shadow: 0 2px 5px var(--shadow-color);
+        }
+      
+        .quantity-container button {
+          background-color: var(--primary-color);
+          color: white;
+          border: none;
+          width: 30px;
+          height: 30px;
+          font-size: 18px;
+          cursor: pointer;
+          transition: transform 0.3s ease, background-color 0.3s ease;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          border-radius: 50%;
+          margin: 0 5px;
+        }
+      
+        .quantity-container button:hover {
+          background-color: var(--secondary-color);
+        }
+      
+        .quantity-container button:active {
+          transform: scale(0.95);
+        }
+      
+        .quantity-container input[type="number"] {
+          width: 40px;
+          text-align: center;
+          border: none;
+          background-color: transparent;
+          font-size: 16px;
+          font-weight: bold;
+          color: var(--text-color);
+          -moz-appearance: textfield;
+        }
+      
+        .quantity-container input[type="number"]::-webkit-outer-spin-button,
+        .quantity-container input[type="number"]::-webkit-inner-spin-button {
+          -webkit-appearance: none;
+          margin: 0;
+        }
+      
+        /* Delete icon */
+        .delete-link {
+          color: #e74c3c;
+          cursor: pointer;
+          transition: color 0.3s, transform 0.2s;
+          font-size: 18px;
+        }
+      
+        .delete-link:hover {
+          color: darken(#e74c3c, 10%);
+          transform: scale(1.2);
+        }
+      
+        /* Summary container */
         #pay {
-            text-align: right;
+          width: 300px;
+          background-color: #fff;
+          padding: 25px;
+          border-radius: 8px;
+          box-shadow: 0 4px 10px var(--shadow-color);
+          margin-left: 30px;
         }
-
-       
-        #product {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 20px;
-        }
-
-       
-        #btn {
-            padding: 10px 20px;
-            font-weight: bold;
-            background-color: #333;
-            color: white;
-            border: none;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-
-        #btn:hover {
-            background-color: #555;
-        }
-
-       
+      
         .summary-container {
-            font-size: 15px;
+          margin-bottom: 25px;
         }
-
+      
         .summary-item {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 10px;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 15px;
+          padding-bottom: 15px;
+          border-bottom: 1px solid var(--border-color);
         }
-
-        .summary-label {
-            flex: 1;
+      
+        .summary-item:last-child {
+          border-bottom: none;
         }
-
-        .summary-value {
-            flex: 1;
-            text-align: right;
+      
+        .summary-label h6,
+        .summary-value h6 {
+          margin: 0;
+          font-size: 16px;
+          color: var(--text-color);
         }
-
-        .no-border {
-            border-bottom: none;
+      
+        .summary-value h6 {
+          font-weight: 600;
+          color: var(--primary-color);
         }
-
-        
+      
+        /* Grand total section */
         .grand_total_section {
-            margin-top: 20px;
-            text-align: right;
+          margin-top: 25px;
+          text-align: right;
         }
-
-        .shipping_box {
-            margin-top: 10px;
+      
+        .grand_total_section h6 {
+          font-size: 20px;
+          font-weight: bold;
+          color: var(--primary-color);
         }
-
+      
+        /* Buttons */
         .gray_btn {
-            padding: 6px 20px;
-            background-color: #ccc;
-            color: #333;
-            border-radius: 5px;
-            display: inline-block;
+          display: inline-block;
+          background-color: var(--primary-color);
+          color: white;
+          text-decoration: none;
+          transition: all 0.3s ease;
+          font-weight: 600;
+          text-align: center;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
         }
-
-        .gray_btn:hover {
-            background-color: #71cd14;
-            text-decoration: none; 
+      
+        /* .gray_btn:hover {
+          background-color: darken(var(--primary-color), 10%);
+          transform: translateY(-2px);
+          box-shadow: 0 4px 12px var(--shadow-color);
+        } */
+      
+        /* Empty cart */
+        .empty-cart {
+          text-align: center;
+          padding: 60px 20px;
+          
         }
-
-        hr {
-            opacity: 0.6;
+      
+        .empty-cart h2 {
+          color: var(--primary-color);
+          margin-bottom: 20px;
+          font-size: 28px;
         }
-           
-    .table {
-        width: 150%; 
-        height: 10px; 
-       
-    }
-    </style>
-   
+      
+        .empty-cart p {
+          color: var(--text-color);
+          margin-bottom: 30px;
+          font-size: 18px;
+        }
+      
+        /* Responsive design */
+        @media (max-width: 1024px) {
+          #cart_container {
+            flex-direction: column;
+            padding: 20px;
+          }
+      
+          #pay {
+            width: 100%;
+            margin-top: 30px;
+            margin-left: 0;
+          }
+      
+          #card {
+            max-height: none;
+          }
+        }
+      
+        @media (max-width: 768px) {
+          .table,
+          .table tbody,
+          .table tr,
+          .table td {
+            display: block;
+            width: 100%;
+          }
+      
+          .table thead {
+            display: none;
+          }
+      
+          .table tr {
+            margin-bottom: 20px;
+            border: 1px solid var(--border-color);
+          }
+      
+          .table td {
+            text-align: right;
+            padding-left: 50%;
+            position: relative;
+          }
+      
+          .table td::before {
+            content: attr(data-label);
+            position: absolute;
+            left: 6px;
+            width: 45%;
+            padding-right: 10px;
+            white-space: nowrap;
+            font-weight: bold;
+            text-align: left;
+          }
+      
+          .quantity-container {
+            justify-content: flex-end;
+          }
+        }
+      
+        /* Toast and Sweet Alert custom styles */
+        .toastify-custom {
+          font-size: 14px;
+          padding: 12px 20px;
+          border-radius: 4px;
+          box-shadow: 0 3px 10px var(--shadow-color);
+        }
+      
+        .swal-custom {
+          width: 400px !important;
+          max-width: 90%;
+        }
+      
+        .swal-custom-content {
+          font-size: 16px;
+        }
+      
+        .swal-custom-confirm {
+          background-color: var(--primary-color) !important;
+        }
+      
+        .swal2-styled.swal2-confirm,
+        .swal2-styled.swal2-cancel {
+          font-size: 14px;
+          padding: 10px 24px;
+          border-radius: 25px;
+        }
+      
+        /* Animations */
+        @keyframes fadeIn {
+          from {
+            opacity: 0;
+          }
+      
+          to {
+            opacity: 1;
+          }
+        }
+      
+        .table tr {
+          animation: fadeIn 0.5s ease-out;
+        }
+      
+        .gray_btn,
+        .delete-link,
+        .quantity-container button {
+          transition: all 0.3s ease;
+        }
+      
+        .gray_btn:active,
+        .delete-link:active,
+        .quantity-container button:active {
+          transform: scale(0.95);
+        }
+      </style>
 
 
 
 <style>
-    .quantity-container {
+  .quantity-container {
     display: flex;
     align-items: center;
-}
-
-button {
-    background-color: #ffffff;
-    border: 1px solid #dcdcdc;
-    color: #333333;
-    font-size: 16px;
-    padding: 0px 11px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-button:hover {
     background-color: #f0f0f0;
-}
-
-button:focus {
-    outline: none;
-    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
-}
-
-input[type="text"] {
+    border-radius: 25px;
+    padding: 5px;
+    width: fit-content;
+  }
+  
+  .quantity-btn {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    width: 30px;
+    height: 30px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+  }
+  
+  .quantity-btn:hover {
+    background-color: var(--secondary-color);
+  }
+  
+  .quantity-btn:active {
+    transform: scale(0.95);
+  }
+  
+  .quantity-input {
     width: 40px;
     text-align: center;
-    border: 1px solid #dcdcdc;
-    margin: 0 10px;
+    border: none;
+    background-color: transparent;
     font-size: 16px;
-    padding: 10px 0;
-    background-color: #ffffff;
-    color: #333333;
-}
+    font-weight: bold;
+    color: var(--text-color);
+    -moz-appearance: textfield;
+    margin: 0 10px;
+  }
+  
+  .quantity-input::-webkit-outer-spin-button,
+  .quantity-input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  </style>
 
-input[type="text"]:focus {
-    outline: none;
-    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
-}
-
-</style>
-
- 
-<style>
- 
-
-/* Style for the buttons */
-button {
-  width: 30px;
-  height: 30px;
-  background-color: #f0f0f0;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-size: 18px;
-  color: #333;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-button:hover {
-  background-color: #e0e0e0;
-}
-
-/* Style for the input field */
-input[type="number"] {
-  width: 50px;
-  height: 30px;
-  text-align: center;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  margin: 0 10px;
-  font-size: 16px;
-  color: #333;
-  background-color: #fff;
-  pointer-events: none;
-}
-
-</style>
-
-
-
-
-<style>
-    /* Styles for pay div */
-    #pay {
-        border: 1px solid #e7e7e7; /* Border style */
-        padding: 20px;
-        margin-bottom: 20px;
-        background-color: #f9f9f9;
-        /* border-radius: 8px;   */
-        /* box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); */
-    }
-
-    
-    .summary-container {
-        margin-bottom: 20px;
-    }
-
-    .summary-item {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 10px;
-    }
-
-    .summary-label {
-        flex: 1;
-        text-align: left;
-    }
-
-    .summary-value {
-        flex: 1;
-        text-align: right;
-    }
-
-    .summary-item.no-border {
-        border-bottom: none;
-    }
-
-    /* Styles for buttons */
-    .gray_btn {
-    display: inline-block;
-    padding: 0px 15px; /* Adjust padding for better appearance */
-    background-color: #ccc;
-    color: #333;
-    text-decoration: none;
-    border-radius: 9px;
-    transition: background-color 0.3s ease;
-    margin-right: 5px;
-    margin-left: 20px;
-    margin-top: 5px; 
-
-}
-
-
-    .gray_btn:hover {
-        background-color: 71cd14#bbb;
-    }
-
-    .shipping_box {
-        text-align: right;
-        margin-top: 10px;
-    }
-    .banner_area{
-        padding-top: 100px;
-    }
-</style>
-
+      
 </head>
 <body>
     <!--================Home Banner Area =================-->
-<section class="banner_area" >
-    <div class="banner_inner d-flex align-items-center">
-      <div class="container">
-        <div class="banner_content d-md-flex justify-content-between align-items-center">
-          <div class="mb-3 mb-md-0">
-            <h2>Cart</h2>
-            <p>Very us move be blessed multiply night</p>
-          </div>
-          <div class="page_link">
-            <a href="/">Home</a>
-            <a href="cart.html">Cart</a>
+    <section class="banner_area" style="padding: 10px; margin-top: 70px;border-bottom: 1px solid green;">
+        <div class="banner_inner d-flex align-items-center">
+          <div class="container">
+            <div
+              class="banner_content d-md-flex justify-content-between align-items-center"
+            >
+              <div class="mb-3 mb-md-0">
+                <h2>Cart Page</h2>
+                <p>Very us move be blessed multiply night</p>
+              </div>
+              <div class="page_link">
+                <a href="index.html">Home</a>
+                <a href="checkout.html">Product Checkout</a>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
-    </div>
-  </section>
+      </section>
   <!--================End Home Banner Area =================-->
-  <div id="cart_container"  style="border: 2px solid #71cd14 ;">
+  <div id="cart_container"   style="border: 2px solid #71cd14 ;">
     <div id="card">
         <div id="product">
-            <!-- Your product table goes here -->
+           
             <table class="table">
-                <!-- Table Headings -->
+               
                 <thead>
                   <tr>
                     <th scope="col">Product</th>
                     <th scope="col">Price</th>
                     <th scope="col">Quantity</th>
                     <th scope="col">Total</th>
+                    
                   </tr>
                 </thead>
                 <tbody>
@@ -333,8 +495,8 @@ input[type="number"] {
                   <% if (!cartItems || cartItems.length === 0) { %>
                     
                   <tr>
-                    <h2>Your cart is empty</h2>
-                    <p>Looks like you haven't added anything to your cart yet.</p>
+                    <h2 style="font-family: monospace;">Your cart is empty</h2>
+                    <p style="font-family: system-ui;font-weight: 600;">Looks like you haven't added anything to your cart yet.</p>
                     <a href="/productPage" class="gray_btn"   style="margin-left: 153px;">Continue Shopping</a >
                   
                 </div>
@@ -355,12 +517,24 @@ input[type="number"] {
                     <td>
                       <h6 style="line-height: 16px;font-size: 12px;">₹<%= products.total %></h6>
                     </td>
-                    <td>
+                    <!-- <td>
                         <div>
-                            <button id="decreaseBtn" onclick="decreseBotton('<%= products.productId %>','<%= products.quantity %>')">-</button>
-                            <input type="number"  class="quantity-input"  id="qty_<%= products.productId %>" value="<%= products.quantity %>" readonly >
-                            <button id="increaseBtn" class="btn-plus"  data-id="<%= products.productId %>"  onclick="updateQuantity('<%= products.productId %>','<%= products.quantity %>','<%= products.stockQuantity %>')">+</button>
-                          </div>
+                            <button id="decreaseBtn" data-id="<%= products.productId %>"  onclick="decreaseButton('<%= products.productId %>', '<%= products.quantity %>','<%= products.stockQuantity %>')">-</button>
+                            <input type="number" class="quantity-input" id="qty_<%= products.productId %>" value="<%= products.quantity %>" readonly>
+                            <button id="increaseBtn" class="btn-plus" data-id="<%= products.productId %>" onclick="updateQuantity('<%= products.productId %>','<%= products.quantity %>', '<%= products.stockQuantity %>')">+</button>
+                        </div>                        
+                    </td> -->
+
+                    <td>
+                      <div class="quantity-container">
+                        <button class="quantity-btn minus" onclick="decreaseButton('<%= products.productId %>', '<%= products.quantity %>', '<%= products.stockQuantity %>')">
+                          <i class="fas fa-minus"></i>
+                        </button>
+                        <input type="number" class="quantity-input" id="qty_<%= products.productId %>" value="<%= products.quantity %>" readonly>
+                        <button class="quantity-btn plus" onclick="updateQuantity('<%= products.productId %>', '<%= products.quantity %>', '<%= products.stockQuantity %>')">
+                          <i class="fas fa-plus"></i>
+                        </button>
+                      </div>
                     </td>
                     <td>
                       <h6 style="line-height: 16px;font-size: 15px;" id="total_<%= products.productId %>">₹<%= products.total * products.quantity %></h6>
@@ -393,10 +567,10 @@ input[type="number"] {
             %>
             <div class="summary-item">
                 <div class="summary-label">
-                    <h6 style="font-size: 16px;">Subtotal</h6>
+                    <h6 style="font-size: 15px;">Subtotal</h6>
                 </div>
                 <div class="summary-value">
-                    <h6 style="line-height: 16px;font-size: 13px;" class="subtotalPrice">₹<%= subtotal %></h6>
+                    <h6 style="line-height: 16px;font-size: 15px;" class="subtotalPrice">₹<%= subtotal %></h6>
                 </div>
             </div>
             <div class="summary-item no-border">
@@ -407,25 +581,33 @@ input[type="number"] {
                     <h6 style="line-height: 16px;font-size: 15px;" class="shippingCost">₹100</h6>
                 </div>
             </div>
+
             <div class="summary-item no-border">
                 <div class="summary-label">
-                    <h6 style="font-size: 16px;">Grand Total</h6>
+                    <h6 style="font-size: 15px;">Grand Total</h6>
                 </div>
                 <div class="summary-value">
-                    <h6 style="line-height: 16px;font-size: 17px;" class="grandTotal" id="grandtotal">₹<%= subtotal + 100 %></h6>
+                    <h6 style="line-height: 16px;font-size: 15px;" class="grandTotal" id="grandtotal">₹<%= subtotal + 100 %></h6>
                 </div>
             </div>
             <% }) %>
         </div>
         <div class="grand_total_section">
             <div class="shipping_box" style="margin-left: 30px;">
-                <a class="gray_btn" href="/CheckOutPage">Proceed to checkout</a>
+                <a class="gray_btn" href="/CheckOutPage">checkout</a>
             </div>
         </div>
-        <!-- <a class="gray_btn" href="#">Continue Shopping</a> -->
+        
     </div>
     <% } %>
 </div>
+
+
+ <!-- couponMOdal -->
+ 
+ 
+<!-- end of edit modal -->
+
 
 
 
@@ -530,74 +712,90 @@ function deleteCart(id) {
 
 
  // Function to update quantity in backend
- function updateQuantity( productId,quantity,stockQuantity ) {
-console.log("productId",productId);
-console.log("quantity",quantity);
-console.log("stockQuantity",stockQuantity);
+ function updateQuantity(productId, quantity, stockQuantity) {
+    console.log("productId", productId);
+    console.log("quantity", quantity);
+    console.log("stockQuantity",stockQuantity);
 
-if(quantity>=10){
-            console.log("ehti evde");
-            quantityInput.value=10
+    const quantityInput = document.getElementById(`qty_${productId}`);
+    console.log("quantityInputtttttttt",quantityInput);
+    if (quantity >= 10) {
+        console.log("Limit exceeded");
+        quantityInput.value = 10;
 
-            Toastify({
-        text: "Limit is over",
-        duration: 3000, 
-        close: true, 
-        gravity: "top",
-        position: "right",
-        backgroundColor: "linear-gradient(to right, #ff5f6d, #ffc371)", 
-    }).showToast();
-            return
-}else if(stockQuantity==quantity){
+        Toastify({
+            text: "this is the maximum limit",
+            duration: 3000,
+            close: true,
+            gravity: "top",
+            position: "center",
+            backgroundColor:'#71cd14'
+        }).showToast();
+        return;
+    } 
+    console.log("Checking stock limit...");
+    console.log("stockQuantity == quantity:", stockQuantity == quantity);
+     if (quantityInput.value == stockQuantity) {
+        console.log("Reached stock limittttttttttttttttttttttttttttttttttttt");
+        quantityInput.value = quantity;
+        
+        Toastify({
+            text: "Product Quantity is over",
+            duration: 3000,
+            close: true,
+            gravity: "top",
+            position: "center",
+            backgroundColor:' #71cd14'
+        }).showToast();
+        return;
+    }
 
-    console.log("ithil kerindada kutta");
-    quantityInput.value=stockQuantity
-          Toastify({
-        text: "Limit is over",
-        duration: 3000, 
-        close: true, 
-        gravity: "top",
-        position: "right",
-        backgroundColor: "linear-gradient(to right, #ff5f6d, #ffc371)", 
-    }).showToast();
-    return  
-}     
-
-          fetch(`/updateCart/${productId}`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ quantity: 1 }) 
-            })
-            .then(response => response.json())
-            .then(result => {
-                if (result.success) {
-                       location.reload()
-                } else {
-                    // Handle error if needed
-                    console.error('Failed to update quantity:', result.message);
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
+    fetch(`/updateCart/${productId}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ quantity: 1})
+    })
+    .then(response => response.json())
+    .then(result => {
+        if (result.success) {
+            location.reload();
+        } else {
+            console.error('Failed to update quantity:', result.message);
         }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+}
 
-        // Function to handle quantity change event
-        function handleQuantityChange(productId) {
-            const newQuantity = document.getElementById(`qty_${productId}`).value;
-            updateQuantity(productId, newQuantity);
-        }
+// Function to handle quantity change event
+function handleQuantityChange(productId) {
+    const newQuantity = document.getElementById(`qty_${productId}`).value;
+    updateQuantity(productId, newQuantity);
+}
+
+
 
 //send in backened quentyty
 
 //decrese botton
-function decreseBotton(productId,quantity) {
+function decreaseButton(productId,quantity) {
 
-    if(quantity<=0){
+    const quantityInput = document.getElementById(`qty_${productId}`);
+
+    if(quantity<=1){
             console.log("ehti evde mone");
-            return   quantityInput.value=0
+            Toastify({
+            text: "Zero is not possible",
+            duration: 3000,
+            close: true,
+            gravity: "top",
+            position: "right",
+            backgroundColor: "linear-gradient(to right, #ff5f6d, #ffc371)"
+        }).showToast();
+        return;
     }
 
 
@@ -623,17 +821,49 @@ function decreseBotton(productId,quantity) {
             });
 }
 
-
+function handleQuantityChange(productId) {
+    const newQuantity = document.getElementById(`qty_${productId}`).value;
+    decreaseButton(productId, newQuantity);
+}
 ///botton descerse
 
 
    
 </script>
-<div style="height: 15vh; width: 98vw; background-color: #ffffff;">
 
-</div>
+<script>
+  var modal = document.getElementById("couponModal");
+
+// Set the initial display to none
+modal.style.display = 'none';
+
+// Get the button that opens the modal
+var btn = document.getElementById("CouponModal");
+
+// Get the <span> element that closes the modal
+var span = document.getElementsByClassName("close")[0];
+
+// When the user clicks the button, open the modal
+btn.onclick = function() {
+  modal.style.display = "block";
+}
+
+// When the user clicks on <span> (x), close the modal
+span.onclick = function() {
+  modal.style.display = "none";
+}
+
+// When the user clicks anywhere outside of the modal, close it
+window.onclick = function(event) {
+  if (event.target == modal) {
+    modal.style.display = "none";
+  }
+}
+</script>
+
+
 
 <%- include('footer') %>
-<!-- </body>
+</body>
 
-</html> -->
+</html>

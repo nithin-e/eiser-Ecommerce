@@ -1,4 +1,11 @@
 <%- include('Header') %>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Ga+Maamli&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+
 
 <style>
   .add-button {
@@ -442,8 +449,128 @@
   }
 </style>
 
+
+<style>
+  .modall{
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.4);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: auto;
+    border: 1px solid #ccc;
+  }
+
+  .modal-content {
+    background-color: #fefefe;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    max-width: 600px;
+    /* width: 90%; */
+    width: 41%;
+    margin-left: 300px;
+    margin-top: 100px;
+    
+  }
+
+  h1 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 20px;
+  }
+
+  .coupon-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+  }
+
+  .coupon {
+    background-color: #ffffff;
+    border: 2px dashed #71cd14;
+    border-radius: 10px;
+    overflow: hidden;
+    transition: transform 0.3s ease;
+  }
+
+  .coupon:hover {
+    transform: translateY(-5px);
+  }
+
+  .coupon-header {
+    background-color: #71cd14;
+    color: white;
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .coupon-number {
+    font-size: 18px;
+    font-weight: bold;
+  }
+
+  .coupon-code {
+    background-color: #ffffff;
+    color: #333;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-family: 'Ga Maamli', sans-serif;
+    font-weight: bold;
+  }
+
+  .coupon-body {
+    padding: 15px;
+  }
+
+  .coupon-description {
+    margin-bottom: 10px;
+    color: #333;
+  }
+
+  .coupon-expiry {
+    font-size: 0.9em;
+    color: #666;
+  }
+
+  .close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+
+  .close:hover,
+  .close:focus {
+    color: #000;
+    text-decoration: none;
+  }
+
+  #showCouponModal {
+    color: #71cd14;
+    text-decoration: none;
+    transition: color 0.3s ease;
+  }
+
+  #showCouponModal:hover {
+    color: #5fa811;
+  }
+</style>
+
+
+
+
 <!--================Home Banner Area =================-->
-<section class="banner_area" style="padding: 10px; margin-top: 110px">
+<section class="banner_area" style="padding: 10px; margin-top: 75px">
   <div class="banner_inner d-flex align-items-center">
     <div class="container">
       <div
@@ -467,7 +594,7 @@
 <section class="checkout_area section_gap" style="border-top: 2px solid green">
   <div class="container">
     <div class="returning_customer"></div>
-    <div class="cupon_area">
+    <!-- <div class="cupon_area">
       <div class="check_title">
         <h2>
           Have a coupon?
@@ -478,7 +605,7 @@
       <a class="tp_btn" href="#" style="border: 2px solid green"
         >Apply Coupon</a
       >
-    </div>
+    </div> -->
     <div class="billing_details">
       <div class="row">
         <div class="col-lg-8">
@@ -508,8 +635,8 @@
                   <div class="name-type">
                     <span class="name" data-index="<%= index %>"
                       ><%= index + 1 %>.&nbsp;&nbsp;Name: <%= element.name
-                      %></span
-                    >
+                      %></span>
+                    
                     <div class="radio_btn">
                       <input
                         type="radio"
@@ -589,12 +716,12 @@
               <li>
                 <a href="#"
                   ><%= item.productName %><span class="middle"
-                    ><%= item.quantity %></span
-                  >
+                    ><%= item.quantity %></span>
+                  
 
                   <span class="last" style="color: green">
-                    ₹ <%= item.total*item.quantity %></span
-                  >
+                    ₹ <%= item.total*item.quantity %></span>
+                  
                 </a>
               </li>
               <% }) }); %>
@@ -602,18 +729,46 @@
             <ul class="list list_2">
               <li>
                 <a href="#"
-                  >Subtotal <span style="color: red">₹ <%= subtotal %></span></a
-                >
+                  >Subtotal <span style="color: red">₹ <%= subtotal %></span></a>
+                
               </li>
+              <%if (locals.Amount) {%>
+                <li class="ChangeField">
+                  <a onclick=" DeleteCoupon(`<%= Amount %>`)" style="color: black; cursor: pointer; font-weight: bold;">
+                        Coupon
+                       <i class="fas fa-trash-alt" style="color: red; cursor: pointer; margin-left: 10px;"></i> 
+                           <span id="CouponModal" onclick=" DeleteCoupon(`<%= Amount %>`)" style="color: green; cursor: pointer;">₹<%= Amount %></span>
+                         </a>
+                 </li>
+              <%} else{%>
+                <li class="ChangeField">
+           <a id="showCouponModal" class="coupon-text" style="color: green;font-weight: bold;   font-family: monospace;">
+         
+            Coupon <span id="CouponModal" class="coupon-modal-text" style="color: green; cursor: pointer;">Available</span>
+               </a>
+                   </li>
+               <%}%>
               <li>
                 <a href="#">Shipping <span style="color: red">₹100</span></a>
               </li>
+              <%if (locals.Amount) {%>
+                <%
+                const amount=Amount
+                %>
               <li>
                 <a href="#" style="font-weight: 100"
                   >Total
-                  <span style="font-weight: 800">₹ <%= subtotal + 100 %></span>
+                  <span  id="subtotal" style="font-weight: 800"  >₹ <%= subtotal-amount%></span>
                 </a>
               </li>
+              <%} else{%>
+                <li>
+                <a href="#" style="font-weight: 100"
+                  >Total
+                  <span  id="subtotal" style="font-weight: 800"  >₹ <%= subtotal + 100 %></span>
+                </a>
+              </li>
+                <%}%>
             </ul>
             <% } else { %>
             <p>No items in the cart.</p>
@@ -655,19 +810,28 @@
                 name="selector"
                 value="Razor Pay"
               />
-              <label for="f-option7">Razor Pay</label>
+              <label for="f-option7" id="payBtn">Razor Pay</label>
               <div class="check"></div>
             </div>
-          </div>
-
-          <a class="main_btn" onclick="PRODUCTINFO('<%= subtotal %>')">Proceed to Pay</a>
+          </div>  
+          <a class="main_btn" onclick="PRODUCTINFO('<%= subtotal %>', '<%= locals.Amount || 0 %>')">Proceed to Pay</a>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-//add new adreess
+
+<style>
+  .coupon-text {
+  font-weight: 700;
+}
+
+.coupon-modal-text {
+    font-weight: 700; 
+}
+                  </style>
+
 <div id="addressModal" class="modal">
   <h2>ADD NEW ADDRESS</h2>
   <form id="addressForm">
@@ -710,7 +874,7 @@
   </form>
 </div>
 <div id="modalOverlayOne" class="modal-overlay"></div>
-//ending......................... //editAdress............
+
 <div id="addressEditModal" class="modal">
   <h2>EDIT ADDRESS</h2>
   <form id="addressEditForm">
@@ -735,8 +899,8 @@
     </div>
     <div class="form-group">
       <label for="edit-address"
-        >Address (House No, Building, Street, Area) *</label
-      >
+        >Address (House No, Building, Street, Area) *</label>
+      
 
       <input type="text" id="edit-address" name="address" required />
     </div>
@@ -759,15 +923,41 @@
 <div id="modalOverlayOne" class="modal-overlay"></div>
 
 
+<div id="couponModal" class="modall">
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <h1>Available Coupons</h1>
+    <div class="coupon-grid">
+      <% CouponInfo.forEach((element, index) => { %>
+        <div class="coupon">
+          <div class="coupon-header">
+            <span class="coupon-number"><%= index + 1 %></span>
+            <div class="coupon-code"><%= element.couponCode %></div>
+          </div>
+          <div class="coupon-body">
+            <p class="coupon-description">Buy <%= element.minPurchaseAmount %> and get a <%= element.discountAmount %> discount.</p>
+            <p class="coupon-expiry">Expires: <%= new Date(element.expiryDate).toLocaleDateString('en-IN') %></p>
+          </div>
+               
+          <button class="apply-button" style="color: #71cd14; border-radius: 5px;" onclick="applyCoupon('<%= element.couponCode %>','<%= element.discountAmount %>','<%= element.minPurchaseAmount %>')"  >Apply</button>
+        </div>
+       
+      <% }) %>
+    </div>
+  </div>
+</div>
 
-
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 
 <script>
-  function PRODUCTINFO(GrandTotal) {
+  // Main function to handle order processing
+function PRODUCTINFO(GrandTotal) {
+     const Total = Number(GrandTotal) + 100; // Adjust Total with additional charges
+    console.log("................",GrandTotal,'...........................................');
     const selectedAddress = document.querySelector('input[name="defaultAddress"]:checked');
     const selectedPaymentMethod = document.querySelector('input[name="selector"]:checked');
 
@@ -775,52 +965,175 @@
     console.log("Selected Payment Method Element:", selectedPaymentMethod);
 
     if (selectedAddress && selectedPaymentMethod) {
-      const addressId = selectedAddress.value;
-      const paymentMethod = selectedPaymentMethod.value; 
+        const addressId = selectedAddress.value;
+        const paymentMethod = selectedPaymentMethod.value;
 
-      console.log("Selected Address ID:", addressId);
-      console.log("Selected Payment Method:", paymentMethod);
-      console.log("Total Amount:", GrandTotal);
+        console.log("Selected Address ID:", addressId);
+        console.log("Selected Payment Method:", paymentMethod);
+        // console.log("Total Amount:", Total);
 
-      fetch("/OrderInfo", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          addressId: addressId,
-          paymentMethod: paymentMethod,
-          GrandTotal: GrandTotal,
-        }), 
-      })
-      .then((response) => response.json())
-      .then((result) => {
-        if(result.success){
-          console.log('comming from backend,',result.message);
-          window.location.href = 'orderSuccessPage'
-        }else{
-          console.log('error iin order');
+        // Handle Razorpay payment method
+        if (paymentMethod === 'Razor Pay') {
+           console.log("Initiating Razorpay Payment with Total:", Total);
+            return initiateRazorPayPayment(addressId, paymentMethod, Total);
         }
-        
-      })
-     
-      .catch((error) => {
-        console.error("Error:", error);
-        // Handle error
-      });
+
+        if (paymentMethod === "Cash on Delivery") {
+           console.log("kerindooooooooooo cash on delivery if:", Total);
+
+           if(Total>1000){
+            Toastify({
+        text: "Orders above Rs 1000 are not eligible for Cash on Delivery (COD).",
+        duration: 3000,
+        close: true,
+        gravity: "top",
+        position: "center",
+        backgroundColor: "#71cd14",
+      }).showToast();
+      return;
+           }
+           
+        }
+          
+       
+
+        // Handle other payment methods
+        fetch("/OrderInfo", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                addressId: addressId,
+                paymentMethod: paymentMethod,
+                GrandTotal: Total,
+            }),
+        })
+        .then(response => response.json())
+        .then(result => {
+            if (result.success) {
+                console.log('Backend response:', result.message);
+                window.location.href = 'orderSuccessPage'; // Redirect on success
+            } else {
+              Toastify({
+        text: result.message,
+        duration: 3000,
+        close: true,
+        gravity: "top",
+        position: "center",
+        backgroundColor: "#71cd14",
+      }).showToast();
+            }
+        })
+        .catch(error => {
+            console.error("Error:", error);
+            // Handle error
+        });
     } else {
-      console.log("No address or payment method selected");
-      Toastify({
-      text: "Please select an address and a payment method.",
-      duration: 3000, 
-      close: true, 
-      gravity: "top", 
-      position: "right",
-      backgroundColor: "#FF0000", 
-    }).showToast();
+        // Show error if no address or payment method selected
+        console.log("No address or payment method selected");
+        Toastify({
+            text: "Please select an address and a payment method.",
+            duration: 3000,
+            close: true,
+            gravity: "top",
+            position: "center",
+            backgroundColor: "#71cd14",
+        }).showToast();
     }
-  }
+}
+
+// Function to initiate Razorpay payment
+const initiateRazorPayPayment = async (addressId, paymentMethod, Total) => {
+    console.log("Initiating Razorpay Payment", paymentMethod);
+
+    try {
+        // Fetch Razorpay key
+        const response = await fetch("/razor-key", {
+            method: "GET",
+            headers: { "Content-Type": "application/json" },
+        });
+        const data = await response.json();
+        console.log("Razorpay key data:", data);
+
+        // Create Razorpay order
+        const razorOrder = await fetch('/razor-order', {
+            method: "POST",
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ amount: parseInt(Total) })
+        });
+        const order = await razorOrder.json();
+        console.log("Razorpay order data:", order);
+
+        // Setup Razorpay options
+        let options = {
+            key: data.key,
+            amount: parseInt(Total) * 100, // Convert amount to paise
+            currency: "INR",
+            name: 'eiser',
+            image: `img/fav.png`,
+            order_id: order.order.id,
+            handler: async function (response) {
+                try {
+                    // Save order details
+                    const saveOrderResponse = await fetch("/OrderInfo", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({
+                            addressId: addressId,
+                            paymentMethod: paymentMethod,
+                            GrandTotal: Total,
+                            razorpayPaymentId: response.razorpay_payment_id,
+                            razorpayOrderId: response.razorpay_order_id,
+                            razorpaySignature: response.razorpay_signature,
+                        }),
+                    });
+                    const result = await saveOrderResponse.json();
+                    if (result.success) {
+                        console.log('Order saved successfully:', result.message);
+                        window.location.href = 'orderSuccessPage'; // Redirect on success
+                    } else {
+                        console.log('Error saving order:', result.message);
+                    }
+                } catch (error) {
+                    console.error('Error saving order:', error);
+                }
+            },
+            prefill: {
+                name: "John Doe",
+                email: "john.doe@example.com",
+                contact: "9000090000",
+            },
+            notes: {
+                address: "Razorpay Corporate Office",
+            },
+            theme: {
+                color: "#1818c4",
+            },
+        };
+
+        // Initialize and open Razorpay payment modal
+        const razor = new window.Razorpay(options);
+        razor.open();
+
+        // Handle payment failure
+        razor.on("payment.failed", function (response) {
+            console.error('Payment failed:', response);
+        });
+    } catch (error) {
+        console.error('Error initiating Razorpay payment:', error);
+    }
+}
+
+
+
+
+
 </script>
+
+
 
 
 
@@ -1050,4 +1363,175 @@
   }
 </script>
 
+
+<script>
+  var modal = document.getElementById("couponModal");
+modal.style.display = 'none';
+
+var btn = document.getElementById("showCouponModal");
+
+var span = document.getElementsByClassName("close")[0];
+
+btn.onclick = function() {
+  modal.style.display = "block";
+}
+
+span.onclick = function() {
+  modal.style.display = "none";
+}
+
+window.onclick = function(event) {
+  if (event.target == modal) {
+    modal.style.display = "none";
+  }
+}
+
+function applyCoupon(code, Amount, minAmount) {
+  const subtotalElement = document.getElementById('subtotal');
+  const Grandtotal = parseFloat(subtotalElement.innerText.replace('₹', '').trim());
+  
+  if (minAmount > Grandtotal) {
+    Toastify({
+      text: "Make sure the minimum purchase amount is crossed or not.",
+      duration: 3000,
+      close: true,
+      gravity: "top", 
+      position: "center", 
+      backgroundColor: "linear-gradient(to right, #ff4b2b, #ff416c)",
+      stopOnFocus: true, 
+    }).showToast();
+    return;
+  } else {
+    const NewTotal = Grandtotal - Amount;
+    subtotalElement.innerText = `₹${NewTotal.toFixed(2)}`;
+    
+    fetch('/couponDiscount', {
+      method: 'post',
+      headers: {
+        'content-type': 'application/json'
+      },
+      body: JSON.stringify({ Amount })
+    })
+    .then(response => response.json())
+    .then(data => {
+      const CHANGE = document.querySelector('.ChangeField');
+      CHANGE.innerHTML = `
+         <li class="ChangeField">
+                  <a   onclick=" DeleteCoupon(${ Amount} )"   style="color: black; cursor: pointer; font-weight: bold;">
+                         <i class="fas fa-tag" style="color: green;"></i> Coupon
+                            <i class="fas fa-trash-alt" style="color: red; cursor: pointer; margin-left: 10px;"></i> <!-- Delete icon -->
+
+                           <span id="CouponModal" style="color: green; cursor: pointer;">₹${ Amount }</span>
+                         </a>
+                 </li>`;  
+
+      if(data.success){
+        modal.style.display = "none";
+        Toastify({
+        text: "Coupon applied successfully!",
+        duration: 3000,
+        close: true,
+        gravity: "top", 
+        position: "center", 
+        backgroundColor: "linear-gradient(to right, #00b09b, #96c93d)",
+        stopOnFocus: true, 
+      }).showToast();
+      }
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      Toastify({
+        text: "An error occurred while applying the coupon.",
+        duration: 3000,
+        close: true,
+        gravity: "top", 
+        position: "center", 
+        backgroundColor: "linear-gradient(to right, #ff4b2b, #ff416c)",
+        stopOnFocus: true, 
+      }).showToast();
+    });
+  }
+}
+
+
+
+function DeleteCoupon(amount) {
+  console.log("amount", amount);
+  swal.fire({
+    title: "Do you want to remove the coupon?",
+    showCancelButton: true,
+    confirmButtonColor: "#3085d6",
+    cancelButtonColor: "#d33",
+    confirmButtonText: "Yes, delete it!",
+    customClass: {
+      popup: 'swal-custom',
+      content: 'swal-custom-content',
+      confirmButton: 'swal-custom-confirm'
+    }
+  })
+  .then((result) => {
+    if (result.isConfirmed) {
+      fetch('/DeleteCoupon', {
+        method: 'post',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ amount })
+      })
+      .then(response => response.json())
+      .then(response => {
+        if (response.success) {
+          Toastify({
+            text: "Coupon Removed successfully!",
+            duration: 3000,
+            close: true,
+            gravity: "top",
+            position: "center",
+            backgroundColor: "linear-gradient(to right, #00b09b, #96c93d)",
+            stopOnFocus: true,
+          }).showToast();
+          setTimeout(() => {
+            window.location.reload();
+          }, 2000);
+        } else {
+          // Handle the case where the response indicates failure
+          console.error("Failed to remove coupon");
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+      });
+    }
+  });
+}
+
+</script>
+
+
+
+
+
+<style>
+    .swal-custom {
+        width: 400px !important;
+        height: auto !important; 
+        max-width: 80%; 
+    }
+    .swal-custom-content {
+        text-align: center; 
+        font-size: 11px; 
+    }
+    .swal-custom-confirm {
+        background-color: #3085d6; 
+        color: white; 
+    }
+    .swal2-styled.swal2-confirm{
+        width: 123px;
+        padding: 5px;
+    }
+    .swal2-styled.swal2-cancel{
+        width: 85px;
+        padding: 5px;
+    }
+</style>
 <%- include('footer') %>

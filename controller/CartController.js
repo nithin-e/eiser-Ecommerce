@@ -1,6 +1,7 @@
 const Product = require("../models/pruductModel");
 const userdb = require("../models/usermodel");
 const CARTMOD = require("../models/cartModel");
+const Coupon= require('../models/CouponModel')
 
 module.exports = {
   ShowCartPage: async (req, res) => {
@@ -13,7 +14,8 @@ module.exports = {
         return res.render("user/cartPage", { cartItems: [], user });
       }
 
-  // console.log("ivde nokkee",cartItems);
+ 
+  //  console.log("CouponInfo",CouponInfo);
       res.render("user/cartPage", { cartItems: [cartItems], user });
     } catch (error) {
       console.error("Error showing cart page:", error);
@@ -73,7 +75,7 @@ module.exports = {
               productName:productInfo.productName,
               productId: id,
               quantity: 1,
-              total: productInfo.price-productInfo.offerPrice,
+              total: productInfo.offerPrice && productInfo.price ? productInfo.offerPrice : productInfo.price,
               subtotal: productInfo.price,
               Grandtotal: 0,
               images: productInfo.images
