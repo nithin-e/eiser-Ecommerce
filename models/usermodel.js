@@ -6,32 +6,31 @@ const userSchema = new mongoose.Schema(
     {
         name: {
             type: String,
-            requred:true
+            required: true
         },
         email: {
             type: String,
             unique: true,
-            requred:true
+            required: true
         },
         password: {
             type: String,
-            requred:true
+            required: true
         },
-        status:{
-            type:Boolean,
-            default:true
+        status: {
+            type: Boolean,
+            default: true
+        },
+        referalLink: {
+            type: String
         }
     },
     {
-        timestamps: true,
-    },
-   
+        timestamps: true
+    }
 );
 
+const User = mongoose.model('User', userSchema);
 
-
-
-const user = mongoose.model('User', userSchema);
-
-//Export the model
-module.exports = user
+// Export the model
+module.exports = User;

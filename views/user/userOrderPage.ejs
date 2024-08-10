@@ -571,75 +571,87 @@
 
 </head>
 <body>
-<div class="container1">
-    <%- include('./partials/userProfileSlidebar') %>
-
-    <% 
-    function addDaysKeepingMonth(date, days) {
-        let result = new Date(date);
-        result.setDate(result.getDate() + days);
-        return result.toLocaleDateString('en-GB');
-    }
-    %>
-
-    <% if (orderInfo && orderInfo.length > 0) { %>
-        <div class="container2" style="border: 1px solid #28a745; height: 70vh; overflow-y: auto;">
-            <% orderInfo.forEach(order => { %>
-            <div class="order-header">
-                <div class="buttons">
-                    <!-- <a href="#" class="btn btn-primary">Invoice</a> -->
-                </div>
-            </div>
-            <div class="order-info">
-                <!-- Render additional order info if needed -->
-            </div>
-            <div class="order-section" style="margin-bottom: 20px;">
-                <div class="product-list" style="max-height: 350px; overflow-y: auto;">
-                    <% order.products.forEach(product => { %>
-                        <div class="product-row" style="display: flex; align-items: center; margin-bottom: 10px;">
-                            <div class="product-image" style="width: 100px; height: 100px; flex-shrink: 0;">
-                                <img src="<%= product.productImage[0] %>" alt="<%= product.productName %>" style="width: 100px; height: 100px;" />
-                            </div>
-                            <div class="product-details" style="flex-grow: 1; padding-left: 10px;">
-                                <div class="product-name"><%= product.productName %></div>
-                                <!-- <a  class="btn btn-secondary" onclick="showModal('<%= product._id %>')" >Cancel Product</a> -->
-                            </div>
-                            <div class="product-price" style="flex-shrink: 0;">₹<%= product.productPrice %></div>
+    <div class="container1">
+        <%- include('./partials/userProfileSlidebar') %>
+    
+        <% if (orderInfo && orderInfo.length > 0) { %>
+            <div class="container2" style="border: 1px solid #28a745; height: 70vh; overflow-y: auto;">
+                <% orderInfo.forEach(order => { %>
+                    <div class="order-header">
+                        <div class="buttons">
+                            <!-- <a href="#" class="btn btn-primary">Invoice</a> -->
                         </div>
-                    <% }) %>
-                </div>
-                <div class="summary" style="width: 242px; height: 150px; margin-left: 531px; margin-top: -122px;">
-                    <div  style="display: flex;">
-                        <div class="order-id">Order ID: <%= order.orderID %></div>
-                        <button class="view-order-btn" onclick="OrderFullDetails('<%= order.orderID %>')" style="margin-left: 42px;">View Order</button>                    </div>
-                    <div class="order-id">Grand Total: ₹<%= order.totalprice %></div>
-                    <div style="font-size: smaller;">Order date: <%= order.orderDate %></div>
-                    <div class="estimated-delivery" style="font-size: smaller;">Estimated delivery:<%= order.orderDate %> </div>
-                    <div class="order-status" style="color: #28a745; font-size: smaller;">Status: <%= order.status %></div>
-                    <% if (order.status != "Cancelled" && order.status != "Delivered") { %>
-                        <a id="cancelOrderButton" class="btnn btn-secondary" onclick="openModal('<%= order.orderID %>')" style="color: red;cursor: pointer;">Cancel Order</a>
-                      <% } else if (order.status === "Delivered"&&order.userRequest=="No Request Yet") { %>
-                        <a id="returnOrderButton" class="btnn btn-secondary" style="color: red; cursor: pointer;" 
-                        data-bs-toggle="modal" 
-                        data-bs-target="#exampleModal" 
-                        data-order-id="<%= order.orderID %>">Return</a>
-                        <% }else if (order.userRequest !=='No Request Yet') {  %>
-                        <div class="order-status" style="color:red; font-size: smaller;">Status: <%= order.userRequest %></div>
-                        <% } %>
-                           
                     </div>
+                    <div class="order-info">
+                        <!-- Render additional order info if needed -->
+                    </div>
+                    <div class="order-section" style="margin-bottom: 20px;">
+                        <div class="product-list" style="max-height: 350px; overflow-y: auto;">
+                            <% order.products.forEach(product => { %>
+                                <div class="product-row" style="display: flex; align-items: center; margin-bottom: 10px;">
+                                    <div class="product-image" style="width: 100px; height: 100px; flex-shrink: 0;">
+                                        <img src="<%= product.productImage[0] %>" alt="<%= product.productName %>" style="width: 100px; height: 100px;" />
+                                    </div>
+                                    <div class="product-details" style="flex-grow: 1; padding-left: 10px;">
+                                        <div class="product-name"><%= product.productName %></div>
+                                        <!-- <a class="btn btn-secondary" onclick="showModal('<%= product._id %>')">Cancel Product</a> -->
+                                    </div>
+                                    <div class="product-price" style="flex-shrink: 0;">₹<%= product.productPrice %></div>
+                                </div>
+                            <% }) %>
+                        </div>
+                        <div class="summary" style="width: 242px; height: 150px; margin-left: 531px; margin-top: -122px;">
+                            <div style="display: flex;">
+                                <div class="order-id">Order ID: <%= order.orderID %></div>
+                                <button class="view-order-btn" onclick="OrderFullDetails('<%= order.orderID %>')" style="margin-left: 42px;">View Order</button>
+                            </div>
+                            <div class="order-id">Grand Total: ₹<%= order.totalprice %></div>
+                            <div style="font-size: smaller;">Order date: <%= order.orderDate %></div>
+                            <% if (order.status != 'PaymentFailed') { %>
+                                <p style="font-size: 12px;">
+                                  "Estimated delivery by
+                                  <b style="font-size: 13px;">
+                                    <%= new Date(order.orderDate).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' }) %>
+                                  </b>
+                                </p>
+                            <% } %>
+    
+                            <% if (order.status === 'PaymentFailed' || order.status === 'Cancelled') { %>
+                                <div class="order-status" style="color: red; font-size: smaller;">Status: <%= order.status %></div>
+                            <% } else if (order.status === 'Delivered') { %>
+                                <div class="order-status" style="color: #28a745; font-size: smaller; margin-top: -17px;">Status: <%= order.status %></div>
+                            <% } else if (order.status === 'Pending') { %>
+                                <div class="order-status" style="color: orange; font-size: smaller;margin-top: -17px;">Status: <%= order.status %></div>
+                            <% } %>
+    
+                            <% if (order.status !== "Cancelled" && order.status !== "Delivered" && order.status !== 'PaymentFailed' && order.status === 'Pending') { %>
+                                <a id="cancelOrderButton" class="btnn btn-secondary" onclick="openModal('<%= order.orderID %>')" style="color: red; cursor: pointer;">Cancel Order</a>
+                            <% } else if (order.status === "Delivered" && order.userRequest === "No Request Yet") { %>
+                                <a id="returnOrderButton" class="btnn btn-secondary" style="color: red; cursor: pointer;" 
+                                data-bs-toggle="modal" 
+                                data-bs-target="#exampleModal" 
+                                data-order-id="<%= order.orderID %>">Return</a>
+                            <% } else if (order.userRequest !== 'No Request Yet') { %>
+                                <div class="order-status" style="color: red; font-size: smaller;">Status: <%= order.userRequest %></div>
+                            <% } else if (order.status === 'PaymentFailed') { %>
+                                <button class="btn btn-outline-success btn-sm repaymentBtn" style="margin-left: 0px;"
+                                data-amount='<%= order.totalprice %>'
+                                data-id="<%= order.orderID %>">Continue Payment</button>
+                            <% } %> 
+                        </div>
+                    </div>
+                <% }) %>
             </div>
-            <% }) %>
-        </div>
-    <% } else { %>
-        <div class="no-orders" style="width: 100%; height: 80vh; display: flex; justify-content: center; align-items: center;">
-            <p style="font-weight: bold; font-size: 20px; position: absolute;">No orders found.</p>
-            <div style="border: 3px solid rgb(240, 238, 238);">
-                <span><img src="/img/cards@3x.png" alt=""></span>
+        <% } else { %>
+            <div class="no-orders" style="width: 100%; height: 80vh; display: flex; justify-content: center; align-items: center;">
+                <p style="font-weight: bold; font-size: 20px; position: absolute;">No orders found.</p>
+                <div style="border: 3px solid rgb(240, 238, 238);">
+                    <span><img src="/img/cards@3x.png" alt=""></span>
+                </div>
             </div>
-        </div>
-    <% } %>
-</div>
+        <% } %>
+    </div>
+    
 
 <!-- Modal code -->
 <div id="modalContent">
@@ -761,7 +773,7 @@ element.style {
                                                                        <% } %>
                                 <% if (order.status === 'Delivered' && order.userRequest === 'No Request Yet') { %>
                                     <button class="btn btn-outline-warning btn-sm">Request Return</button>
-                                <% } %>
+                                <% } %> 
                             </div>
                         </div>
                         <hr>
@@ -908,6 +920,10 @@ element.style {
             const cancelButton = document.getElementById("cancelOrderButton");
         cancelButton.disabled = true;
         cancelButton.classList.add("disabled");
+        setTimeout(() => {
+            window.location.reload()
+        }, 1000);
+       
         }
     })
     .catch(error => {
@@ -1098,8 +1114,7 @@ function generateModalContent(orderInfo) {
                         <i class="bi bi-file-earmark-text"></i> Download Invoice
                     </button>
                 ` : ''}
-                   
-                          
+            
                     ${order.status === 'Delivered' && order.userRequest === 'No Request Yet' ? 
                         '<button class="btn btn-outline-warning btn-sm">Request Return</button>' : ''}
                 </div>
@@ -1247,6 +1262,111 @@ $(document).ready(function() {
     }
 </script>
 
+
+<script>
+    async function saveOrderRazor(amount, orderId, razorResponse) {
+        console.log('amount',amount);
+        console.log('orderId',orderId);
+        console.log('razorResponse',razorResponse);
+
+
+      try {
+        const response = await fetch("/repayment", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ amount, orderId }),
+        });
+  
+        const data = await response.json();
+        if(data){
+            window.location.href = 'orderSuccessPage';
+        }else{
+            console.log('Error saving order:', data);
+        }
+  
+      } catch (error) {
+        Swal.fire({
+          title: "Error",
+          text: error.message || "Something went wrong",
+          icon: "error",
+        });
+      }
+    }
+  </script>
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <script>
+  document.querySelectorAll(".repaymentBtn").forEach((btn) => {
+    btn.addEventListener("click", async function () {
+      const amount = this.dataset.amount;
+      const orderId = this.dataset.id;
+
+      console.log('...................',amount);
+      console.log('...................',orderId);
+      try {
+        // Fetch Razorpay key
+        const response = await fetch("/razor-key", {
+            method: "GET",
+            headers: { "Content-Type": "application/json" },
+        });
+        const data = await response.json();
+        console.log("Razorpay key data:", data);
+
+
+        console.log('..................................................');
+
+        // Create Razorpay order
+        const razorOrder = await fetch('/razor-order',  {
+            method: "POST",
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ amount: parseInt(amount) })
+        });
+        console.log('..................................................');
+        const order = await razorOrder.json();
+        console.log("Razorpay order data:", order);
+
+        // Setup Razorpay options
+        let options = {
+            key: data.key,
+            amount: parseInt(amount) * 100, // Convert amount to paise
+            currency: "INR",
+            name: 'eiser',
+            image: `img/fav.png`,
+            order_id: order.order.id,
+            handler: function (response) {
+               
+            saveOrderRazor(amount, orderId, response);
+            console.log('.............problem inside the function.....................');
+          },
+         
+            prefill: {
+                name: "John Doe",
+                email: "john.doe@example.com",
+                contact: "9000090000",
+            },
+            notes: {
+                address: "Razorpay Corporate Office",
+            },
+            theme: {
+                color: "#1818c4",
+            },
+        };
+
+        // Initialize and open Razorpay payment modal
+        const razor = new window.Razorpay(options);
+        razor.open();
+      } catch (error) {
+        console.log('ithanu error',error);
+        Swal.fire({
+          title: "Error",
+          text: "Failed to initiate payment",
+          icon: "error",
+        });
+      }
+    });
+  });
+</script>
+  
 
 
 <style>

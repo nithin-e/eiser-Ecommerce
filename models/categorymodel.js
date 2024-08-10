@@ -11,6 +11,11 @@ const categorySchema = new mongoose.Schema(
       type: Boolean,
       default: true,
     },
+  
+  offerPrice:{
+    type: String,
+    default:0
+   },
   },
   {
     timestamps: true,

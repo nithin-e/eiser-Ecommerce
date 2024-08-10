@@ -95,6 +95,7 @@
   
 
   <!--================ Inspired Product Area =================-->
+  
   <style>
     .single-product {
       width: 200px;
@@ -147,102 +148,202 @@
         </div>
       </div>
     </div>
-  <div class="row"  style="margin-right: -60px;">
-    <% allProduct.forEach(product => { %>
-    <div class="col-lg-3 col-md-6" style="max-width: 19%;">
-      <div class="single-product">
-        <div class="product-img">
-          <img class="img-fluid w-100" src="<%=product.images[0]%>" alt="" />
-          <div class="p_icon" style="display: flex;">
-            <a href="/ViewProduct/<%=product._id %>">
-              <i class="ti-eye"></i>
+    <div class="row" style="margin-right: -60px;">
+      <% allProduct.forEach(product => { %>
+      <div class="col-lg-3 col-md-6" style="max-width: 19%;">
+        <div class="single-product">
+          <div class="product-img">
+            <a href="/ViewProduct/<%= product._id %>">
+              <img class="img-fluid w-100" src="<%= product.images[0] %>" alt="" />
             </a>
-            <a href="">
+            <% if (product.stockQuantity==0) { %>
+              <div class="stock-badge" style="color: red;">
+                outOff Stock
+              </div>
+            <% } else if(product.stockQuantity<10){ %>
+              <div class="stock-badge" style="color: orange">
+                Limited Stock
+              </div>  
+            <% }else{ %>
+              <div class="stock-badge" style="color: green">
+                Limited Stock
+              </div> 
+            <% } %>
+            <a href="#" class="heart-icon" style="position: absolute; top: 10px; right: 10px; color: red;text-decoration: none;">
               <i class="ti-heart"></i>
             </a>
-            <a href="#">
-              <i class="ti-shopping-cart"></i>
+          </div>
+          <div class="product-btm">
+            <a href="#" class="d-block">
+              <h4><%= product.productName %></h4>
             </a>
-          </div>
-        </div>
-        <div class="product-btm">
-          <a href="#" class="d-block">
-            <h4><%=product.productName %></h4>
-          </a>
-          <div style="display: flex;">
-          <div>  <span 
-          style="font-size: 16px; font-weight: 500; color:gray; <% if (product.offerPrice) { %> text-decoration: line-through; text-decoration-color: green;<% } %>" 
-          class="single-price">
-          ₹<%= product.price %>&nbsp;
-        </span>
-          </div>
-          <% if (product.offerPrice) { %>
-            <div class="">
-              <span style="color:green;font-size: 14px;" class="offer-price">&nbsp;&nbsp;&nbsp;&nbsp;₹<%= product.offerPrice %></span >
+            <div style="display: flex; align-items: center; justify-content: space-between;">
+              <div>
+                <span 
+                  style="font-size: 16px; font-weight: 500; color: gray; <% if (product.offerPrice) { %> text-decoration: line-through; text-decoration-color: green;<% } %>" 
+                  class="single-price">
+                  ₹<%= product.price %>&nbsp;
+                </span>
+              </div>
+              <% if (product.offerPrice) { %>
+                <div style="margin-left: 10px;">
+                  <span style="color: green; font-size: 14px; text-decoration:none;" class="offer-price">₹<%= product.offerPrice %></span>
+                </div>
+              <% }else if(product.categoryOffer=='10%'||product.categoryOffer=='20%'||product.categoryOffer=='30%'){ %>
+                <span style="color: green; font-size: 14px; text-decoration:none;" class="offer-price">₹<%= product.categoryOffer %> Off</span>
+              <% } %>
+              <div style="display: flex; align-items: center;">
+                <!-- <a href="#" class="heart-icon" style="margin-right: 10px;">
+                  <i class="ti-heart"></i>
+                </a> -->
+                <a href="#" class="cart-icon">
+                  <i class="ti-shopping-cart" style="font-size: 1.5rem; color: #71cd14; text-decoration: none;"></i>
+                </a>
+              </div>
             </div>
-          <% } %>
-          
+          </div>
         </div>
-        
-        </div>
-        
       </div>
-
-      
+      <% }) %>
     </div>
-    <% }) %>
-  </div>
+    
 </section>
 
 
 <style>
+ .product-img-wrapper {
+  position: relative;
+}
+
+.heart-icon {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  color: red; /* Adjust the color as needed */
+}
+
+.stock-badge {
+  position: absolute;
+  left: 10px;
+  padding: 5px;
+  border-radius: 5px;
+  color: white;
+}
+</style>
+
+<style>
   .pagination {
-      margin-top: 20px;
-      display: flex;
-      justify-content: center;
-      font-family: Arial, sans-serif;
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  font-family: Arial, sans-serif;
+}
+
+.pagination ul {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  background-color: var(--card-background);
+  border-radius: 25px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.pagination li {
+  margin: 5px;
+}
+
+.pagination li a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  color: var(--text-color);
+  border-radius: 50%;
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  font-size: 14px;
+}
+
+.pagination li.active a {
+  background-color: var(--primary-color);
+  color: var(--card-background);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.pagination li a:hover {
+  background-color: var(--hover-color, #f0f0f0);
+  transform: scale(1.1);
+}
+
+.pagination li.disabled a {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.pagination .prev-next a {
+  font-size: 18px;
+  width: 40px;
+  height: 40px;
+}
+
+</style>
+
+<style>
+  .product-img {
+    position: relative;
+    overflow: hidden;
   }
-  .pagination ul {
-      list-style: none;
-      padding: 0;
-      display: flex;
-      background-color: var(--card-background);
-      border-radius: 25px;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  .stock-badge {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    background-color: rgba(255, 255, 255, 0.9);
+    color: #333;
+    padding: 6px 12px;
+    font-size: 12px;
+    font-weight: 600;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
   }
-  .pagination li {
-      margin: 5px;
+  .stock-badge .dot {
+    width: 8px;
+    height: 8px;
+    background-color: #2ecc71;
+    border-radius: 50%;
+    margin-right: 6px;
+    animation: pulse 2s infinite;
   }
-  .pagination li a {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 36px;
-      height: 36px;
-      color: var(--text-color);
-      border-radius: 50%;
-      text-decoration: none;
-      font-weight: 600;
-      transition: all 0.3s ease;
-      font-size: 14px;
+  .stock-badge .text {
+    opacity: 0;
+    width: 0;
+    overflow: hidden;
+    transition: all 0.3s ease;
   }
-  .pagination li.active a {
-      background-color: var(--primary-color);
-      color: var(--card-background);
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  .single-product:hover .stock-badge {
+    padding-right: 20px;
   }
-  .pagination li a:hover {
-      background-color: var(--hover-color, #f0f0f0);
-      transform: scale(1.1);
+  .single-product:hover .stock-badge .text {
+    opacity: 1;
+    width: auto;
   }
-  .pagination li.disabled a {
-      opacity: 0.5;
-      pointer-events: none;
-  }
-  .pagination .prev-next a {
-      font-size: 18px;
-      width: 40px;
-      height: 40px;
+  @keyframes pulse {
+    0% {
+      transform: scale(0.95);
+      box-shadow: 0 0 0 0 rgba(46, 204, 113, 0.7);
+    }
+    70% {
+      transform: scale(1);
+      box-shadow: 0 0 0 10px rgba(46, 204, 113, 0);
+    }
+    100% {
+      transform: scale(0.95);
+      box-shadow: 0 0 0 0 rgba(46, 204, 113, 0);
+    }
   }
 </style>
 
@@ -305,9 +406,7 @@
        ` <% } %>`
     </script>
 
-      <!-- <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script> -->
+    
 
     <style>
       .section_gap_bottom_custom {

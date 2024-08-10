@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const category = require('./categorymodel');
 const { Schema } = mongoose;
 
 const productSchema = new mongoose.Schema({
@@ -51,6 +52,10 @@ const productSchema = new mongoose.Schema({
    },
    offerDate:{
     type:Date
+   },
+   categoryOffer:{
+    type: String,
+    default:0
    },
     status: {
     type: Boolean,

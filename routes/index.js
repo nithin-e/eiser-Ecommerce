@@ -118,6 +118,9 @@ router.get('/userOrder',userthere,ORDERCONTROLLER.orderPageRendering)
 router.post('/CancellOrder',userthere,ORDERCONTROLLER.CancellAllOrder)
 router.post('/returnOrder',userthere,ORDERCONTROLLER.ReturnProduct)
 router.post('/OrderFullDetails/:id',userthere,ORDERCONTROLLER.FullOrderDetails)
+router.post ("/faildOrder",userthere,ORDERCONTROLLER.RazorFailedOrder)
+router.post('/repayment',userthere,ORDERCONTROLLER.ContinuePayment)
+
 
 // router.post('CancellEachProduct',ORDERCONTROLLER.SingleOrderRemove)
 
@@ -129,6 +132,7 @@ router.post('/DeleteCoupon',userthere,ORDERCONTROLLER.DeleteCoupon)
 //razor pay
 router.get('/razor-key',userthere,RazorPayController.RazorKey)
 router.post('/razor-order',userthere,RazorPayController.RazorOrder)
+
 
 
 //wishlist

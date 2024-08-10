@@ -3,6 +3,8 @@ const CATMOD = require("../../models/categorymodel");
 const BRANDMOD=require("../../models/brandsModel")
 const Product=require("../../models/pruductModel")
 const upload=require("../../config/multerConfig")
+const OrderModel=require('../../models/orderModel')
+const mongoose = require('mongoose')
 
 
 const fs =require("fs");
@@ -29,22 +31,235 @@ module.exports = {
   },
 
   // chekking email and pass word
-  adminloginSubmit: (req, res) => {
+  adminloginSubmit: async (req, res) => {
     const { email, password } = req.body;
     if (credentials.email == email && credentials.password == password) {
       req.session.Admin=true
-      res.render("admin/admin-home");
+
+
+
+      const OrderInfo = await OrderModel.find().sort({ quantity: -1 }).limit(10);
+
+
+
+      const topCategories = await OrderModel.aggregate([
+        { $unwind: '$products' },
+        {
+            $lookup: {
+                from: 'products',
+                let: { productId: { $arrayElemAt: ['$products.product', 0] } },
+                pipeline: [
+                    { 
+                        $match: { 
+                            $expr: { $eq: ['$_id', { $toObjectId: '$$productId' }] }
+                        } 
+                    }
+                ],
+                as: 'productDetails'
+            }
+        },
+        { $unwind: '$productDetails' },
+        {
+            $lookup: {
+                from: 'categorys',
+                let: { categoryId: '$productDetails.category' },
+                pipeline: [
+                    { 
+                        $match: { 
+                            $expr: { $eq: ['$_id', '$$categoryId'] }
+                        } 
+                    }
+                ],
+                as: 'categoryDetails'
+            }
+        },
+        { $unwind: '$categoryDetails' },
+        {
+            $group: {
+                _id: '$categoryDetails._id',
+                name: { $first: '$categoryDetails.name' },
+                totalSold: { $sum: '$products.quantity' },
+                totalRevenues: { $sum: { $multiply: ['$products.productPrice', '$products.quantity'] } }
+            }
+        },
+        { $sort: { totalSold: -1 } },
+        { $limit: 3 }
+    ]);
+
+
+
+
+
+
+const topBrands = await OrderModel.aggregate([
+    { $unwind: '$products' },
+    {
+        $lookup: {
+            from: 'products',
+            let: { productId: { $arrayElemAt: ['$products.product', 0] } },
+            pipeline: [
+                { 
+                    $match: { 
+                        $expr: { $eq: ['$_id', { $toObjectId: '$$productId' }] }
+                    } 
+                }
+            ],
+            as: 'productDetails'
+        }
+    },
+    { $unwind: '$productDetails' },
+    {
+        $lookup: {
+            from: 'brands',  // Make sure to use the correct collection name
+            let: { brandId: '$productDetails.brand' },
+            pipeline: [
+                { 
+                    $match: { 
+                        $expr: { $eq: ['$_id', '$$brandId'] }
+                    } 
+                }
+            ],
+            as: 'brandDetails'
+        }
+    },
+    { $unwind: '$brandDetails' },
+    {
+        $group: {
+            _id: '$brandDetails._id',
+            name: { $first: '$brandDetails.name' },
+            totalSold: { $sum: '$products.quantity' },
+            totalRevenues: { $sum: { $multiply: ['$products.productPrice', '$products.quantity'] } }
+        }
+    },
+    { $sort: { totalSold: -1 } },
+    { $limit: 3 }
+]);
+
+
+  console.log('Top 10 selling topBrands:', JSON.stringify(topBrands, null, 2));
+
+      res.render("admin/admin-home",{OrderInfo,topCategories,topBrands});
     } else {
       req.session.lock = "INVALID ENTRY";
       res.redirect("/admin_login");
     }
   },
 
-  //showing home page
-  adminHome: (req, res) => {
-    res.render("admin/admin-home");
-  },
 
+
+adminHome: async (req, res) => {
+    try {
+      const OrderInfo = await OrderModel.find().sort({ quantity: -1 }).limit(10);
+
+
+      const topCategories = await OrderModel.aggregate([
+        { $unwind: '$products' },
+        {
+            $lookup: {
+                from: 'products',
+                let: { productId: { $arrayElemAt: ['$products.product', 0] } },
+                pipeline: [
+                    { 
+                        $match: { 
+                            $expr: { $eq: ['$_id', { $toObjectId: '$$productId' }] }
+                        } 
+                    }
+                ],
+                as: 'productDetails'
+            }
+        },
+        { $unwind: '$productDetails' },
+        {
+            $lookup: {
+                from: 'categorys',
+                let: { categoryId: '$productDetails.category' },
+                pipeline: [
+                    { 
+                        $match: { 
+                            $expr: { $eq: ['$_id', '$$categoryId'] }
+                        } 
+                    }
+                ],
+                as: 'categoryDetails'
+            }
+        },
+        { $unwind: '$categoryDetails' },
+        {
+            $group: {
+                _id: '$categoryDetails._id',
+                name: { $first: '$categoryDetails.name' },
+                totalSold: { $sum: '$products.quantity' },
+                totalRevenues: { $sum: { $multiply: ['$products.productPrice', '$products.quantity'] } }
+            }
+        },
+        { $sort: { totalSold: -1 } },
+        { $limit: 3 }
+    ]);
+
+
+
+
+
+
+    const topBrands = await OrderModel.aggregate([
+      { $unwind: '$products' },
+      {
+          $lookup: {
+              from: 'products',
+              let: { productId: { $arrayElemAt: ['$products.product', 0] } },
+              pipeline: [
+                  { 
+                      $match: { 
+                          $expr: { $eq: ['$_id', { $toObjectId: '$$productId' }] }
+                      } 
+                  }
+              ],
+              as: 'productDetails'
+          }
+      },
+      { $unwind: '$productDetails' },
+      {
+          $lookup: {
+              from: 'brands',  // Make sure to use the correct collection name
+              let: { brandId: '$productDetails.brand' },
+              pipeline: [
+                  { 
+                      $match: { 
+                          $expr: { $eq: ['$_id', '$$brandId'] }
+                      } 
+                  }
+              ],
+              as: 'brandDetails'
+          }
+      },
+      { $unwind: '$brandDetails' },
+      {
+          $group: {
+              _id: '$brandDetails._id',
+              name: { $first: '$brandDetails.name' },
+              totalSold: { $sum: '$products.quantity' },
+              totalRevenues: { $sum: { $multiply: ['$products.productPrice', '$products.quantity'] } }
+          }
+      },
+      { $sort: { totalSold: -1 } },
+      { $limit: 3 }
+  ]);
+  
+
+        res.render("admin/admin-home",{OrderInfo,topCategories,topBrands});
+    } catch (error) {
+        console.log(error);
+    }
+},
+
+
+
+
+   
+  
+
+
+ 
 
 
   showCategory: async (req, res) => {
@@ -125,6 +340,8 @@ module.exports = {
     }
   },
 
+
+  
   updateCat: (req, res) => {
            const exisist= req.session.exisist
            req.session.exisist=null
@@ -135,20 +352,26 @@ module.exports = {
 
   // add category and show succes messege in frond end
   storedb: async (req, res) => {
-   let { name } = req.body;
-    name=name.toLowerCase();
-    console.log('fylll hyuiii',name);
+   let {name,Offerprice} = req.body;
+   const formattedOfferPrice = `${Offerprice}%`;
+
+
+   console.log('category req.body kittando',formattedOfferPrice);
+   
+    
+    
     try {
       const Cat = await CATMOD.findOne({ name });
       console.log('thsiu is already here',Cat);
       if (Cat) {
-      //  const exisist= req.session.exisist
-      //  req.session.exisist=null
       req.session.exisist="already exisist"
         res.redirect("/updateCat")
       } else {
-        let lower = name.toLowerCase();
-        await CATMOD.create({ name: lower});
+        
+        await CATMOD.create({ 
+          name: name,
+          offerPrice:formattedOfferPrice
+        });
         req.session.suss = "succesfully added";
         res.redirect("/category");
         console.log("category added");
@@ -170,7 +393,6 @@ module.exports = {
       const catry = await CATMOD.findById(id);
       console.log("thi ir", catry);
       if (catry) {
-        // console.log("thi is the user", catry);
         res.render("admin/categoryedit",{catry});
       } else {
         res.status(404).send("User not found");
@@ -183,24 +405,30 @@ module.exports = {
 
   //edit datas store data base
 applyChanges:async(req,res)=>{
-  const {id,name}=req.body
+  const {id,name,Offerprice}=req.body
   console.log("aaaaaa this mee",name);
   try{
+    const formattedOfferPrice = `${Offerprice}%`;
+    console.log('...........................',formattedOfferPrice);
+    
+
     const already= await CATMOD.findOne({name})
     console.log("here here",already);
-    if(already){
+    if(already&&already.offerPrice=='0'){
       console.log("here both name are same",already.name,"and",name);
       req.session.alreadythre="This Category Already There"
       console.log("hereeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee");
        res.redirect("/category")
-      
-    }else{
+    }
+    
+
+    
       console.log("enth thengaaanu")
-      await CATMOD.findByIdAndUpdate(id,{name},{new:true})
+      await CATMOD.findByIdAndUpdate(id,{name,offerPrice:formattedOfferPrice},{new:true})
    
      req.session.cateditUp="Category SuccesFully Updated"
      res.redirect("/category")
-    }
+    
     
   }catch(error){
     console.log(error);
@@ -349,7 +577,7 @@ blockUnblockbrand:async(req,res)=>{
       try {
         
    const Allprod= await Product.find().populate('category').populate('brand')
-  console.log("oke alle",Allprod);
+  // console.log("oke alle",Allprod);
    console.log('all items');
         const ProIn= req.session.ProIn
         req.session.ProIn=null
@@ -385,30 +613,37 @@ PressAddproductButton:async (req, res) => {
   // console.log('add product req.body',req.body);
 const {productName,description,stockQuantity,Offerprice,expiryDate,category,brand,price}=req.body 
 
+const catOffer=await CATMOD.findById(category)
+
+console.log('i think its not etting properly right',catOffer);
 
 
 req.session.Admin=true;
   try {
     req.session.Admin=true;
-    // console.log("req.files",req.files);
     const filepaths = req.files.map(file => {
       return `/uploads/${file.filename}`;
       
   });
+
   req.session.Admin=true;
+
+  const categoryOffer = Offerprice > 0 ? 0 : catOffer.offerPrice;
+
     const newproduct=new Product({
       productName,
       images:filepaths,
       description,
       stockQuantity,
-      category,
+      category:catOffer._id,
+      categoryOffer:categoryOffer,
       brand,
       offerPrice: Offerprice ? parseFloat(Offerprice) : 0, 
       offerDate: expiryDate ? new Date(expiryDate) : null,    
       price
     })
       await newproduct.save()
-      console.log("succesfully added");
+      console.log("succesfully ...............added",newproduct);
      
       req.session.sussAdd="Product successfully added."
       req.session.Admin=true;
@@ -449,9 +684,7 @@ try {
   
 const isProduct=await Product.findById(id).populate('category').populate('brand')
 const allcategory=await CATMOD.find()
-// console.log("isProduct",isProduct);
 const allbrands=await BRANDMOD.find()
-// console.log("fddffdff",isProduct);
 if(isProduct){
   res.render("admin/editProduct",{isProduct,allcategory,allbrands})
 }else{
@@ -472,13 +705,12 @@ editBottom: async (req, res) => {
     console.log("req.body id kittando", id);
   req.session.Admin = true;
 
-  console.log('..........................',req.files);
+  // console.log('..........................',req.files);
+  const catOffer=await CATMOD.findById(category)
+
 
   try {
-    // console.log('kittando ithokke',
-    //   productName, description, stockQuantity, category, brand, price, Offerprice, expiryDate 
-    // );
-    // console.log("req.body id kittando but randum same ahhno", id);
+  
     const editPro = await Product.findById(id)
     
     if (!editPro) {
@@ -494,6 +726,8 @@ editBottom: async (req, res) => {
         
     });
 
+    const categoryOffer = Offerprice > 0 ? 0 : catOffer.offerPrice;
+
       // Update the product fields
       editPro.productName = productName;
       if (filepaths.length > 0) {
@@ -501,7 +735,8 @@ editBottom: async (req, res) => {
       }
       editPro.description = description;
       editPro.stockQuantity = stockQuantity;
-      editPro.category = category;
+      editPro.category = catOffer._id
+      editPro.categoryOffer = categoryOffer;
       editPro.brand = brand;
       editPro.offerPrice = Offerprice;
       editPro.expiryDate = expiryDate

@@ -475,7 +475,7 @@
         </div>
       </section>
   <!--================End Home Banner Area =================-->
-  <div id="cart_container"   style="border: 2px solid #71cd14 ;">
+  <div id="cart_container" style="border: 2px solid #71cd14 ;">
     <div id="card">
         <div id="product">
            
@@ -487,66 +487,91 @@
                     <th scope="col">Price</th>
                     <th scope="col">Quantity</th>
                     <th scope="col">Total</th>
-                    
+                    <th scope="col">Action</th>
                   </tr>
                 </thead>
                 <tbody>
                   <!-- Product Rows -->
                   <% if (!cartItems || cartItems.length === 0) { %>
-                    
-                  <tr>
-                    <h2 style="font-family: monospace;">Your cart is empty</h2>
-                    <p style="font-family: system-ui;font-weight: 600;">Looks like you haven't added anything to your cart yet.</p>
-                    <a href="/productPage" class="gray_btn"   style="margin-left: 153px;">Continue Shopping</a >
-                  
-                </div>
+                    <tr>
+                      <td colspan="5">
+                        <h2 style="font-family: monospace;">Your cart is empty</h2>
+                        <p style="font-family: system-ui;font-weight: 600;">Looks like you haven't added anything to your cart yet.</p>
+                        <a href="/productPage" class="gray_btn" style="margin-left: 153px;">Continue Shopping</a>
+                      </td>
+                    </tr>
                   <% } else { %>
-                  <% cartItems.forEach(item => { %>
-                  <% item.cartProducts.forEach(products => { %>
-                  <tr id="productRow_<%= products.productId %>">
-                    <td>
-                      <div class="media">
-                        <div class="d-flex">
-                          <img src="<%= products.images[0] %>" alt="Product Image" style="max-width: 100px; max-height: 70px; border-radius: 0px 2px;">
-                        </div>
-                        <div class="media-body">
-                          <p><%= products.productName %></p>
-                        </div>
-                      </div>
-                    </td>
-                    <td>
-                      <h6 style="line-height: 16px;font-size: 12px;">₹<%= products.total %></h6>
-                    </td>
-                    <!-- <td>
-                        <div>
-                            <button id="decreaseBtn" data-id="<%= products.productId %>"  onclick="decreaseButton('<%= products.productId %>', '<%= products.quantity %>','<%= products.stockQuantity %>')">-</button>
-                            <input type="number" class="quantity-input" id="qty_<%= products.productId %>" value="<%= products.quantity %>" readonly>
-                            <button id="increaseBtn" class="btn-plus" data-id="<%= products.productId %>" onclick="updateQuantity('<%= products.productId %>','<%= products.quantity %>', '<%= products.stockQuantity %>')">+</button>
-                        </div>                        
-                    </td> -->
+                    <% cartItems.forEach(item => { %>
+                      <% item.cartProducts.forEach(product => { %>
+                        <tr id="productRow_<%= product.productId._id %>">
+                          <td>
+                            <div class="media">
+                              <div class="d-flex">
+                                <img src="<%= product.images[0] %>" alt="Product Image" style="max-width: 100px; max-height: 70px; border-radius: 0px 2px;">
+                              </div>
+                              <div class="media-body">
+                                <p><%= product.productName %></p>
+                              </div>
+                            </div>
+                          </td>
+                          <td>
 
-                    <td>
-                      <div class="quantity-container">
-                        <button class="quantity-btn minus" onclick="decreaseButton('<%= products.productId %>', '<%= products.quantity %>', '<%= products.stockQuantity %>')">
-                          <i class="fas fa-minus"></i>
-                        </button>
-                        <input type="number" class="quantity-input" id="qty_<%= products.productId %>" value="<%= products.quantity %>" readonly>
-                        <button class="quantity-btn plus" onclick="updateQuantity('<%= products.productId %>', '<%= products.quantity %>', '<%= products.stockQuantity %>')">
-                          <i class="fas fa-plus"></i>
-                        </button>
-                      </div>
-                    </td>
-                    <td>
-                      <h6 style="line-height: 16px;font-size: 15px;" id="total_<%= products.productId %>">₹<%= products.total * products.quantity %></h6>
-                    </td>
-                    <td>
-                      <a class="delete-link" onclick="deleteCart('<%= products.productId %>')">
-                        <i class="fas fa-trash-alt"></i>
-                      </a>
-                    </td>
-                  </tr>
-                  <% }); %>
-                  <% }); %>
+                            <% if (product.categoryOffer == '10' || product.categoryOffer == '20' || product.categoryOffer == '30'){ %>
+                              <h6 style="line-height: 16px; font-size: 12px;">
+                                ₹<%= product.offerPrice!=null ? product.offerPrice : product.total %>&nbsp;&nbsp;<%= product.categoryOffer %>Off
+                              </h6>
+                            <% }else{ %>
+                              <h6 style="line-height: 16px; font-size: 12px;">
+                                ₹<%= product.offerPrice!=null ? product.offerPrice : product.total %>
+                              </h6>
+                            <% } %>
+
+                            
+                             </td>
+                          <td>
+                            <div class="quantity-container">
+                              <% if (product.productId.status) { %>
+                                <button class="quantity-btn minus" onclick="decreaseButton('<%= product.productId._id %>', '<%= product.quantity %>', '<%= product.stockQuantity %>')">
+                                  <i class="fas fa-minus"></i>
+                                </button>
+                                <input type="hidden" id="originalQantyty" value="<%= product.stockQuantity %>">
+                                <input type="number" class="quantity-input" id="qty_<%= product.productId._id %>" value="<%= product.quantity %>" readonly>
+                                <button class="quantity-btn plus" onclick="updateQuantity('<%= product.productId._id %>', '<%= product.quantity %>', '<%= product.stockQuantity %>')">
+                                  <i class="fas fa-plus"></i>
+                                </button>
+                              <% } else { %>
+                                <span style="color: red;">Product Unavailable</span>
+                              <% } %>
+                            </div>
+                          </td>
+
+                          <td>
+                            <% if (product.productId.status) { %>
+
+                                <% if (product.categoryOffer == '10' || product.categoryOffer == '20' || product.categoryOffer == '30') { %>
+                                  <% 
+                                       let discount=product.total*product.categoryOffer/100
+                                       let discounts=Math.floor(discount)*product.quantity
+                                     %>
+                                  <h6 style="line-height: 16px;font-size: 15px;" id="total_<%= product.productId._id %>">₹<%= discounts %></h6>
+
+                                <% }else{ %>
+                                  <h6 style="line-height: 16px;font-size: 15px;" id="total_<%= product.productId._id %>">₹<%= product.total * product.quantity %></h6>
+
+                                <% } %>
+                            <% }else{ %>
+                              <h6 style="line-height: 16px;font-size: 15px; color: red;">Not included</h6>
+                            <% } %>
+                          </td>
+
+                          <td>
+                            <a class="delete-link" onclick="deleteCart('<%= product.productId._id %>')">
+                              <i class="fas fa-trash-alt"></i>
+                            </a>
+                          </td>
+                        </tr>
+                      <% }); %>
+                    <% }); %>
                   <% } %>
                 </tbody>
               </table>
@@ -554,55 +579,66 @@
         </div>
     </div>
     <% if (!cartItems || cartItems.length === 0) { %>
-
-
-
-        <% } else{%>
-    <div id="pay" style="height: 50%;">
-        <div class="summary-container">
-            <% cartItems.forEach(item => { %>
-            <% 
-              // Calculate subtotal
-              const subtotal = item.cartProducts.reduce((acc, product) => acc + (product.total * product.quantity), 0);
-            %>
-            <div class="summary-item">
-                <div class="summary-label">
-                    <h6 style="font-size: 15px;">Subtotal</h6>
+      <!-- Display message or handle empty cart -->
+      <% } else { %>
+        <div id="pay" style="height: 50%;">
+            <div class="summary-container">
+                <div class="summary-item">
+                    <div class="summary-label">
+                        <h6 style="font-size: 15px;">Subtotal</h6>
+                    </div>
+                    <div class="summary-value">
+                        <h6 style="line-height: 16px;font-size: 15px;" class="subtotalPrice">₹<%= subtotal %></h6>
+                    </div>
                 </div>
-                <div class="summary-value">
-                    <h6 style="line-height: 16px;font-size: 15px;" class="subtotalPrice">₹<%= subtotal %></h6>
-                </div>
-            </div>
-            <div class="summary-item no-border">
-                <div class="summary-label">
-                    <h6 style="font-size: 15px;">Shipping</h6>
-                </div>
-                <div class="summary-value">
-                    <h6 style="line-height: 16px;font-size: 15px;" class="shippingCost">₹100</h6>
-                </div>
-            </div>
-
-            <div class="summary-item no-border">
-                <div class="summary-label">
-                    <h6 style="font-size: 15px;">Grand Total</h6>
-                </div>
-                <div class="summary-value">
-                    <h6 style="line-height: 16px;font-size: 15px;" class="grandTotal" id="grandtotal">₹<%= subtotal + 100 %></h6>
+                <% if (shippingCost > 0) { %>
+                  <div class="summary-item no-border">
+                      <div class="summary-label">
+                          <h6 style="font-size: 15px;">Shipping</h6>
+                      </div>
+                      <div class="summary-value">
+                          <h6 style="line-height: 16px;font-size: 15px;" class="shippingCost">₹<%= shippingCost %></h6>
+                      </div>
+                  </div>
+                <% } %>
+    
+                <div class="summary-item no-border">
+                    <div class="summary-label">
+                        <h6 style="font-size: 15px;">Grand Total</h6>
+                    </div>
+                    <div class="summary-value">
+                        <h6 style="line-height: 16px;font-size: 15px;" class="grandTotal" id="grandtotal">₹<%= grandTotal %></h6>
+                    </div>
                 </div>
             </div>
-            <% }) %>
+            <div class="grand_total_section">
+                <div class="shipping_box" style="margin-left: 30px;">
+                    <% if (grandTotal > 0) { %>
+                        <a class="gray_btn" href="/CheckOutPage">checkout</a>
+                    <% } else { %>
+                      <p class="checkout-message">Add items to your cart to proceed to checkout.</p>
+                      <% } %>
+                </div>
+            </div>
         </div>
-        <div class="grand_total_section">
-            <div class="shipping_box" style="margin-left: 30px;">
-                <a class="gray_btn" href="/CheckOutPage">checkout</a>
-            </div>
-        </div>
-        
-    </div>
-    <% } %>
+      <% } %>
 </div>
 
+<style>
+  .checkout-message {
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #4CAF50;
+    text-align: center;
+    margin: 20px 0;
+    padding: 10px;
+    border: 2px solid #4CAF50;
+    border-radius: 8px;
+    background-color: #f0f0f0; 
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
 
+</style>
  <!-- couponMOdal -->
  
  
@@ -681,17 +717,13 @@ function deleteCart(id) {
 
                     // Show success toast
                     Toastify({
-                        text: result.msg,
-                        duration: 3000,
-                        close: true,
-                        gravity: "top",
-                        position: 'right',
-                        backgroundColor: "linear-gradient(to right, #00b09b, #96c93d)",
-                        offset: {
-                            x: 50,
-                            y: 60
-                        },
-                        className: "toastify-custom"
+                  text: result.msg,
+                  duration: 3000,
+                  close: true,
+                  gravity: "top",
+                  position: "center",
+                  backgroundColor:' #71cd14',
+                    className: "toastify-custom",
                     }).showToast();
 
                     // Update the subtotal and grand total
@@ -712,41 +744,49 @@ function deleteCart(id) {
 
 
  // Function to update quantity in backend
- function updateQuantity(productId, quantity, stockQuantity) {
-    console.log("productId", productId);
-    console.log("quantity", quantity);
-    console.log("stockQuantity",stockQuantity);
+ function updateQuantity(productId, inputQuantity, stockQuantity) {
+
+  console.log('Input quantity:', inputQuantity, 'Type:', typeof inputQuantity);
+  console.log('Stock quantity:', stockQuantity, 'Type:', typeof stockQuantity);
+  
+  
 
     const quantityInput = document.getElementById(`qty_${productId}`);
-    console.log("quantityInputtttttttt",quantityInput);
-    if (quantity >= 10) {
+   
+
+     
+
+    if (inputQuantity >= 10) {
         console.log("Limit exceeded");
         quantityInput.value = 10;
 
         Toastify({
-            text: "this is the maximum limit",
-            duration: 3000,
-            close: true,
-            gravity: "top",
-            position: "center",
-            backgroundColor:'#71cd14'
-        }).showToast();
+             text: "Ur Limit Is Reached",
+              duration: 3000,
+              close: true,
+              gravity: "top",
+              position: "center",
+              backgroundColor:' #71cd14',
+              className: "toastify-custom",
+            }).showToast();
         return;
     } 
     console.log("Checking stock limit...");
-    console.log("stockQuantity == quantity:", stockQuantity == quantity);
-     if (quantityInput.value == stockQuantity) {
-        console.log("Reached stock limittttttttttttttttttttttttttttttttttttt");
-        quantityInput.value = quantity;
+    
+    
+     if (inputQuantity == stockQuantity) {
+        console.log("now inside the if quantyty equal to original produ quam=ntyt");
+        quantityInput.value = stockQuantity;
         
         Toastify({
-            text: "Product Quantity is over",
-            duration: 3000,
-            close: true,
-            gravity: "top",
-            position: "center",
-            backgroundColor:' #71cd14'
-        }).showToast();
+             text: "Product Quatity is Over",
+              duration: 3000,
+              close: true,
+              gravity: "top",
+              position: "center",
+              backgroundColor:' #71cd14',
+              className: "toastify-custom",
+            }).showToast();
         return;
     }
 
@@ -760,6 +800,8 @@ function deleteCart(id) {
     .then(response => response.json())
     .then(result => {
         if (result.success) {
+          console.log('subtotal comming from backent',result.subtotal);
+          
             location.reload();
         } else {
             console.error('Failed to update quantity:', result.message);
@@ -781,22 +823,23 @@ function handleQuantityChange(productId) {
 //send in backened quentyty
 
 //decrese botton
-function decreaseButton(productId,quantity) {
+function decreaseButton(productId, inputQuantity, stockQuantity){
 
     const quantityInput = document.getElementById(`qty_${productId}`);
 
-    if(quantity<=1){
+    if(inputQuantity<=1){
             console.log("ehti evde mone");
             Toastify({
-            text: "Zero is not possible",
-            duration: 3000,
-            close: true,
-            gravity: "top",
-            position: "right",
-            backgroundColor: "linear-gradient(to right, #ff5f6d, #ffc371)"
-        }).showToast();
-        return;
-    }
+             text: "Zero is not possible",
+              duration: 3000,
+              close: true,
+              gravity: "top",
+              position: "center",
+              backgroundColor:' #71cd14',
+              className: "toastify-custom",
+            }).showToast();
+           return;
+          }
 
 
     console.log("productId",productId);
@@ -821,11 +864,7 @@ function decreaseButton(productId,quantity) {
             });
 }
 
-function handleQuantityChange(productId) {
-    const newQuantity = document.getElementById(`qty_${productId}`).value;
-    decreaseButton(productId, newQuantity);
-}
-///botton descerse
+
 
 
    
@@ -834,26 +873,20 @@ function handleQuantityChange(productId) {
 <script>
   var modal = document.getElementById("couponModal");
 
-// Set the initial display to none
 modal.style.display = 'none';
 
-// Get the button that opens the modal
 var btn = document.getElementById("CouponModal");
 
-// Get the <span> element that closes the modal
 var span = document.getElementsByClassName("close")[0];
 
-// When the user clicks the button, open the modal
 btn.onclick = function() {
   modal.style.display = "block";
 }
 
-// When the user clicks on <span> (x), close the modal
 span.onclick = function() {
   modal.style.display = "none";
 }
 
-// When the user clicks anywhere outside of the modal, close it
 window.onclick = function(event) {
   if (event.target == modal) {
     modal.style.display = "none";
@@ -866,4 +899,31 @@ window.onclick = function(event) {
 <%- include('footer') %>
 </body>
 
+<style>
+  .toastify-custom {
+    font-family: 'Roboto', sans-serif;
+    font-size: 16px; 
+    color: #fff; 
+    border-radius: 8px; 
+    padding: 10px 20px; 
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2); 
+    font-size: 15px; 
+    font-weight: bold;
+}
+
+
+.toastify-custom .toastify-close {
+    color: #fff; 
+    font-size: 15px; 
+    
+}
+
+.toastify-custom::before {
+  content: '🚨'; 
+  font-size: 20px; 
+}
+.toastify-custom {
+    background: #71cd14;
+}
+</style>
 </html>

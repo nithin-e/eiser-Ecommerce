@@ -31,18 +31,18 @@ downloadInvoice : async (req, res) => {
 <!-- =>    image validation in file uploads 
 drop down should have a place holder and validation -->
 <!-- delete function from the server  -->
-session handling is not proper 
+<!-- session handling is not proper  -->
 <!-- cart page UI  -->
 <!-- Proper error messages -->
-handle failed payments 
+<!-- handle failed payments  -->
 <!-- Apply coupon button  -->
 <!-- remove coupon ui  -->
 <!-- app crashed on orders after removing coupon - handle crash -->
-charts are invalid with the data represented in x axis and y axis 
-date format in chart - timestamp not allowed 
-PDF - redesign
+<!-- charts are invalid with the data represented in x axis and y axis  -->
+<!-- date format in chart - timestamp not allowed  -->
+<!-- PDF - redesign -->
 <!-- Proper error msg display in create coupon form  -->
-date validation in create coupon
+<!-- date validation in create coupon -->
 
 
 
@@ -53,18 +53,76 @@ date validation in create coupon
 
 
 
-User side :
-<!-- Invoice download (Pdf) -->
-<!-- Order above Rs 1000 should not be allowed for COD -->
-<!-- Delivery charge can be applied according to location / fixed charges (optional) -->
-Handle error for failed payments (update status as payment pending), 
-Should be able to continue payment from my order page in case of failed payment
-Admin side :
-Admin Dashboard - Chart with filter(yearly,monthly etc.)
-Best selling product (top 10) 
-Best selling category (top 10) 
-Best selling brands (top 10) 
-Generate ledger book (optional)
+Week Repeat	"Pending 
 
+User
+- dont show/avail expired offers
+- wishlist ad to cart button
+<!-- - cart quantity validation -->
+<!-- - address input validation -->
+<!-- - website crashes after order completion -->
+- quantity validation in checkout and on order creation
+- sort
+- interconnect search, sort and filter
+<!-- - profile name validation -->
+<!-- - weak password is saved despite validation errors -->
+- unlisted products can be ordered
+- show latest orders on top
+- products from unlisted categories show up in product list
+
+Admin
+<!-- - reject duplicate categories (edit) -->
+- use Indian date format
+<!-- - category offers -->
+- dashboard date range filter 
+- download report for criteria selected in dashboard without having to select dates again
+- sales report total discounts 
+- show latest orders on top
+- order detail view
+- stock management: quantity not decremented on order creation
+
+
+"
 </body>
 </html>
+
+
+
+
+
+
+
+function validateCouponDates(startDate, expiryDate) {
+    const currentDate = new Date();
+    const start = new Date(startDate);
+    const expiry = new Date(expiryDate);
+
+    // Remove time component for date comparison
+    currentDate.setHours(0, 0, 0, 0);
+    start.setHours(0, 0, 0, 0);
+    expiry.setHours(0, 0, 0, 0);
+
+    if (expiry < currentDate) {
+        return "Expiry date cannot be in the past.";
+    }
+
+    if (expiry < start) {
+        return "Expiry date cannot be before the start date.";
+    }
+
+    const isValidDate = (date) => {
+        const month = date.getMonth() + 1;
+        const day = date.getDate();
+        return month >= 1 && month <= 12 && day >= 1 && day <= 31;
+    };
+
+    if (!isValidDate(start)) {
+        return "Invalid start date.";
+    }
+
+    if (!isValidDate(expiry)) {
+        return "Invalid expiry date.";
+    }
+
+    return null; // No error
+}

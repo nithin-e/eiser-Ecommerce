@@ -1,8 +1,9 @@
 const mongoose = require('mongoose');
 const path=require('path')
-const Order = require('../../models/orderModel');
+const orderModel = require('../../models/orderModel');
 const generateSalesPDF=require('../../util/salesPdfCreator')
-const pdf=require('../../util/salesReportCretor')
+const pdf=require('../../util/salesReportCretor');
+const { OrderInfo } = require('../orderController');
 
 
 
@@ -41,41 +42,53 @@ function formatDateToDDMMYYYY(date) {
 module.exports = {
     AdminChart: async (req, res) => {
         console.log('Period from query:', req.query); 
-       
-try {
-    const period = req.query.period || 'all'; 
-    let startDate;
-    let endDate = new Date();
+        
+        try {
+            const period = req.query.period || 'all'; 
 
-   
+
+            let startDate =new Date();
+            let endDate=  new Date(startDate.setHours(23, 59, 59, 999));
+            // let endDate = new Date(startDate.setHours(23, 59, 59, 999));
+    
+    
     switch (period) {
         case 'day':
-            startDate = new Date();
-            startDate.setHours(0, 0, 0, 0);
+            // startDate = new Date();
+            startDate=new Date()
+            startDate.setHours(0, 0, 0, 0); 
+
+        
+           
             break;
         case 'week':
             startDate = startOfWeek(new Date());
             break;
-        case 'month':
-            startDate = new Date();
+            case 'month':
+                startDate = new Date();
             startDate.setDate(1);
             break;
         case 'year':
             startDate = new Date();
             startDate.setMonth(0, 1);
             break;
-        case 'all':
-            startDate = new Date(0); 
-            break;
-        default:
-            return res.status(400).json({ error: 'Invalid period' });
-    }
+            case 'all':
+                startDate = new Date(0); 
+                break;
+                default:
+                    return res.status(400).json({ error: 'Invalid period' });
+                }
+                
+                
+                
+                const startISODate = formatDate(startDate);
+                const endISODate = formatDate(endDate);
+                
+                console.log('check1',startISODate);
+                console.log('check2',endISODate);
+                
 
-
-    const startISODate = formatDate(startDate);
-    const endISODate = formatDate(endDate);
-
-    const salesData = await Order.aggregate([
+    const salesData = await orderModel.aggregate([
         {
             $addFields: {
                
@@ -89,17 +102,19 @@ try {
         },
         {
             $match: {
-                orderDate: { $gte: new Date(startISODate), $lte: new Date(endISODate) }
+                orderDate: { $gte: new Date(startISODate), $lte: new Date(endDate) }
             }
+
         },
+        
         {
             $unwind: "$products"
         },
         {
             $group: {
-                _id: period === 'day' ? "$orderDate" : {
+                _id: {
                     $dateToString: {
-                        format: period === 'month' ? "%Y-%m" : "%Y-%m-%d",
+                        format: "%Y-%m-%d",
                         date: "$orderDate"
                     }
                 },
@@ -112,6 +127,7 @@ try {
     ]);
 
     console.log('Sales Data:', salesData);
+    
             res.json(salesData);
         } catch (error) {
             console.error('Error fetching sales data:', error);
@@ -119,7 +135,19 @@ try {
         }
     },
 
+
+
+
+
+
+
+
+
+
+
+
     downloadSalesReport: async (req, res) => {
+        console.log('..................what is the problem.............................',req.body);
         try {
             const { startdate, enddate, downloadformat } = req.body;
             const startDate = new Date(startdate);
@@ -144,15 +172,15 @@ try {
             console.log('Formatted End Date:', endFormat);
     
             // Query for orders
-            const orders = await Order.find({
-                status: "Delivered",
+            const orders = await orderModel.find({
+              
                 orderDate: {
                     $gte: startFormat,
                     $lte: endFormat
                 }
             });
     
-            console.log('Orders:', orders);
+            console.log('Ord..........................................ers:', orders);
     
             if (orders.length === 0) {
                 return res.status(404).json({ error: 'No orders found for the given date range' });
@@ -171,8 +199,8 @@ try {
                 return pdf.downloadReport(
                     req,
                     res,
-                    startDate,
-                    endDate,
+                    startFormat,
+                    endFormat,
                     orders,
                     totalSales.toFixed(2),
                     downloadformat

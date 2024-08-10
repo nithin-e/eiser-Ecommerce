@@ -242,9 +242,10 @@
                     <button class="save" onclick="saveChanges()">Save</button>
                     <button class="cancel" type="button" onclick="cancelEdit()">Cancel</button>
                     <div id="errorMessage" class="error-message"></div>
+                    
                 </div>
                 <p><strong>Email:</strong> <%= userInfo.email %> </p>
-                <p><strong>Referral link:</strong> <a href="#">Referralcode</a></p>
+                <p><strong>Referral link:</strong> <a href="#"><%= userInfo.referalLink %></a></p>
                 <p><strong>Password:</strong> *********** <a href="#" onclick="openModal()">Change Password</a></p>
             </div>
         </div>
@@ -277,7 +278,10 @@
         </div>
         <span id="confirmPasswordError" class="error" style="color: red;"></span>
 
+        <input type="hidden" id="userpassword">
+        <!-- <button type="submit" onclick="changePass('<%= userInfo._id %>')">Change Password</button> -->
         <button type="submit" onclick="changePass('<%= userInfo._id %>')">Change Password</button>
+
     </form>
 </div>
 
@@ -294,60 +298,74 @@
     }
 
     function saveChanges() {
-        var inputElement = document.getElementById('nameInput');
-        var userIdElement = document.getElementById('userId');
-        var textElement = document.getElementById('nameText');
-        var errorMessageElement = document.getElementById('errorMessage');
+    var inputElement = document.getElementById('nameInput');
+    var userIdElement = document.getElementById('userId');
+    var textElement = document.getElementById('nameText');
+    var errorMessageElement = document.getElementById('errorMessage');
 
-        var nameValue = inputElement.value;
+    var nameValue = inputElement.value;
+    var nameValue = inputElement.value.trim(); 
 
-        // Check if the name contains numbers or spaces
-        if (/\d/.test(nameValue) || /\s/.test(nameValue)) {
-            errorMessageElement.textContent = 'Name cannot contain numbers or spaces.';
-            return;
-        } else {
-            errorMessageElement.textContent = '';
-        }
+    // Define the regex for name validation
+    const nameRegex = /^[a-zA-Z\s]+$/;
 
-        const data = {
-            name: nameValue,
-            userId: userIdElement.value
-        };
 
-        fetch("/update-name", {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(data)
-        })
-        .then(response => response.json())
-        .then(result => {
-            if (result.success) {
-                textElement.textContent = nameValue;
-                inputElement.parentNode.style.display = 'none';
-                textElement.style.display = 'inline';
-
-                Toastify({
-                    text: result.msg,
-                    duration: 3000,
-                    close: true,
-                    gravity: "top",
-                    position: 'right',
-                    backgroundColor: "linear-gradient(to right, #00b09b, #96c93d)",
-                    offset: {
-                        x: 50,
-                        y: 60
-                    },
-                }).showToast();
-            } else {
-                console.error('Failed to update name:', result.message);
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-        });
+    if (nameValue === '') {
+        errorMessageElement.textContent = 'Name cannot be empty or contain only spaces.';
+        return;
     }
+
+    // Check if the name matches the regex
+    if (!nameRegex.test(nameValue)) {
+        errorMessageElement.textContent = 'Name cannot contain numbers or special characters.';
+        return;
+    } else {
+        errorMessageElement.textContent = '';
+    }
+
+    const data = {
+        name: nameValue,
+        userId: userIdElement.value
+    };
+
+    fetch("/update-name", {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(result => {
+        if (result.success) {
+            textElement.textContent = nameValue;
+            inputElement.parentNode.style.display = 'none';
+            textElement.style.display = 'inline';
+
+            Toastify({
+                text: result.msg,
+                duration: 3000,
+                close: true,
+                gravity: "top",
+                position: "center",
+                backgroundColor:' #71cd14',
+                className: "toastify-custom",
+                offset: {
+                    x: 50,
+                    y: 60
+                },
+            }).showToast();
+        } else {
+            console.error('Failed to update name:', result.message);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+}
+
+
+
 
     function cancelEdit() {
         var textElement = document.getElementById('nameText');
@@ -356,11 +374,7 @@
         editElement.style.display = 'none';
     }
 
-    // Modal functionality
-    function openModal() {
-        var modal = document.getElementById('passwordModal');
-        modal.style.display = 'block';
-    }
+    
 
     function closeModal() {
         var modal = document.getElementById('passwordModal');
@@ -375,129 +389,106 @@
         }
     }
 
-    //fectch function
 
-    function changePass(id) {
-    console.log(id);
-    var currentPassword = document.getElementById("currentPassword").value;
-    var confirmPassword = document.getElementById("confirmPassword").value;
-    console.log("Current Password:", currentPassword);
-    console.log("New Password:", confirmPassword);
-    
-    const data = {
-        currentPassword,
-        confirmPassword,
-        id
-    };
-
-    fetch("/Update-PassWord", {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(data)
-    })
-    .then(response => response.json())
-    .then(result => {
-        if (result.success) {
-            Toastify({
-                text: result.msg,
-                duration: 3000,
-                close: true,
-                gravity: "top",
-                position: 'right',
-                backgroundColor: "linear-gradient(to right, #00b09b, #96c93d)",
-                offset: {
-                    x: 50,
-                    y: 60
-                },
-            }).showToast();
-            closeModal(); 
-        } else {
-            Toastify({
-                text:'Some Thing Went Wrong',
-                duration: 3000,
-                close: true,
-                gravity: "top",
-                position: 'right',
-                backgroundColor: "linear-gradient(to right, #ff0000, #ff0000)",
-                offset: {
-                    x: 50,
-                    y: 60
-                },
-            }).showToast();
-         
-        }
-    })
-    .catch(error => {
-        console.error('Error updating password:', error);
-        Toastify({
-            text: 'Failed to update password. Please try again later.',
-            duration: 3000,
-            close: true,
-            gravity: "top",
-            position: 'right',
-            backgroundColor: "linear-gradient(to right, #ff0000, #ff0000)",
-            offset: {
-                x: 50,
-                y: 60
-            },
-        }).showToast();
-        closeModal(); 
-    });
-}
-
+    function openModal() {
+        const passwordId=document.getElementById('userId').value
+       
+        document.getElementById('userpassword').value=passwordId
+        var modal = document.getElementById('passwordModal');
+        modal.style.display = 'block';
+        console.log('kittndo',passwordId);
+        
+    }
+ 
 </script>
 <script>
     
     document.addEventListener('DOMContentLoaded', function() {
-        const changePasswordForm = document.getElementById('changePasswordForm');
+    const changePasswordForm = document.getElementById('changePasswordForm');
 
-        changePasswordForm.addEventListener('submit', function(event) {
-            event.preventDefault(); // Prevent form submission
-            
-            const currentPassword = document.getElementById('currentPassword').value.trim();
-            const newPassword = document.getElementById('newPassword').value.trim();
-            const confirmPassword = document.getElementById('confirmPassword').value.trim();
+    changePasswordForm.addEventListener('submit', function(event) {
+        event.preventDefault(); // Prevent form submission
 
-            const currentPasswordError = document.getElementById('currentPasswordError');
-            const newPasswordError = document.getElementById('newPasswordError');
-            const confirmPasswordError = document.getElementById('confirmPasswordError');
+        const currentPassword = document.getElementById('currentPassword').value.trim();
+        const newPassword = document.getElementById('newPassword').value.trim();
+        const confirmPassword = document.getElementById('confirmPassword').value.trim();
+        const id = document.getElementById('userpassword').value.trim();
 
-            currentPasswordError.textContent = '';
-            newPasswordError.textContent = '';
-            confirmPasswordError.textContent = '';
+        const currentPasswordError = document.getElementById('currentPasswordError');
+        const newPasswordError = document.getElementById('newPasswordError');
+        const confirmPasswordError = document.getElementById('confirmPasswordError');
 
-            let isValid = true;
+        // Clear previous error messages
+        currentPasswordError.textContent = '';
+        newPasswordError.textContent = '';
+        confirmPasswordError.textContent = '';
 
-            // Check if current password is empty
-            if (!currentPassword) {
-                currentPasswordError.textContent = 'Current Password is required';
-                isValid = false;
-            }
+        let isValid = true;
 
-            // Check if new password is empty or does not meet criteria
-            const passwordPattern = /^(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,}$/;
-            if (!newPassword) {
-                newPasswordError.textContent = 'New Password is required';
-                isValid = false;
-            } else if (!passwordPattern.test(newPassword)) {
-                newPasswordError.textContent = "Password: 8+ characters, 1 special character."
-                isValid = false;
-            }
+        // Check if current password is empty
+        if (!currentPassword) {
+            currentPasswordError.textContent = 'Current Password is required';
+            isValid = false;
+        }
 
-            // Check if confirm password matches new password
-            if (!confirmPassword) {
-                confirmPasswordError.textContent = 'Please confirm your new password';
-                isValid = false;
-            } else if (newPassword !== confirmPassword) {
-                confirmPasswordError.textContent = 'Passwords do not match';
-                isValid = false;
-            }
+        // Check if new password is empty or does not meet criteria
+        const passwordPattern = /^(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,}$/;
+        if (!newPassword) {
+            newPasswordError.textContent = 'New Password is required';
+            isValid = false;
+        } else if (!passwordPattern.test(newPassword)) {
+            newPasswordError.textContent = "Password: 8+ characters, 1 special character.";
+            isValid = false;
+        }
 
-            if (isValid) {
+        // Check if confirm password matches new password
+        if (!confirmPassword) {
+            confirmPasswordError.textContent = 'Please confirm your new password';
+            isValid = false;
+        } else if (newPassword !== confirmPassword) {
+            confirmPasswordError.textContent = 'Passwords do not match';
+            isValid = false;
+        }
+
+        // If the form is not valid, return early and do not proceed with the fetch request
+        if (!isValid) {
+            return;
+        }
+
+        // If validation passes, proceed with the fetch request
+        const data = {
+            currentPassword,
+            newPassword, // Send newPassword instead of confirmPassword
+            id
+        };
+
+        fetch("/Update-PassWord", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
+        .then(response => response.json())
+        .then(result => {
+            if (result.success) {
                 Toastify({
-                    text:msg,
+                    text: result.msg,
+                    duration: 3000,
+                    close: true,
+                    gravity: "top",
+                    position: "center",
+                    backgroundColor:' #71cd14',
+                     className: "toastify-custom",
+                    offset: {
+                        x: 50,
+                        y: 60
+                    },
+                }).showToast();
+                closeModal(); 
+            } else {
+                Toastify({
+                    text: 'Some Thing Went Wrong',
                     duration: 3000,
                     close: true,
                     gravity: "top",
@@ -508,10 +499,15 @@
                         y: 60
                     },
                 }).showToast();
-                closeModal(); 
             }
+        })
+        .catch(error => {
+            console.error('Error updating password:', error);
         });
+
     });
+});
+
 
 
 </script>
@@ -523,3 +519,30 @@
 }
 
 </script>
+<style>
+    .toastify-custom {
+      font-family: 'Roboto', sans-serif;
+      font-size: 16px; 
+      color: #fff; 
+      border-radius: 8px; 
+      padding: 10px 20px; 
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2); 
+      font-size: 15px; 
+      font-weight: bold;
+  }
+  
+  
+  .toastify-custom .toastify-close {
+      color: #fff; 
+      font-size: 15px; 
+      
+  }
+  
+  .toastify-custom::before {
+    content: '🚨'; 
+    font-size: 20px; 
+  }
+  .toastify-custom {
+      background: #71cd14;
+  }
+  </style>

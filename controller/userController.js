@@ -12,8 +12,11 @@ const CARTMOD = require("../models/cartModel");
 const Category = require("../models/categorymodel");
 const mongoose = require("mongoose");
 const Wishlist = require("../models/WishlistModel");
-const walletModel=require('../models/walletModel')
+const Wallet=require('../models/walletModel')
 const ObjectId = mongoose.Types.ObjectId;
+const uuid=require('uuid')
+
+
 
 let i = 150;
 module.exports = {
@@ -77,14 +80,19 @@ module.exports = {
     });
   },
 
+
+
   loginAndSignup: (req, res) => {
     const nouser = req.session.nouser;
     req.session.nouser = null;
     res.render("user/user_signup", { nouser });
+
   },
 
   //render otp page
   renderOtpPage: (req, res) => {
+    console.log('.....otp page reqBody',req.body);
+    
     let errMess = null;
     if (req.session.errMess) {
       errMess = req.session.errMess;
@@ -96,7 +104,7 @@ module.exports = {
   //store user database
   registerUser: async (req, res) => {
     console.log("ibde ethi");
-    const { name, password, email } = req.body;
+    const { name, password, email,refId } = req.body;
     try {
       console.log("user  indada");
       // Checking whether user already exists
@@ -108,9 +116,9 @@ module.exports = {
           "This email is already registered. You can login with another one.";
         res.redirect("/loginandsignup");
       } else {
-        console.log("user illatta but ");
+        console.log("user illatta but ",req.body);
         req.session.email = email;
-        req.session.temp = { email, name, password };
+        req.session.temp = { email, name, password,refId };
         console.log("user illatta but ", req.session.temp);
         // req.session.user = name;
         const { otpcode, otpExpires } = await genOtp();
@@ -163,9 +171,11 @@ module.exports = {
 
   //verify otp
   verifyOtp: async (req, res) => {
+    console.log('req.body verifiying tyme',req.body);
+    
     const { otp1, otp2, otp3, otp4 } = req.body;
 
-    const { password, email, name } = req.session.temp;
+    const { password, email, name,refId } = req.session.temp;
 
     const otpcode = [otp1, otp2, otp3, otp4].join("");
     console.log("Received OTP:", otpcode, "for email:", email);
@@ -202,6 +212,46 @@ module.exports = {
       console.log("kityada mone", req.session.userId);
       req.session.user = email;
       
+//creting referall link
+const referalLink= `http://localhost:3000/loginAndSignup?refId=${userdata._id}`
+
+  userdata.referalLink=referalLink
+  await userdata.save()
+  if (refId) {
+    const findUser = await userdb.findById(refId);
+    if (findUser) {
+      const orderId = null;
+  
+      // Use findOne to get a single wallet document
+      let findWallet = await Wallet.findOne({ user: refId });
+  
+      if (!findWallet) {
+        const createdWallet = await Wallet.create({
+          user:refId,
+          balance: 200,
+          transactions: [{
+            transaction_id: `wallet_${uuid.v4()}`,
+            amount: 200,
+            type: "credit",
+            description: "referral fund",
+            orderId: orderId,
+          }],
+        });
+        await createdWallet.save();
+      } else {
+        findWallet.balance += 200; 
+        findWallet.transactions.push({
+          transaction_id: `wallet_${uuid.v4()}`,
+          amount: 200,
+          type: "credit",
+          description: "referral fund",
+          orderId: orderId,
+        });
+  
+        await findWallet.save(); 
+      }
+    }
+  }
       res.redirect("/");
     } catch (error) {
       console.log(error);
@@ -296,72 +346,63 @@ module.exports = {
     const userId = req.session.userId;
     console.log("hiii", userId);
     try {
-      // const id = req.params.id.replace(':', '');
-
       const products = await Product.findById(id)
         .populate("brand")
         .populate("category");
-
+  
+      // Check if the product exists and its status is true
+      if (!products || !products.status) {
+        // If the product doesn't exist or its status is false, redirect to the product listing page
+        return res.redirect('/'); // Adjust this URL to your product listing page
+      }
+  
       const allBrands = await BRANDMOD.find();
-      const allproducts = await Product.find({ _id: { $ne: id } }).populate(
+      const allproducts = await Product.find({ _id: { $ne: id }, status: true }).populate(
         "category"
       );
-
+  
       const allcategory = await CATMOD.find();
-
+  
       const FindUser = await CARTMOD.findOne({ userId: userId });
-
+  
+      const WishlistInfo = await Wishlist.find();
+      const isProductInWishlist = WishlistInfo.some(item => item.productId.toString() === products._id.toString());
+  
+      const user = req.session.user;
+      let CartExisistIndex;
+  
       if (FindUser) {
         console.log(" oke allehe", FindUser);
         console.log("if ill pettada");
-        var CartExisistIndex = await FindUser.cartProducts.findIndex(
+        CartExisistIndex = FindUser.cartProducts.findIndex(
           (p) => p.productId.toString() == id
         );
         console.log("this is index inside block", CartExisistIndex);
-        const user = req.session.user;
-
-        const WishlistInfo=await Wishlist.find()
-        const isProductInWishlist = WishlistInfo.some(item => item.productId.toString() === products._id.toString());
-     
-
-        res.render("user/productDetailsPage", {
-          products,
-          user,
-          allproducts,
-          allcategory,
-          allBrands,
-          CartExisistIndex,
-          isProductInWishlist 
-        });
       } else {
         console.log("else ill pettada");
         console.log("this is index inside block", CartExisistIndex);
-        const user = req.session.user;
-        
-         const WishlistInfo=await Wishlist.find()
-         const isProductInWishlist = WishlistInfo.some(item => item.productId.toString() === products._id.toString());
-        
-     
-      
-         console.log('------------',isProductInWishlist,'-------------');
-        res.render("user/productDetailsPage", {
-          products,
-          user,
-          allproducts,
-          allcategory,
-          allBrands,
-          isProductInWishlist
-        });
       }
+  
+      console.log('------------', isProductInWishlist, '-------------');
+      res.render("user/productDetailsPage", {
+        products,
+        user,
+        allproducts,
+        allcategory,
+        allBrands,
+        CartExisistIndex,
+        isProductInWishlist
+      });
+  
     } catch (error) {
-      console.error("Error while adding product:", error);
+      console.error("Error while fetching product details:", error);
       res.status(500).send("Internal Server Error");
     }
   },
 
   //showing separate page
   showProductSeperetPage: async (req, res) => {
-    const perPage = 8;
+    const perPage = 12;
     const page = req.query.page || 1;
 
     try {

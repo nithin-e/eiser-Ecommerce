@@ -45,22 +45,19 @@ const generateSalesPDF = async (orders, startDate, endDate) => {
             // Products
             // Footer for the PDF
             doc
-                .fontSize(15)
-                .text(
-                    `Sales Report ${startDate +
-                    " " +
-                    startDate
-                    } to ${endDate + " " + endDate
-                    }`,
-                    50,
-                    50,
-                    {
-                        align: "center",
-                        width: 500,
-                        color: "white",
-                        backgroundColor: "gray",
-                    }
-                );
+    .fontSize(15)
+    .text(
+        `Sales Report ${startDate} to ${endDate}`,
+        50,
+        50,
+        {
+            align: "center",
+            width: 500,
+            color: "white",
+            backgroundColor: "gray",
+        }
+    );
+
 
             const invoiceTableTop = 100;
 
@@ -81,28 +78,30 @@ const generateSalesPDF = async (orders, startDate, endDate) => {
             let sum = 0;
             orders.forEach((x) => {
                 var position = invoiceTableTop + (i + 1) * 30;
-                sum += x.totalAmount;
-                sum -= x.couponDiscount;
+                const totalAmount = x.totalprice || 0;
+                const couponAmount = x.CouponAmound || 0;
+                const finalAmount = totalAmount - couponAmount;
+                sum += finalAmount;
+
                 generateTableRow(
                     doc,
                     position,
                     i + 1,
-                    x._id,
-                    x.userid,
-                    x.orderDate+ x.orderDate,
+                    x.orderID,
+                    x.customer,
+                    x.orderDate +  x.orderDate,
                     x.paymentMethod,
-                    x.couponDiscount,
-                    x.totalAmount || x.discountAmount
+                    couponAmount,
+                    finalAmount
                 );
                 i++;
             });
 
             // Summary rows
             const subtotalPosition = invoiceTableTop + orders.length * 30;
-
             const paidToDatePosition = subtotalPosition + 30;
-
             const duePosition = paidToDatePosition + 30;
+
             generateTableRowNoLine(doc, duePosition, "", "", "Total", "", sum);
 
             // End the document

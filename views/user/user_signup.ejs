@@ -57,6 +57,7 @@
                                     <input type="password" class="form-control" id="confirmPassword" name="confirm_password" placeholder="Confirm Password" style="font-size: 15px;font-family: ui-monospace;" required>
                                     <div class="error-message" id="confirmPasswordError"></div>
                                 </div>
+                                <input type="hidden" id="refId" name="refId" >
                                 <button type="submit" value="Sign Up" class="btn text-white btn-block btn-primary" style="margin-bottom: -17px;">
                                     Sign Up
                                 </button>
@@ -80,6 +81,16 @@
     <script src="/js/popper.min.js"></script>
     <script src="/js/bootstrap.min.js"></script>
     <script src="/js/main.js"></script>
+
+
+
+<script>
+const urlParams = new URLSearchParams(window.location.search);
+const refId = urlParams.get('refId');
+
+    document.getElementById('refId').value=refId;
+</script>
+
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const signupForm = document.getElementById('signupForm');

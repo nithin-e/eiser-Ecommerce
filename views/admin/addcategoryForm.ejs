@@ -37,36 +37,58 @@
                 <label for="name">Category Name</label>
                 <input type="text" id="name" name="name" required>
                 <span style="color: red;" id="error-message"></span>
+
+
+                <label for="Offerprice">Offer Price (optional (10,20,30 only possible))</label>
+            <input type="number" id="Offerprice" name="Offerprice" placeholder="Enter offer price">
+            <span class="error-message" id="offer-error"></span>
             </div>
           
             <div class="form-actions">
                 <button type="submit">Add Category</button>
-               
             </div>
         </form>
     </div>
+
     <script>
-
         document.getElementById("categoryForm").addEventListener("submit", function(event) {
-                const nameInput = document.getElementById("name").value.trim();
-                const errorMessage = document.getElementById("error-message");
-                const specialCharPattern = /[^a-zA-Z\s]/;
-              errorMessage.innerText = ""; // Clear previous error messages
-
-                if (nameInput === "") {
-                    event.preventDefault();
-                    errorMessage.innerText ="Only Space not Allowed "
-                } 
-                if (/\d/.test(nameInput)) {
-                    event.preventDefault();
-                    errorMessage.innerText ="Number not Allowed"
-                } 
-                if (specialCharPattern.test(nameInput)) {
+          const nameInput = document.getElementById("name").value.trim();
+          const offerPriceInput = document.getElementById("Offerprice").value.trim();
+          const errorMessage = document.getElementById("error-message");
+          const offerError = document.getElementById("offer-error");
+          const specialCharPattern = /[^a-zA-Z\s]/;
+          const lowercasePattern = /[a-z]/;
+      
+          // Clear previous error messages
+          errorMessage.innerText = "";
+          offerError.innerText = "";
+      
+          // Validate category name
+          if (nameInput === "") {
+            event.preventDefault();
+            errorMessage.innerText = "Category name is required.";
+          } else if (lowercasePattern.test(nameInput)) {
+            event.preventDefault();
+            errorMessage.innerText = "Category name must be in uppercase.";
+          } else if (/\d/.test(nameInput)) {
+            event.preventDefault();
+            errorMessage.innerText = "Number not allowed in category name.";
+          } else if (specialCharPattern.test(nameInput)) {
             event.preventDefault();
             errorMessage.innerText = "Special characters are not allowed in the name.";
-                 }
-            });
-        </script>
+          }
+      
+          // Validate offer price
+          const allowedOffers = [10, 20, 30];
+          const offerPrice = parseFloat(offerPriceInput);
+      
+          if (offerPriceInput && !allowedOffers.includes(offerPrice)) {
+            event.preventDefault();
+            offerError.innerText = "Offer price must be one of the following values: 10, 20, 30.";
+          }
+        });
+      </script>
+
 
 </body>
 </html>

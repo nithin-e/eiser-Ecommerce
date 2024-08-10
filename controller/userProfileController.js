@@ -62,15 +62,15 @@ module.exports={
 
     //change Password
     EditPassword:async(req,res)=>{
-      const {currentPassword,confirmPassword,id}=req.body
+      const {currentPassword,newPassword,id}=req.body
       console.log("aaale kittanndo Currernt",currentPassword);
-      console.log("aaale kittanndo Conform",confirmPassword);
+      console.log("aaale kittanndo Conform",newPassword);
 
      try {
         const UserInfo=await Userdb.findById(id)
         
         if(!UserInfo){
-            console.log("ithonnnum allah");
+            console.log(" id  ithonnnum allah");
         }else{
             const salt = await bcrypt.genSalt(10);
       const hashedPassword = await bcrypt.hash(currentPassword, salt);
@@ -82,15 +82,15 @@ module.exports={
       if(isMatch){
         
         const salt = await bcrypt.genSalt(10);
-        const ChangedPassword = await bcrypt.hash(confirmPassword, salt);
+        const ChangedPassword = await bcrypt.hash(newPassword, salt);
          UserInfo.password=ChangedPassword
         await UserInfo.save();
         console.log("successfully! updated");
-        res.json({ success: true, msg: "Password updated successfully!"});
+       return res.json({ success: true, msg: "Password updated successfully!"});
         
       }else{
         console.log("ith entha match avathe");
-        res.json({ success: false, msg: "Incorrect password entered!" });
+      return  res.json({ success: false, msg: "Incorrect password entered!" });
       }
             
         }

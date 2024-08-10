@@ -173,93 +173,101 @@ body {
 <!--================End Home Banner Area =================-->
 
 <!--================Single Product Area =================-->
-<div class="product_image_area" style="margin-top: -90px;">
-  <div class="container">
-    <div class="row s_product_inner">
-      <div class="col-lg-6">
-        <div class="s_product_img border-shadow app-figure">
-          <a id="Zoom-1" class="MagicZoom" href="<%= products.images[0] %>" data-zoom-image="<%= products.images[0] %>">
-            <img src="<%= products.images[0] %>" alt="<%= products.productName %>">
-          </a>
-          <div class="selectors">
-            <% for (var i = 0; i < products.images.length; i++) { %>
-            <a data-zoom-id="Zoom-1" href="<%= products.images[i] %>" data-image="<%= products.images[i] %>" data-zoom-image="<%= products.images[i] %>">
-              <img src="<%= products.images[i] %>" style="width: 100px; height: auto;" />
+<% if (products && products.status) { %>
+  <div class="product_image_area" style="margin-top: -90px;">
+    <div class="container">
+      <div class="row s_product_inner">
+        <div class="col-lg-6">
+          <div class="s_product_img border-shadow app-figure">
+            <a id="Zoom-1" class="MagicZoom" href="<%= products.images[0] %>" data-zoom-image="<%= products.images[0] %>">
+              <img src="<%= products.images[0] %>" alt="<%= products.productName %>">
             </a>
-            <% } %>
+            <div class="selectors">
+              <% for (var i = 0; i < products.images.length; i++) { %>
+              <a data-zoom-id="Zoom-1" href="<%= products.images[i] %>" data-image="<%= products.images[i] %>" data-zoom-image="<%= products.images[i] %>">
+                <img src="<%= products.images[i] %>" style="width: 100px; height: auto;" />
+              </a>
+              <% } %>
+            </div>
           </div>
         </div>
-      </div>
-      <div class="col-lg-5 offset-lg-1">
-        <div class="s_product_text">
-          <div style="display: flex; gap: 20px;">
-            <div>
-          <h3><%= products.productName %></h3>
-              <div class="d-flex">
-          <span>Price&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;</span>  
-          <h2  style="font-size: 16px; font-weight: 500; color:red; padding-top: 3px;<% if (products.offerPrice) {%>
-              text-decoration: line-through; text-decoration-color: green;
-              <% } %>">
-           &nbsp; ₹<%= products.price %>&nbsp;&nbsp;
-        </h2>&nbsp;&nbsp;&nbsp;&nbsp;
-        <% if (products.offerPrice) { %>
-          <h6 style="color:green;padding-top: 3px;"> ₹<%= products.offerPrice %></h6>
-          <% } %>
-        </div>
-      </div>
-        </div>
-          <ul class="list">
-            <li>
-              <a class="active" href="#">
-                <span>Category</span> : <%= products.category.name %></a>
-            </li>
-
-            <li>
-              <a class="active" href="#">
-                <span>Brand</span> : <%= products.brand.name %></a>
-            </li>
-
-          <% if (products.stockQuantity>10) { %>
-            <li>
-              <a href="#" style="color: green;font-weight: 900;"> <span style="font-weight: 600;">Availability</span> : <%= products.stockQuantity %>  In Stock </a>
-            </li>
-          
-          <% } else if(products.stockQuantity<10&&products.stockQuantity>=1) { %>
-            <li>
-              <a href="#" style="color: orange;font-weight: 900;"> <span style="color: orange;font-weight: 600;">Availability</span> : <%= products.stockQuantity %> Less Quantity</a>
-            </li>
-            <% }else if(products.stockQuantity==0){ %>
+        <div class="col-lg-5 offset-lg-1">
+          <div class="s_product_text">
+            <div style="display: flex; gap: 20px;">
+              <div>
+                <h3><%= products.productName %></h3>
+                <div class="d-flex">
+                  <span>Price&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;</span>  
+                  <h2 style="font-size: 16px; font-weight: 500;  text-decoration: none;  color:red; padding-top: 3px;<% if (products.offerPrice) {%>
+                    text-decoration: line-through; text-decoration-color: green;
+                  <% } %>">
+                    &nbsp; ₹<%= products.price %>&nbsp;&nbsp;
+                  </h2>&nbsp;&nbsp;&nbsp;&nbsp;
+                  <% if (products.offerPrice) { %>
+                    <h6 style="color:green;padding-top: 3px; text-decoration: none;"> ₹<%= products.offerPrice %></h6>
+                  <% }else if (products.categoryOffer == '10%' || products.categoryOffer == '20%' || products.categoryOffer == '30%'){ %>
+                  <h6 style="color:green;padding-top: 3px; text-decoration: none;"> <%= products.categoryOffer %>Off</h6>
+                  <% } %>
+                </div>
+              </div>
+            </div>
+            <ul class="list">
               <li>
-                <a href="#" style="color:red;font-weight: 900;"> <span style="color: red;font-weight: 600">Availability</span> :  OutOff Stock</a>
+                <a class="active" href="#">
+                  <span>Category</span> : <%= products.category.name %></a>
               </li>
-              <% }%>
-          </ul>
-          <p>Description:<br> <%= products.description %></p>
-          <div class="card_area"> 
-            <% if (products.stockQuantity > 0) { %>
-              <% if (locals.CartExisistIndex === -1 || locals.CartExisistIndex == undefined) { %>
-                <a class="main_btn" onclick="AddToBag('<%= products._id %>')">Add to Cart</a>
-              <% } else { %>
-                <a class="main_btn" href="/View-cart">GO TO BAG</a>
+              <li>
+                <a class="active" href="#">
+                  <span>Brand</span> : <%= products.brand.name %></a>
+              </li>
+              <% if (products.stockQuantity > 10) { %>
+                <li>
+                  <a href="#" style="color: green;font-weight: 900;"> <span style="font-weight: 600;">Availability</span> : <%= products.stockQuantity %>  In Stock </a>
+                </li>
+              <% } else if (products.stockQuantity < 10 && products.stockQuantity >= 1) { %>
+                <li>
+                  <a href="#" style="color: orange;font-weight: 900;"> <span style="color: orange;font-weight: 600;">Availability</span> : <%= products.stockQuantity %> Less Quantity</a>
+                </li>
+              <% } else if (products.stockQuantity == 0) { %>
+                <li>
+                  <a href="#" style="color:red;font-weight: 900;"> <span style="color: red;font-weight: 600">Availability</span> :  Out Of Stock</a>
+                </li>
               <% } %>
-            <% } else { %>
-              <a class="main_btn" style="pointer-events: none; opacity: 0.5;">Out of Stock</a>
-            <% } %>
-            
+            </ul>
+            <p>Description:<br> <%= products.description %></p>
+            <div class="card_area"> 
+              <% if (products.stockQuantity > 0) { %>
+                <% if (locals.CartExisistIndex === -1 || locals.CartExisistIndex == undefined) { %>
+                  <a class="main_btn" onclick="AddToBag('<%= products._id %>')">Add to Cart</a>
+                <% } else { %>
+                  <a class="main_btn" href="/View-cart">GO TO BAG</a>
+                <% } %>
+              <% } else { %>
+                <a class="main_btn" style="pointer-events: none; opacity: 0.5;">Out of Stock</a>
+              <% } %>
               
-
-            <% if (isProductInWishlist) { %>
-              <a class="main_btn" href="/GotoWishList">Wishlist</a>
-            <% } else { %>
-              <a class="main_btn" onclick="ADDWISHLIST('<%= products._id %>')">Add to Wishlist</a>
-            <% } %>
-             
+              <% if (isProductInWishlist) { %>
+                <a class="main_btn" href="/GotoWishList">Wishlist</a>
+              <% } else { %>
+                <a class="main_btn" onclick="ADDWISHLIST('<%= products._id %>')">Add to Wishlist</a>
+              <% } %>
+            </div>
           </div>
         </div>
       </div>
     </div>
   </div>
-</div>
+<% } else { %>
+  <div class="container">
+    <div class="row">
+      <div class="col-12 text-center">
+        <h2>Product not available</h2>
+        <p>The requested product is currently unavailable or has been removed.</p>
+        <a href="/products" class="btn btn-primary">Back to Products</a>
+      </div>
+    </div>
+  </div>
+<% } %>
 <!--================End Single Product Area =================-->
 
 

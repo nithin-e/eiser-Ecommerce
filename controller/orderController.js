@@ -16,18 +16,13 @@ const fs=require('fs')
  async function  updateProductQuantities (ProductIdQuantities) {
  
 for (const oredrItem of ProductIdQuantities) {
-
  const {productId,quantity}=oredrItem
-
  const product =await Product.findById(productId)
-
  if(product){
   product.stockQuantity-=quantity
   await product.save();
  }
-
 }
-
 }
 
 
@@ -50,8 +45,17 @@ for (const orderItem of PruductQuantityInfo) {
 
 
 
+  //generating orderId
+  function generateOrderID() {
+    const safeIndex = Math.floor(Math.random() * 100000);
+    const fiveDigitId = String(safeIndex + 1).padStart(5, "0");
+    return fiveDigitId;
+  }
 
 
+  function getCurrectTime() {
+    return moment().format("hh:mm A");
+  }
 module.exports = {
   OrderInfo: async (req, res) => {
          
@@ -62,19 +66,14 @@ module.exports = {
     const userId = req.session.userId;
     console.log('...........userId...............',userId);
     //generating time and date
-    function getCurrectTime() {
-      return moment().format("hh:mm A");
-    }
+   
 
     //getting that value in session
     const CouponAmound=req.session.Amount
+    console.log('...................', CouponAmound ,'.............................................');
+    
 
-    //generating orderId
-    function generateOrderID() {
-      const safeIndex = Math.floor(Math.random() * 100000);
-      const fiveDigitId = String(safeIndex + 1).padStart(5, "0");
-      return fiveDigitId;
-    }
+  
     try {
       const orderTime = getCurrectTime();
       const CurrectDate = moment();
@@ -237,7 +236,7 @@ module.exports = {
         const user = req.session.user;
         const userId = req.session.userId;
         try {
-            const orderInfo = await orderModel.find({ customer: new ObjectId(userId) }).populate('products.product');
+            const orderInfo = await orderModel.find({ customer: new ObjectId(userId) }).populate('products.product').sort({orderDate:-1});
            
             // console.log("order informations", orderInfo);
             res.render('user/userOrderPage', { user, orderInfo });
@@ -328,7 +327,7 @@ discountCoupon:(req,res)=>{
 const {Amount}=req.body
 console.log('gggggggggg',Amount);
 req.session.Amount=Amount
-res.json({success:true})
+res.json({success:true,Amount})
 },
 
 
@@ -427,10 +426,100 @@ DownLoadInvoice: async(req,res)=>{
       console.error("Error in downloading the invoice:", error);
       res.status(500).json({ success: false, message: "Error in downloading the invoice" });
   }
+},
+
+RazorFailedOrder: async(req,res)=>{
+  const userId = req.session.userId;
+const {addressId,paymentMethod,GrandTotal}=req.body
+const orderId = generateOrderID();
+const CouponAmound=req.session.Amount
+
+ try {
+  const orderTime = getCurrectTime();
+  const CurrectDate = moment();
+  const orderDate = CurrectDate.format("DD-MM-YYYY");
+  console.log('ibde ethandoooooooooooooooooooooooooooooooooooooooooooo');
+  const CART = await CARTMOD.findOne({ userId: userId });
+  if(!CART){
+    console.log('no cart');
+  }else{
+    const ADDRESS = await USERADDRESS.findOne({ userId: userId });
+    const selectedAddress = ADDRESS.addresses.find(
+      (addr) => addr._id.toString() === addressId
+    );
+
+    var newOrderData = {
+      orderID: orderId,
+      customer: userId,
+      address: selectedAddress,
+      totalprice: GrandTotal,
+      orderDate: orderDate,
+      orderTime: orderTime,
+      paymentMethod: paymentMethod,
+      status: "PaymentFailed",
+      products: CART.cartProducts.map((item) => ({
+        product: item.productId,
+        quantity: item.quantity,
+        productImage:item.images,
+        productName:item.productName,
+        productPrice:item.total
+      })),
+      CouponAmound: CouponAmound || 0
+    };
+
+    console.log("entha ibde seeeeeeeeeeeeeeeeeeeeeeeeeeeeen",newOrderData);
+
+    const ProductIdQuantities = CART.cartProducts.map(item => ({
+      productId: item.productId,
+      quantity: item.quantity
+  }));
+  
+  const newOrder = new orderModel(newOrderData);
+  delete req.session.Amount
+  await CARTMOD.findOneAndDelete({ userId: userId });
+await newOrder.save();
+console.log("pakka bro");
+updateProductQuantities(ProductIdQuantities)
+return res.status(200).json({ newOrder });
+  }
+
+ } catch (error) {
+  console.log(error);
+ }
+},
+
+ContinuePayment:async(req,res)=>{
+  console.log('ibde kerindoooooooo');
+  try {
+    const {orderId} = req.body;
+    const userId = req.session.userId;
+    console.log('this is req.body',req.body);
+    console.log('this is userId',userId);
+
+
+    if(!userId){
+      return res.status(401).json({ message: "User not authenticated" });
+    }
+
+   const order =  await orderModel.findOneAndUpdate({orderID:orderId},{
+      $set: {
+        status:"Pending",
+      }
+    },{ new: true });
+
+
+    console.log('...............order.......',order);
+      if(!order){
+      return res.status(404).json({ message: "Order not found" });
+    }
+
+
+return res.status(200).json({ message: "Order repayment successfully" });
+
+  } catch (error) {
+    res.status(500).json({message: "somthing went wrong"});  
+  }
 }
-
-
-
 
 };
 

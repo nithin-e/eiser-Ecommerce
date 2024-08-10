@@ -53,8 +53,7 @@
                     <div class="bg-light rounded d-flex align-items-center justify-content-between p-4">
                         <i class="fa fa-chart-line fa-3x text-primary"></i>
                         <div class="ms-3">
-                            <button class="mb-2" data-bs-toggle="modal" data-bs-target="#salesReportModal" style="color: #009CFF;">DownLoad SalesReport</button>
-                  
+                            <button class="mb-2" data-bs-toggle="modal" data-bs-target="#salesReportModal" style="color: #009CFF;">Download Sales Report</button>
                         </div>
                     </div>
                 </div>
@@ -65,10 +64,10 @@
         <!-- Sales Charts Start -->
         <div class="container-fluid pt-4 px-4">
             <div class="row g-4">
-                <div class="col-sm-12 col-xl-6">
-                    <div class="bg-light text-center rounded p-4" style="height: 515px;">
+                <div class="col-sm-12 col-xl-12">
+                    <div class="bg-light text-center rounded p-4" style="height: 550px;">
                         <div class="d-flex align-items-center justify-content-between mb-4">
-                            <h6 class="mb-0">total Sales</h6>
+                            <h6 class="mb-0">Total Sales</h6>
                             <div class="btn-group" role="group" aria-label="Basic example">
                                 <button class="btn btn-primary" data-filter="day">Day</button>
                                 <button class="btn btn-primary" data-filter="week">Week</button>
@@ -77,13 +76,7 @@
                                 <button class="btn btn-primary" data-filter="all">All Time</button>
                             </div>
                         </div>
-                        <canvas id="reportsChart" style="height: 530px;"></canvas>
-                    </div>
-                </div>
-                <div class="col-sm-12 col-xl-6">
-                    <div class="bg-light text-center rounded p-4">
-                        <h6 class="mb-4">Sales Distribution</h6>
-                        <canvas id="pieChart" style="height: 200px;"></canvas>
+                        <canvas id="reportsChart" style="height: 300px; display: block; box-sizing: border-box; width: 100%;" width="1375" height="687"></canvas>
                     </div>
                 </div>
             </div>
@@ -94,34 +87,131 @@
         <div class="container-fluid pt-4 px-4">
             <div class="bg-light text-center rounded p-4">
                 <div class="d-flex align-items-center justify-content-between mb-4">
-                    <h6 class="mb-0">Recent Sales</h6>
-                    <a href="">Show All</a>
+                    <h6 class="mb-0">Best selling product</h6>
+                    
                 </div>
                 <div class="table-responsive">
                     <table class="table text-start align-middle table-bordered table-hover mb-0">
                         <thead>
                             <tr class="text-dark">
                                 <th scope="col"><input class="form-check-input" type="checkbox"></th>
-                                <th scope="col">Date</th>
-                                <th scope="col">Invoice</th>
-                                <th scope="col">Customer</th>
-                                <th scope="col">Amount</th>
-                                <th scope="col">Status</th>
-                                <th scope="col">Action</th>
+                                <th scope="col">SlNo</th>
+                                <th scope="col">pruduct image</th>
+                                <th scope="col">name</th>
+                                <th scope="col">quantity</th>
+                                <th scope="col">price</th>                       
                             </tr>
                         </thead>
                         <tbody>
-                            <!-- Table rows here -->
-                        </tbody>
+                            <% if (OrderInfo && OrderInfo.length > 0) { %>
+                                <% OrderInfo.forEach((element, index) => { %>
+                                    <tr>
+                                        <td><input class="form-check-input" type="checkbox"></td>
+                                        <td><%= index + 1 %></td>
+                                        <% element.products.forEach(pro => { %>
+                                        <td><img src="<%= pro.productImage[0] %>" alt="Product Image" style="width: 50px; height: 50px;"></td>
+                                        <td><%= pro.productName %></td>
+                                        <td><%= pro.quantity %></td>
+                                        <td><%= pro.productPrice %></td>
+                                    </tr>
+                                    <% }) %>
+                                <% }); %>
+                            </tbody>
+                            <% }else{ %>
+                            <p>no produts</p>
+                            <% } %>
+                        
                     </table>
                 </div>
             </div>
         </div>
         <!-- Recent Sales End -->
 
+
+
+        <div class="container-fluid pt-4 px-4" style="display: flex;">
+            <div class="bg-light text-center rounded p-4" style="width: 50%;">
+                <div class="d-flex align-items-center justify-content-between mb-4">
+                    <h6 class="mb-0">Best selling Category</h6>
+                    
+                </div>
+                <div class="table-responsive">
+                    <table class="table text-start align-middle table-bordered table-hover mb-0">
+                        <thead>
+                            <tr class="text-dark">
+                                <th scope="col"><input class="form-check-input" type="checkbox"></th>
+                                <th scope="col">SlNo</th>
+                                <!-- <th scope="col">Category ID</th> -->
+                                <th scope="col">Category Name</th>
+                                <th scope="col">Total Sold</th>
+                                <th scope="col">Total Revenue</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% if (topCategories && topCategories.length > 0) { %>                    
+                                <% topCategories.forEach((category, index) => { %>
+                                    <tr>
+                                        <td><input class="form-check-input" type="checkbox"></td>
+                                        <td><%= index + 1 %></td>
+                                        
+                                        <td><%= category.name %></td>
+                                        <td><%= category.totalSold %></td>
+                                        <td><%= category.totalRevenues %></td>
+                                    </tr>
+                                <% }); %>
+                            <% } else { %>
+                                <tr>
+                                    <td colspan="6" class="text-center">No products</td>
+                                </tr>
+                            <% } %>
+                        </tbody>
+                    </table>
+                </div>
+                
+            </div>
+
+
+            <div class="bg-light text-center rounded p-4" style="width: 50%;">
+                <div class="d-flex align-items-center justify-content-between mb-4">
+                    <h6 class="mb-0">Best selling Brand</h6>
+                    
+                </div>
+                <div class="table-responsive">
+                    <table class="table text-start align-middle table-bordered table-hover mb-0">
+                        <thead>
+                            <tr class="text-dark">
+                                <th scope="col"><input class="form-check-input" type="checkbox"></th>
+                                <th scope="col">SlNo</th>
+                                <th scope="col">Brand Name</th>
+                                <th scope="col">Total Sold</th>
+                                <th scope="col">Total Revenue</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% if (topBrands && topBrands.length > 0) { %>                    
+                                <% topBrands.forEach((brand, index) => { %>
+                                    <tr>
+                                        <td><input class="form-check-input" type="checkbox"></td>
+                                        <td><%= index + 1 %></td>
+                                        <td><%= brand.name %></td>
+                                        <td><%= brand.totalSold %></td>
+                                        <td><%= brand.totalRevenues %></td>
+                                    </tr>
+                                <% }); %>
+                            <% } else { %>
+                                <tr>
+                                    <td colspan="6" class="text-center">No products</td>
+                                </tr>
+                            <% } %>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
         <!-- Footer Start -->
         <div class="container-fluid pt-4 px-4">
-            <div class="bg-light rounded-top p-4">
+            <div class="bg-light rounded-top p-4" >
                 <div class="row">
                     <div class="col-12 col-sm-6 text-center text-sm-start">
                         &copy; <a href="#">Your Site Name</a>, <h3>eiser</h3>.
@@ -129,14 +219,12 @@
                 </div>
             </div>
         </div>
-        
+        <!-- Footer End -->
     </div>
     
-
     <!-- Back to Top -->
     <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
 </div>
-
 
 <!-- Sales Report Modal -->
 <div class="modal fade" id="salesReportModal" tabindex="-1" aria-labelledby="salesReportModalLabel" aria-hidden="true">
@@ -148,7 +236,6 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <!-- Input fields for start date, end date, and download format -->
                     <div class="mb-3">
                         <label for="startDate" class="form-label">Start Date</label>
                         <input type="date" class="form-control" id="startDate" name="startdate" oninput="validateForm()">
@@ -178,21 +265,10 @@
     </div>
 </div>
 
-
-
-
-
-
-
-
-
-
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
 let salesChart;
-let pieChart;
 
 async function fetchSalesData(period = 'all') {
     try {
@@ -215,11 +291,19 @@ async function createOrUpdateSalesChart(period = 'all') {
         return;
     }
 
-    // Update dynamic labels and amounts
     updateDynamicLabels(salesData);
+
+
+
+
 
     const labels = salesData.map(item => item._id);
     const values = salesData.map(item => item.totalSales);
+
+
+
+
+    console.log('label kittando',labels);
 
     const ctxLine = document.getElementById('reportsChart').getContext('2d');
     const chartConfig = {
@@ -260,61 +344,18 @@ async function createOrUpdateSalesChart(period = 'all') {
     } else {
         salesChart = new Chart(ctxLine, chartConfig);
     }
-
-    // Create or update pie chart
-    const pieLabels = salesData.map(item => item._id);
-    const pieValues = salesData.map(item => item.totalSales);
-
-    const ctxPie = document.getElementById('pieChart').getContext('2d');
-    const pieConfig = {
-        type: 'pie',
-        data: {
-            labels: pieLabels,
-            datasets: [{
-                data: pieValues,
-                backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF'],
-                borderColor: '#fff',
-                borderWidth: 1
-            }]
-        },
-        options: {
-            responsive: true,
-            plugins: {
-                legend: {
-                    position: 'top',
-                },
-                tooltip: {
-                    callbacks: {
-                        label: function(tooltipItem) {
-                            return tooltipItem.label + ': $' + tooltipItem.raw;
-                        }
-                    }
-                }
-            }
-        }
-    };
-
-    if (pieChart) {
-        pieChart.data = pieConfig.data;
-        pieChart.update();
-    } else {
-        pieChart = new Chart(ctxPie, pieConfig);
-    }
 }
 
 function updateDynamicLabels(salesData) {
-    // Calculate total sale
     const totalSale = salesData.reduce((sum, item) => sum + item.totalSales, 0);
     document.getElementById('totalSaleLabel').textContent = 'Total Sale';
     document.getElementById('totalSaleAmount').textContent = `₹${totalSale.toFixed(2)}`;
 
-   
     const todayRevenue = salesData[salesData.length - 1]?.totalSales || 0;
     document.getElementById('todayRevenueLabel').textContent = 'Today Revenue';
     document.getElementById('todayRevenueAmount').textContent = `₹${todayRevenue.toFixed(2)}`;
 
-
-    const totalRevenue = totalSale; // In this example, total revenue is the same as total sale
+    const totalRevenue = totalSale;
     document.getElementById('totalRevenueLabel').textContent = 'Total Revenue';
     document.getElementById('totalRevenueAmount').textContent = `₹${totalRevenue.toFixed(2)}`;
 }
@@ -335,25 +376,16 @@ document.querySelectorAll('[data-filter]').forEach(button => {
 });
 </script>
 
-
 <script>
     document.addEventListener("DOMContentLoaded", function() {
-        // Get the button and the modal
         var downloadSalesReportBtn = document.getElementById("downloadSalesReportBtn");
         var salesReportModal = new bootstrap.Modal(document.getElementById("salesReportModal"));
     
-        // Add click event listener to the button
         downloadSalesReportBtn.addEventListener("click", function() {
-            // Show the modal
             salesReportModal.show();
         });
     });
-    </script>
-
-
-
-
-
+</script>
 
 <script>
     function validateForm() {
@@ -366,12 +398,10 @@ document.querySelectorAll('[data-filter]').forEach(button => {
         const downloadFormatError = document.getElementById('downloadFormatError');
         const generateReportBtn = document.getElementById('generateReportBtn');
 
-        // Reset error messages
         startDateError.innerHTML = "";
         endDateError.innerHTML = "";
         downloadFormatError.innerHTML = "";
 
-        // Validate Start Date
         const currentDate = new Date().toISOString().split('T')[0];
         if (startDate === "") {
             startDateError.innerHTML = "Start Date is required";
@@ -379,7 +409,6 @@ document.querySelectorAll('[data-filter]').forEach(button => {
             startDateError.innerHTML = "Start Date must be less than or equal to the current date";
         }
 
-        // Validate End Date
         if (endDate === "") {
             endDateError.innerHTML = "End Date is required";
         } else if (endDate > currentDate) {
@@ -388,12 +417,10 @@ document.querySelectorAll('[data-filter]').forEach(button => {
             endDateError.innerHTML = "End Date cannot be less than Start Date";
         }
 
-        // Validate Download Format
         if (downloadFormat === "") {
             downloadFormatError.innerHTML = "Download Format is required";
         }
 
-        // Enable or disable the Generate Report button based on validation
         if (!startDateError.innerHTML && !endDateError.innerHTML && !downloadFormatError.innerHTML) {
             generateReportBtn.disabled = false;
         } else {
@@ -402,11 +429,8 @@ document.querySelectorAll('[data-filter]').forEach(button => {
     }
 
     function generateReport() {
-        
         $('#salesReportModal').modal('hide');
     }
 </script>
 
-
-
-<%- include('../admin/adminpartials/footer') -%>
+<%- include('../admin/adminpartials/Footer') -%>

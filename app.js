@@ -8,7 +8,8 @@ const nocache = require("nocache");
 const fileUpload = require("express-fileupload");
 require("./config/passport");
 const cors = require('cors');
-// const morgan = require("morgan");
+const { v4: uuidv4 } = require("uuid");
+const morgan = require("morgan");
 
 const mongoose = require("./config/connectMongo");
 var indexRouter = require("./routes/index");
@@ -22,15 +23,16 @@ var app = express();
 app.use(nocache());
 app.use(
   session({
-    secret: "your_secret_key",
+    secret: uuidv4(),
     resave: false,
     saveUninitialized: true,
-    // cookie: { secure: false }
-    cookie: { maxAge: 120000 },
+    cookie: {
+      maxAge: 30 * 24 * 60 * 60 * 1000 
+    }
   })
 );
 
-// app.use(morgan("dev"));
+app.use(morgan("dev"));
 
 app.use((req, res, next) => {
   res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");

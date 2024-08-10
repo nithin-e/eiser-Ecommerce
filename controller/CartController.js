@@ -3,26 +3,60 @@ const userdb = require("../models/usermodel");
 const CARTMOD = require("../models/cartModel");
 const Coupon= require('../models/CouponModel')
 
+
 module.exports = {
-  ShowCartPage: async (req, res) => {
+  
+ ShowCartPage: async (req, res) => {
     const userId = req.session.userId;
     try {
-      let cartItems = await CARTMOD.findOne({ userId: userId });
       const user = req.session.user;
   
+      let cartItems = await CARTMOD.findOne({ userId })
+        .populate({
+          path: "cartProducts.productId",
+          model: 'Product',
+        })
+        .lean();
+  
       if (!cartItems || !cartItems.cartProducts || cartItems.cartProducts.length === 0) {
-        return res.render("user/cartPage", { cartItems: [], user });
+        return res.render("user/cartPage", { cartItems: [], user, grandTotal: 0, subtotal: 0, shippingCost: 0 });
       }
-
- 
-  //  console.log("CouponInfo",CouponInfo);
-      res.render("user/cartPage", { cartItems: [cartItems], user });
+  
+      // Calculate subtotal only for products with status true
+      let subtotal = 0;
+      cartItems.cartProducts.forEach(product => {
+        if (product.productId && product.productId.status) {
+          let productTotal;
+          if (product.categoryOffer == '10' || product.categoryOffer == '20' || product.categoryOffer == '30') {
+            let discount = product.total * parseInt(product.categoryOffer) / 100;
+            let discounts=Math.floor(discount)
+            productTotal = discounts * product.quantity;
+            console.log('.........kittando..........');
+            
+          } else {
+            productTotal = product.total * product.quantity;
+          }
+          subtotal += productTotal;
+        }
+      });
+  
+      // Determine shipping cost and grand total
+      let shippingCost = subtotal > 0 ? 100 : 0;
+      let grandTotal = subtotal + shippingCost;
+  
+      res.render("user/cartPage", { 
+        cartItems: [cartItems], 
+        user, 
+        grandTotal,
+        subtotal,
+        shippingCost
+      });
+  
     } catch (error) {
       console.error("Error showing cart page:", error);
       res.status(500).json({ message: "Internal server error" });
     }
   },
-  
 
 
 
@@ -39,6 +73,9 @@ module.exports = {
       if(userId){ 
       const productInfo = await Product.findById(id);
       console.log("name settaaakktto",productInfo);
+      const numericValue = parseFloat(productInfo.categoryOffer.replace('%', ''));
+      console.log('...........marindo.........................',numericValue);
+      
       if (!productInfo) {
         return res.status(404).json({ message: "Product not found" });
       } else {
@@ -55,7 +92,8 @@ module.exports = {
               productName:productInfo.productName,
               productId: id,
               quantity: 1,
-              total: productInfo.price,
+              categoryOffer:numericValue,
+              total: productInfo.offerPrice && productInfo.price ? productInfo.offerPrice : productInfo.price,
               subtotal: productInfo.price,
               Grandtotal: 0,
               images: productInfo.images,
@@ -75,6 +113,7 @@ module.exports = {
               productName:productInfo.productName,
               productId: id,
               quantity: 1,
+              categoryOffer:numericValue,
               total: productInfo.offerPrice && productInfo.price ? productInfo.offerPrice : productInfo.price,
               subtotal: productInfo.price,
               Grandtotal: 0,
@@ -133,53 +172,58 @@ module.exports = {
 
 
 
-
-
-
   updateQuantity: async (req, res) => {
     const { id } = req.params;
-console.log("loook the req.body",req.body);
     const { quantity } = req.body;
-    console.log(typeof quantity, "da mwone");
     const userId = req.session.userId;
-    console.log("Product ID:", id);
-
+  
     try {
       const findCart = await CARTMOD.findOne({ userId: userId });
-
-      const productIndex = findCart.cartProducts.findIndex( (p) => p.productId.toString() === id);
-       
-      
-
-      console.log("Product index:", productIndex);
-
+      if (!findCart) {
+        return res.status(404).json({ message: "Cart not found" });
+      }
+  
+      const productIndex = findCart.cartProducts.findIndex(
+        (p) => p.productId.toString() === id
+      );
+  
       if (productIndex !== -1) {
-        console.log("ivade onn nokkada",quantity);
-
-          
         // Update quantity
         findCart.cartProducts[productIndex].quantity += parseInt(quantity);
-        
-        console.log(
-          "cartile count",
-          findCart.cartProducts[productIndex].quantity
-        );
-
+  
         // Calculate subtotal
         let subtotal = 0;
         findCart.cartProducts.forEach((product) => {
-          const total = parseFloat(product.total);
+          let total;
           const qty = parseInt(product.quantity);
-          subtotal += total * qty;
+  
+          if (product.categoryOffer === '10' || product.categoryOffer === '20' || product.categoryOffer === '30') {
+            const discount = product.total * product.categoryOffer / 100;
+            const discounts = Math.floor(discount);
+            console.log('discounts ethre varane',discounts);
+            total =  discounts;
+            console.log('total ethre varane',total);
+            subtotal += total * qty;
+           return product.subtotal=subtotal
+          } else {
+            total = parseFloat(product.total);
+            console.log('total ethre varane elsente ullil',total);
+          return  subtotal += total * qty;
+          }
+  
+          
         });
+  
+        console.log('if nte porathe subtotol',subtotal);
 
-        // Update subtotal in findCart
+        // console.log('data basithe subtotal',findCart.subtotal);
+        findCart.cartProducts[productIndex].subtotal=subtotal
 
-        findCart.subtotal = subtotal;
+        
+        // Update and save cart
+        // findCart.subtotal = subtotal;
         await findCart.save();
-
-        console.log("Updated subtotal:", subtotal);
-        res.json({ success: true });
+        res.json({ success: true, subtotal: subtotal });
       } else {
         res.status(404).json({ message: "Product not found in cart" });
       }
@@ -188,7 +232,7 @@ console.log("loook the req.body",req.body);
       res.status(500).json({ error: "Internal server error" });
     }
   },
-
+  
 
 
 

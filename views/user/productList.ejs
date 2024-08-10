@@ -12,446 +12,482 @@
 </head> 
 <body>
 
-  <section class="" style="margin-top: 210px;">
-    <div class="container">
-      <div class="row" style="margin: -70px;padding-bottom: 100px;">
 
-        <div class="col-lg-3">
-          <button class="btn btn-outline-secondary mb-3 w-100 d-lg-none" type="button" data-mdb-toggle="collapse"
-            data-mdb-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
-            aria-label="Toggle navigation">
-            <span>Show filter</span>
-          </button>
+  <style>
+    /* General form styling */
+#filterForm {
+  font-family: 'Arial', sans-serif;
+  max-width: 300px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
 
-          <div class="collapse card d-lg-block mb-5" id="navbarSupportedContent">
-            <div class="accordion" id="accordionPanelsStayOpenExample">
+/* Accordion item styling */
+.accordion-item {
+  margin-bottom: 15px;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  overflow: hidden;
+}
 
-              <form id="filterForm"  >
-                
-                <div class="accordion-item">
-                  <h2 class="accordion-header" id="headingCategory">
-                    <button class="accordion-button text-dark bg-light" type="button" data-mdb-toggle="collapse"
-                      data-mdb-target="#panelsStayOpen-collapseCategory" aria-expanded="true"
-                      aria-controls="panelsStayOpen-collapseCategory">
-                      Category
-                    </button>
-                  </h2>
-                  <div id="panelsStayOpen-collapseCategory" class="accordion-collapse collapse show"
-                    aria-labelledby="headingCategory">
-                    <div class="accordion-body">
-                      <div>
-                        <% allCategories.forEach(category => { %>
-                        <div class="form-check">
-                          <input class="form-check-input" type="checkbox" id="CategoryCheckbox_<%= category.name %>" name="categories" value="<%= category.name %>" />
-                          <label class="form-check-label" for="CategoryCheckbox_<%= category.name %>"><%= category.name %></label>
+/* Accordion header styling */
+.accordion-header {
+  background-color: #ffffff;
+}
+
+.accordion-button {
+  width: 100%;
+  padding: 15px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+  background-color: #f1f3f5;
+  border: none;
+  text-align: left;
+  transition: background-color 0.3s ease;
+}
+
+.accordion-button:hover {
+  background-color: #e9ecef;
+}
+
+.accordion-button:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
+/* Accordion body styling */
+.accordion-body {
+  padding: 15px;
+  background-color: #ffffff;
+}
+
+/* Checkbox styling */
+.form-check {
+  margin-bottom: 10px;
+}
+
+.form-check-input {
+  margin-right: 10px;
+}
+
+.form-check-label {
+  font-size: 14px;
+  color: #495057;
+}
+
+/* Range input styling */
+.form-range {
+  width: 100%;
+  margin-top: 10px;
+}
+
+/* Price inputs styling */
+.form-outline {
+  margin-top: 10px;
+}
+
+.form-outline input {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+/* Apply button styling */
+#filterProduct {
+  width: 100%;
+  padding: 10px;
+  margin-top: 15px;
+  background-color: #71cd14;
+  color: #ffffff;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+#filterProduct:hover {
+  background-color: #71cd14;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  #filterForm {
+    max-width: 100%;
+    padding: 15px;
+  }
+}
+  </style>
+
+
+
+<style>
+  .product-img {
+    position: relative;
+    overflow: hidden;
+  }
+  .stock-badge {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    background-color: rgba(255, 255, 255, 0.9);
+    color: #333;
+    padding: 6px 12px;
+    font-size: 12px;
+    font-weight: 600;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+  }
+  .stock-badge .dot {
+    width: 8px;
+    height: 8px;
+    background-color: #2ecc71;
+    border-radius: 50%;
+    margin-right: 6px;
+    animation: pulse 2s infinite;
+  }
+  .stock-badge .text {
+    opacity: 0;
+    width: 0;
+    overflow: hidden;
+    transition: all 0.3s ease;
+  }
+  .single-product:hover .stock-badge {
+    padding-right: 20px;
+  }
+  .single-product:hover .stock-badge .text {
+    opacity: 1;
+    width: auto;
+  }
+  @keyframes pulse {
+    0% {
+      transform: scale(0.95);
+      box-shadow: 0 0 0 0 rgba(46, 204, 113, 0.7);
+    }
+    70% {
+      transform: scale(1);
+      box-shadow: 0 0 0 10px rgba(46, 204, 113, 0);
+    }
+    100% {
+      transform: scale(0.95);
+      box-shadow: 0 0 0 0 rgba(46, 204, 113, 0);
+    }
+  }
+</style>
+
+<style>
+  .product-img-wrapper {
+    position: relative;
+  }
+  .heart-icon {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    color: red;
+  }
+  .stock-badge {
+    position: absolute;
+    left: 10px;
+    padding: 5px;
+    border-radius: 5px;
+    color: white;
+  }
+</style>
+
+
+<style>
+  .pagination {
+    margin-top: -58px;
+    display: flex;
+    justify-content: center;
+    font-family: Arial, sans-serif;
+  }
+
+  .pagination ul {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    background-color: var(--card-background);
+    border-radius: 25px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  }
+
+  .pagination li {
+    margin: 5px;
+  }
+
+  .pagination li a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    color: var(--text-color);
+    border-radius: 50%;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    font-size: 14px;
+    background-color: #e0e0e0; /* Default button color */
+  }
+
+  .pagination li.active a {
+    background-color: #71cd14; /* Highlight color */
+    color: #fff; /* White text */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  }
+
+  .pagination li a:hover {
+    background-color: #c0f3a1; /* Slightly lighter green for hover */
+    transform: scale(1.1);
+  }
+
+  .pagination li.disabled a {
+    opacity: 0.5;
+    pointer-events: none;
+    background-color: #d0d0d0; /* Gray background for disabled buttons */
+  }
+
+  .pagination .prev-next a {
+    font-size: 18px;
+    width: 40px;
+    height: 40px;
+    background-color: #f4f4f4; /* Light gray for prev/next buttons */
+  }
+
+  .pagination .prev-next a:hover {
+    background-color: #d0d0d0; /* Darker gray on hover for prev/next buttons */
+  }
+</style>
+
+
+
+
+
+<section style="margin-top: 210px;">
+  <div class="container">
+    <div class="row" style="margin: -70px; padding-bottom: 100px;">
+
+      <div class="col-lg-3" style="margin-top: -50px;">
+        <button class="btn btn-outline-secondary mb-3 w-100 d-lg-none" type="button" data-mdb-toggle="collapse"
+          data-mdb-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+          aria-label="Toggle navigation">
+          <span>Show filter</span>
+        </button>
+
+        <div class="collapse card d-lg-block mb-5" id="navbarSupportedContent">
+          <div class="accordion" id="accordionPanelsStayOpenExample">
+            <form id="filterForm">
+              <div class="accordion-item">
+                <h2 class="accordion-header" id="headingCategory">
+                  <button class="accordion-button text-dark bg-light" type="button" data-mdb-toggle="collapse"
+                    data-mdb-target="#panelsStayOpen-collapseCategory" aria-expanded="true"
+                    aria-controls="panelsStayOpen-collapseCategory">
+                    Category
+                  </button>
+                </h2>
+                <div id="panelsStayOpen-collapseCategory" class="accordion-collapse collapse show"
+                  aria-labelledby="headingCategory">
+                  <div class="accordion-body">
+                    <div>
+                      <% allCategories.forEach(category => { %>
+                      <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="CategoryCheckbox_<%= category.name %>" name="categories" value="<%= category.name %>" />
+                        <label style="font-weight: bolder; font-family: unset;" class="form-check-label" for="CategoryCheckbox_<%= category.name %>"><%= category.name %></label>
+                      </div>
+                      <% }) %>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="accordion-item">
+                <h2 class="accordion-header" id="headingBrands">
+                  <button class="accordion-button text-dark bg-light" type="button" data-mdb-toggle="collapse"
+                    data-mdb-target="#panelsStayOpen-collapseBrands" aria-expanded="true"
+                    aria-controls="panelsStayOpen-collapseBrands">
+                    Brands
+                  </button>
+                </h2>
+                <div id="panelsStayOpen-collapseBrands" class="accordion-collapse collapse show"
+                  aria-labelledby="headingBrands">
+                  <div class="accordion-body">
+                    <div>
+                      <% products.forEach(brand => { %>
+                      <% if (brand.brand && brand.brand.name) { %>
+                      <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="brandCheckbox_<%= brand.brand.name %>" name="brands" value="<%= brand.brand.name %>" />
+                        <label style="font-weight: bolder; font-family: unset;" class="form-check-label" for="brandCheckbox_<%= brand.brand.name %>"><%= brand.brand.name %></label>
+                      </div>
+                      <% } %>
+                      <% }) %>
+                      <span class="badge badge-secondary float-end"></span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="accordion-item">
+                <h2 class="accordion-header" id="headingThree">
+                  <button class="accordion-button text-dark bg-light" type="button" data-mdb-toggle="collapse"
+                    data-mdb-target="#panelsStayOpen-collapseThree" aria-expanded="false"
+                    aria-controls="panelsStayOpen-collapseThree">
+                    Price
+                  </button>
+                </h2>
+                <div id="panelsStayOpen-collapseThree" class="accordion-collapse collapse show"
+                  aria-labelledby="headingThree">
+                  <div class="accordion-body">
+                    <div class="range">
+                      <input type="range" class="form-range" id="priceRange" min="0" max="50000" oninput="updateMaxPrice()" />
+                    </div>
+                    <div class="row mb-3">
+                      <div class="col-6">
+                        <p class="mb-0">Min</p>
+                        <div class="form-outline">
+                          <input type="number" id="minPrice" name="minPrice" class="form-control" value="0" readonly />
+                          <label class="form-label" for="minPrice">₹ 0</label>
                         </div>
-                        <% }) %>
+                      </div>
+                      <div class="col-6">
+                        <p class="mb-0">Max</p>
+                        <div class="form-outline">
+                          <input type="number" id="maxPrice" name="maxPrice" class="form-control" value="50000" readonly />
+                          <label class="form-label" for="maxPrice">₹ 50,000</label>
+                        </div>
+                      </div>
+                    </div>
+                    <button type="submit" id="filterProduct" class="btn btn-white w-100 border border-secondary">Apply</button>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-9" style="border-top: 2px solid green; max-width: 74%;  margin-top: -50px;">
+        <div class="search-container" style="margin-left: 700px; margin-top: 8px;">
+          <input type="text" id="searchInput" class="search-box" value="" placeholder="Search...">
+        </div>
+
+        <header class="d-sm-flex align-items-center border-bottom mb-4 pb-3"></header>
+
+
+
+        <section class="inspired_product_area section_gap_bottom_custom">
+          <div class="container">
+            <div class="row">
+              <% products.forEach(product => { %>
+              <div class="col-lg-3 col-md-4">
+                <div class="single-product">
+                  <div class="product-img">
+                    <a href="/ViewProduct/<%= product._id %>">
+                      <img class="img-fluid w-100" src="<%= product.images[0] %>" alt="" />
+                    </a>
+                    <% if (product.stockQuantity == 0) { %>
+                      <div class="stock-badge" style="color: red;">
+                        Out of Stock
+                      </div>
+                    <% } else if (product.stockQuantity < 10) { %>
+                      <div class="stock-badge" style="color: orange;">
+                        Limited Stock
+                      </div>  
+                    <% } else { %>
+                      <div class="stock-badge" style="color: green;">
+                        In Stock
+                      </div> 
+                    <% } %>
+                    <a href="#" class="heart-icon" style="position: absolute; top: 10px; right: 10px; color:#71cd14; text-decoration: none; font-size:larger;">
+                      <i class="ti-heart"></i>
+                    </a>
+                  </div>
+                  <div class="product-btm">
+                    <a href="#" class="d-block" style="text-decoration: none;">
+                      <h4><%= product.productName %></h4>
+                    </a>
+                    <div style="display: flex; align-items: center; justify-content: space-between;">
+                      <div>
+                        <span 
+                          style="font-size: 16px; font-weight: 500; color: gray; <% if (product.offerPrice) { %> text-decoration: line-through; text-decoration-color: green;<% } %>" 
+                          class="single-price">
+                          ₹<%= product.price %>&nbsp;
+                        </span>
+                      </div>
+                      <% if (product.offerPrice) { %>
+                        <div style="margin-left: 10px;">
+                          <span style="color: green; font-size: 14px; text-decoration: none;" class="offer-price">₹<%= product.offerPrice %></span>
+                        </div>
+                      <% } else if (product.categoryOffer == '10%' || product.categoryOffer == '20%' || product.categoryOffer == '30%') { %>
+                        <span style="color: green; font-size: 14px; text-decoration: none;" class="offer-price">₹<%= product.categoryOffer %> Off</span>
+                      <% } %>
+                      <div style="display: flex; align-items: center;">
+                        <a href="#" class="cart-icon">
+                          <i class="ti-shopping-cart" style="font-size: 1.5rem; color: #71cd14; text-decoration: none;"></i>
+                        </a>
                       </div>
                     </div>
                   </div>
                 </div>
-           
-                 <div class="accordion-item">
-                  <h2 class="accordion-header" id="headingBrands">
-                      <button class="accordion-button text-dark bg-light" type="button" data-mdb-toggle="collapse"
-                          data-mdb-target="#panelsStayOpen-collapseBrands" aria-expanded="true"
-                          aria-controls="panelsStayOpen-collapseBrands">
-                          Brands
-                      </button>
-                  </h2>
-                  <div id="panelsStayOpen-collapseBrands" class="accordion-collapse collapse show"
-                      aria-labelledby="headingBrands">
-                      <div class="accordion-body">
-                        <div>
-                            <% products.forEach(brand => { %>
-                            <% if (brand.brand && brand.brand.name) { %>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="brandCheckbox_<%= brand.brand.name %>" name="brands" value="<%= brand.brand.name %>" />
-                                <label class="form-check-label" for="brandCheckbox_<%= brand.brand.name %>"><%= brand.brand.name %></label>
-                            </div>
-                            <% } %>
-                            <% }) %>
-                            <span class="badge badge-secondary float-end"></span>
-                        </div>
-                    </div>
-                  </div>
               </div>
-
-                <div class="accordion-item">
-                    <h2 class="accordion-header" id="headingThree">
-                        <button class="accordion-button text-dark bg-light" type="button" data-mdb-toggle="collapse"
-                            data-mdb-target="#panelsStayOpen-collapseThree" aria-expanded="false"
-                            aria-controls="panelsStayOpen-collapseThree">
-                            Price
-                        </button>
-                    </h2>
-                    <div id="panelsStayOpen-collapseThree" class="accordion-collapse collapse show"
-                        aria-labelledby="headingThree">
-                        <div class="accordion-body">
-                            <div class="range">
-                                <input type="range" class="form-range" id="priceRange" 
-                                    min="0" max="50000" oninput="updateMaxPrice()" />
-                            </div>
-                            <div class="row mb-3">
-                                <div class="col-6">
-                                    <p class="mb-0">Min</p>
-                                    <div class="form-outline">
-                                        <input type="number" id="minPrice" name="minPrice"
-                                            class="form-control" value="0" readonly />
-                                        <label class="form-label" for="minPrice">₹ 0</label>
-                                    </div>
-                                </div>
-                                <div class="col-6">
-                                    <p class="mb-0">Max</p>
-                                    <div class="form-outline">
-                                        <input type="number" id="maxPrice" name="maxPrice"
-                                            class="form-control" value="50000" readonly />
-                                        <label class="form-label" for="maxPrice">₹ 50,000</label>
-                                    </div>
-                                </div>
-                            </div>
-                            <button type="submit"  id="filterProduct"  class="btn btn-white w-100 border border-secondary">Apply</button>
-                        </div>
-                    </div>
-                </div>
-            </form>
+              <% }) %>
             </div>
           </div>
-        </div>
-        <div class="col-lg-9" style="border-top: 2px solid green;         max-width: 74%">
+        </section>
 
-          
-          <div class="search-container" style="margin-left: 700px; margin-top:8px;">
-            <input type="text" id="searchInput" class="search-box" value="" placeholder="Search...">
-          </div>
+       
 
 
-          <header class="d-sm-flex align-items-center border-bottom mb-4 pb-3" >
-            <div class="ms-auto">
-            </div>
-          </header>
 
 
- 
-<style>
- @import url('https://fonts.googleapis.com/css?family=Roboto:400,500,700');
-*
-{
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-}
 
-body {
-    font-family: 'Roboto', sans-serif;
-}
 
-a {
-    text-decoration: none;
-}
 
-.product-card {
-    margin-top: 13px;
-    width: 300px;
-    box-shadow: 0 2px 7px #dfdfdf;
-    background: #fafafa;
-}
-
-.badge {
-    position: absolute;
-    left: 0;
-    text-transform: uppercase;
-    font-size: 13px;
-    font-weight: 700;
-    background: red;
-    color: #fff;
-    padding: 3px 10px;
-}
-
-.product-tumb {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 300px;
-    padding: 50px;
-    background: #f0f0f0;
-    overflow: hidden;
-}
-
-.product-tumb img {
-    max-width: 100%;
-    max-height: 100%;
-    width: auto;
-    height: auto;
-    display: block;
-    margin: 0 auto;
-}
-
-.product-details {
-    padding: 30px;
-}
-
-.product-catagory {
-    display: block;
-    font-size: 12px;
-    font-weight: 700;
-    text-transform: uppercase;
-    color: #ccc;
-    margin-bottom: 18px;
-}
-
-.product-details h4 a {
-    font-weight: 500;
-    display: block;
-    margin-bottom: 18px;
-    text-transform: uppercase;
-    color: #363636;
-    text-decoration: none;
-    transition: 0.3s;
-}
-
-.product-details h4 a:hover {
-    color: #fbb72c;
-}
-
-.product-details p {
-    font-size: 15px;
-    line-height: 22px;
-    margin-bottom: 18px;
-    color: #999;
-}
-
-.product-bottom-details {
-    overflow: hidden;
-    border-top: 1px solid #eee;
-    padding-top: 20px;
-}
-
-.product-bottom-details div {
-    float: left;
-    width: 50%;
-}
-
-.product-price {
-    font-size: 18px;
-    color: #fbb72c;
-    font-weight: 600;
-}
-
-.product-price small {
-    font-size: 80%;
-    font-weight: 400;
-    text-decoration: line-through;
-    display: inline-block;
-    margin-right: 5px;
-}
-
-.product-links {
-    text-align: right;
-}
-
-.product-links a {
-    display: inline-block;
-    margin-left: 5px;
-    color: #e1e1e1;
-    transition: 0.3s;
-    font-size: 17px;
-}
-
-.product-links a:hover {
-    color: #fbb72c;
-}
-
-.single-product {
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    transition: box-shadow 0.3s ease;
-    margin-bottom: 15px;
-}
-
-.single-product:hover {
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-}
-
-.product-img {
-    height: 200px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-}
-
-.product-img img {
-    max-width: 100%;
-    max-height: 100%;
-    width: auto;
-    height: auto;
-    transition: transform 0.3s ease;
-}
-
-.product-img:hover img {
-    transform: scale(1.05);
-}
-
-.p_icon {
-    display: flex;
-    justify-content: center;
-    margin-top: 10px;
-}
-
-.p_icon a {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 40px;
-    height: 40px;
-    margin-right: 5px;
-    background-color: white;
-    border-radius: 50%;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    transition: background-color 0.3s ease, transform 0.3s ease;
-}
-
-.p_icon a:hover {
-    background-color: #f8f8f8;
-    transform: scale(1.1);
-}
-
-.p_icon a i {
-    color: #333;
-    font-size: 16px;
-}
-
-.products-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 20px;
-}
-
-.products-grid .single-product {
-    background: #fff;
-  
-    border-radius: 10px;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.products-grid .single-product:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-}
-.offer-price {
-  color: #ff4500; 
-  font-size: 1.2em; 
-  font-weight:100; 
-  margin-left: 10px; 
-}
-</style>
-
-<div class="products-grid">
-  <% products.forEach(product => { %>
-    <% if (product.status === true) { %>
-      <div class="single-product position-relative">
-        <div class="product-img">
-          <img class="img-fluid w-100" src="<%= product.images[0] %>" alt="" />
-          <div class="p_icon">
-            <a href="/ViewProduct/<%= product._id %>">
-              <i class="ti-eye"></i>
-            </a>
-            <a href="#">
-              <i class="ti-heart"></i>
-            </a>
-            <a href="#">
-              <i class="ti-shopping-cart"></i>
-            </a>
-          </div>
-        </div>
-        <div class="product-btm">
-          <a href="#" class="d-block">
-            <h4><%= product.productName %></h4>
-          </a>
-          <div style="display: flex;">
-            <div class="mt-3">
-              <span 
-                style="font-size: 16px; font-weight: 500; color:gray; <% if (product.offerPrice) { %> text-decoration: line-through; text-decoration-color: green;<% } %>" 
-                class="single-price">
-                ₹<%= product.price %>&nbsp;&nbsp;
-              </span>
-            </div>
-            <% if (product.offerPrice) { %>
-              <div class="mt-3">
-                <span style="color:green;font-size: 14px;" class="offer-price">₹<%= product.offerPrice %></span>
-              </div>
-            <% } %>
-          </div>
-        </div>
-        <!-- Badge positioned at the bottom left -->
-         <% if (product.stockQuantity==0) { %>
-          <div
-          class="bg-danger rounded text-white position-absolute end-0 bottom-0 m-2 py-1 px-2"
-          style="font-size: 0.75rem;"
-        >
-          OutOf 
-        </div>
-         <% } else if(product.stockQuantity<10){ %>
-          <div
-          class="bg-warning rounded text-dark position-absolute end-0 bottom-0 m-2 py-1 px-2"
-          style="font-size: 0.75rem;"
-        >
-          Limited
-        </div>
-          <% }else{ %>
-            <div
-            class="bg-success rounded text-white position-absolute end-0 bottom-0 m-2 py-1 px-2"
-            style="font-size: 0.75rem;"
-          >
-            In Stock
-          </div>
+     
+      
+<div class="pagination">
+  <% if (pages > 1) { %>
+      <ul style="color: 71cd14;">
+          <li class="prev-next <%= current === 1 ? 'disabled' : '' %>">
+              <a href="?page=<%= current - 1 %>">&laquo;</a>
+          </li>
+          <% for (let i = 1; i <= pages; i++) { %>
+              <% if (i === 1 || i === pages || (i >= current - 1 && i <= current + 1)) { %>
+                  <li class="<%= i === current ? 'active' : '' %>">
+                      <a href="?page=<%= i %>"><%= i %></a>
+                  </li>
+              <% } else if (i === current - 2 || i === current + 2) { %>
+                  <li class="disabled"><a href="#">...</a></li>
+              <% } %>
           <% } %>
+          <li class="prev-next <%= current === pages ? 'disabled' : '' %>">
+              <a href="?page=<%= current + 1 %>">&raquo;</a>
+          </li>
+      </ul>
+  <% } %>
+</div>   
       </div>
-    <% } %>
-  <% }) %>
-</div>
 
-
-
-
-
-<nav aria-label="Page navigation example">
-  <ul class="pagination justify-content-center">
-    <% if (current > 1) { %>
-      <li class="page-item">
-        <a class="page-link" href="?page=<%= current - 1 %>">Previous</a>
-      </li>
-    <% } else { %>
-      <li class="page-item disabled">
-        <a class="page-link" href="#">Previous</a>
-      </li>
-    <% } %>
-
-    <% for (let i = 1; i <= pages; i++) { %>
-      <li class="page-item <%= current == i ? 'active' : '' %>">
-        <a class="page-link" href="?page=<%= i %>"><%= i %></a>
-      </li>
-    <% } %>
-
-    <% if (current < pages) { %>
-      <li class="page-item">
-        <a class="page-link" href="?page=<%= current + 1 %>">Next</a>
-      </li>
-    <% } else { %>
-      <li class="page-item disabled">
-        <a class="page-link" href="#">Next</a>
-      </li>
-    <% } %>
-  </ul>
-</nav>
-</div>
-</div>
-</div>
-</div>
-</div>
+    </div>
+  </div>
 </section>
 
-             
+
+
+
+
+
+
    
 
 
@@ -550,13 +586,15 @@ event.preventDefault()
 });
 
 function renderProducts(products) {
-  const productsGrid = document.querySelector('.products-grid');
+  const productsGrid = document.querySelector('.inspired_product_area .container .row');
   productsGrid.innerHTML = ''; // Clear the current products
 
   if (products.length === 0) {
     productsGrid.innerHTML = `
-      <div class="no-products">
-        <p>No products found</p>
+      <div class="col-12">
+        <div class="no-products">
+          <p>No products found</p>
+        </div>
       </div>
     `;
     return;
@@ -564,39 +602,51 @@ function renderProducts(products) {
 
   products.forEach(product => {
     if (product.status === true) {
+      const stockBadgeColor = product.stockQuantity === 0
+        ? 'red'
+        : product.stockQuantity < 10
+        ? 'orange'
+        : 'green';
+
       const productHTML = `
-        <div class="single-product">
-          <div class="product-img">
-            <img class="img-fluid w-100" src="${product.images[0]}" alt="" />
-            <div class="p_icon">
+        <div class="col-lg-3 col-md-4">
+          <div class="single-product">
+            <div class="product-img">
               <a href="/ViewProduct/${product._id}">
-                <i class="ti-eye"></i>
+                <img class="img-fluid w-100" src="${product.images[0]}" alt="" />
               </a>
-              <a href="#">
+              <div class="stock-badge" style="color: ${stockBadgeColor};">
+                ${product.stockQuantity === 0 ? 'Out of Stock' : product.stockQuantity < 10 ? 'Limited Stock' : 'In Stock'}
+              </div>
+              <a href="#" class="heart-icon" style="position: absolute; top: 10px; right: 10px; color: red; text-decoration: none;">
                 <i class="ti-heart"></i>
               </a>
-              <a href="#">
-                <i class="ti-shopping-cart"></i>
-              </a>
             </div>
-          </div>
-          <div class="product-btm">
-            <a href="#" class="d-block">
-              <h4>${product.productName}</h4>
-            </a>
-            <div style="display: flex;">
-              <div class="mt-3">
-                <span 
-                  style="font-size: 16px; font-weight: 500; color:gray; ${product.offerPrice ? 'text-decoration: line-through; text-decoration-color: green;' : ''}" 
-                  class="single-price">
-                  ₹${product.price}&nbsp;&nbsp;
-                </span>
-              </div>
-              ${product.offerPrice ? `
-                <div class="mt-3">
-                  <span style="color:green;font-size: 14px;" class="offer-price">₹${product.offerPrice}</span >
+            <div class="product-btm">
+              <a href="#" class="d-block">
+                <h4>${product.productName}</h4>
+              </a>
+              <div style="display: flex; align-items: center; justify-content: space-between;">
+                <div>
+                  <span 
+                    style="font-size: 16px; font-weight: 500; color: gray; ${product.offerPrice ? 'text-decoration: line-through; text-decoration-color: green;' : ''}" 
+                    class="single-price">
+                    ₹${product.price}&nbsp;
+                  </span>
                 </div>
-              ` : ''}
+                ${product.offerPrice ? `
+                  <div style="margin-left: 10px;">
+                    <span style="color: green; font-size: 14px; text-decoration: none;" class="offer-price">₹${product.offerPrice}</span>
+                  </div>
+                ` : product.categoryOffer === '10%' || product.categoryOffer === '20%' || product.categoryOffer === '30%' ? `
+                  <span style="color: green; font-size: 14px; text-decoration: none;" class="offer-price">₹${product.categoryOffer} Off</span>
+                ` : ''}
+                <div style="display: flex; align-items: center;">
+                  <a href="#" class="cart-icon">
+                    <i class="ti-shopping-cart" style="font-size: 1.5rem; color: #71cd14; text-decoration: none;"></i>
+                  </a>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -606,18 +656,19 @@ function renderProducts(products) {
   });
 }
 
+
 </script>
   <style>
     .no-products {
   text-align: center;
-  margin-top: 50px;
+  margin-top: 80px;
   font-size: 24px;
   font-weight: bold;
   color:gray;
   /* background-color: #f8f9fa; */
   padding: 20px;
   border-radius: 5px;
-  margin-left: 400px;
+  margin-left: 0px;
 }
 
 .no-products p {
@@ -654,14 +705,15 @@ function renderProducts(products) {
 document.getElementById('searchInput').addEventListener('input', getInputValue);
 
 function displayProducts(products) {
-  
-  const productsGrid = document.querySelector('.products-grid');
+  const productsGrid = document.querySelector('.inspired_product_area .container .row');
   productsGrid.innerHTML = ''; // Clear the current products
 
   if (products.length === 0) {
     productsGrid.innerHTML = `
-      <div class="no-products">
-        <p>No products found</p>
+      <div class="col-12">
+        <div class="no-products">
+          <p>No products found</p>
+        </div>
       </div>
     `;
     return;
@@ -669,39 +721,51 @@ function displayProducts(products) {
 
   products.forEach(product => {
     if (product.status === true) {
+      const stockBadgeColor = product.stockQuantity === 0
+        ? 'red'
+        : product.stockQuantity < 10
+        ? 'orange'
+        : 'green';
+
       const productHTML = `
-        <div class="single-product">
-          <div class="product-img">
-            <img class="img-fluid w-100" src="${product.images[0]}" alt="" />
-            <div class="p_icon">
+        <div class="col-lg-3 col-md-4">
+          <div class="single-product">
+            <div class="product-img">
               <a href="/ViewProduct/${product._id}">
-                <i class="ti-eye"></i>
+                <img class="img-fluid w-100" src="${product.images[0]}" alt="" />
               </a>
-              <a href="#">
+              <div class="stock-badge" style="color: ${stockBadgeColor};">
+                ${product.stockQuantity === 0 ? 'Out of Stock' : product.stockQuantity < 10 ? 'Limited Stock' : 'In Stock'}
+              </div>
+              <a href="#" class="heart-icon" style="position: absolute; top: 10px; right: 10px; color: red; text-decoration: none;">
                 <i class="ti-heart"></i>
               </a>
-              <a href="#">
-                <i class="ti-shopping-cart"></i>
-              </a>
             </div>
-          </div>
-          <div class="product-btm">
-            <a href="#" class="d-block">
-              <h4>${product.productName}</h4>
-            </a>
-            <div style="display: flex;">
-              <div class="mt-3">
-                <span 
-                  style="font-size: 16px; font-weight: 500; color:gray; ${product.offerPrice ? 'text-decoration: line-through; text-decoration-color: green;' : ''}" 
-                  class="single-price">
-                  ₹${product.price}&nbsp;&nbsp;
-                </span>
-              </div>
-              ${product.offerPrice ? `
-                <div class="mt-3">
-                  <span style="color:green;font-size: 14px;" class="offer-price">₹${product.offerPrice}</span >
+            <div class="product-btm">
+              <a href="#" class="d-block">
+                <h4>${product.productName}</h4>
+              </a>
+              <div style="display: flex; align-items: center; justify-content: space-between;">
+                <div>
+                  <span 
+                    style="font-size: 16px; font-weight: 500; color: gray; ${product.offerPrice ? 'text-decoration: line-through; text-decoration-color: green;' : ''}" 
+                    class="single-price">
+                    ₹${product.price}&nbsp;
+                  </span>
                 </div>
-              ` : ''}
+                ${product.offerPrice ? `
+                  <div style="margin-left: 10px;">
+                    <span style="color: green; font-size: 14px; text-decoration: none;" class="offer-price">₹${product.offerPrice}</span>
+                  </div>
+                ` : product.categoryOffer === '10%' || product.categoryOffer === '20%' || product.categoryOffer === '30%' ? `
+                  <span style="color: green; font-size: 14px; text-decoration: none;" class="offer-price">₹${product.categoryOffer} Off</span>
+                ` : ''}
+                <div style="display: flex; align-items: center;">
+                  <a href="#" class="cart-icon">
+                    <i class="ti-shopping-cart" style="font-size: 1.5rem; color: #71cd14; text-decoration: none;"></i>
+                  </a>
+                </div>
+              </div>
             </div>
           </div>
         </div>

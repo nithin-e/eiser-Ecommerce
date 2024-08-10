@@ -11,9 +11,12 @@ module.exports={
         const userId = req.session.userId;
        
         try {
-            let cartItems = await CARTMOD.findOne({ userId: userId });
-            // cartItems = cartItems ? cartItems : { cartProducts: [] }; 
-            
+            let cartItems = await CARTMOD.findOne({ userId: userId })
+            .populate({
+                path: "cartProducts.productId",
+                model: 'Product',
+                match: { status: true } 
+              })            
                
                 console.log("cart information in checkout", cartItems);
                 if(cartItems==null){
