@@ -516,21 +516,23 @@
                           </td>
                           <td>
 
-                            <% if (product.categoryOffer == '10' || product.categoryOffer == '20' || product.categoryOffer == '30'){ %>
+                            <% if (product.productId.category.offerPrice == '10%' || product.productId.category.offerPrice == '20%' ||product.productId.category.offerPrice== '30%' && product.productId.offerPrice == 0 || null){ %>
                               <h6 style="line-height: 16px; font-size: 12px;">
-                                ₹<%= product.offerPrice!=null ? product.offerPrice : product.total %>&nbsp;&nbsp;<%= product.categoryOffer %>Off
+                                ₹<%= product.offerPrice!=null ? product.offerPrice : product.total %>&nbsp;&nbsp;<%= product.productId.category.offerPrice %>Off
+                              </h6>
+                            <% }else if(product.productId.offerPrice != null||0){ %>
+                              <h6 style="line-height: 16px; font-size: 12px;">
+                                ₹<%= product.productId.offerPrice %>
                               </h6>
                             <% }else{ %>
                               <h6 style="line-height: 16px; font-size: 12px;">
                                 ₹<%= product.offerPrice!=null ? product.offerPrice : product.total %>
                               </h6>
                             <% } %>
-
-                            
                              </td>
                           <td>
                             <div class="quantity-container">
-                              <% if (product.productId.status) { %>
+                              <% if (product.productId.status&&product.productId.category.status&&product.productId.brand.status) { %>
                                 <button class="quantity-btn minus" onclick="decreaseButton('<%= product.productId._id %>', '<%= product.quantity %>', '<%= product.stockQuantity %>')">
                                   <i class="fas fa-minus"></i>
                                 </button>
@@ -546,14 +548,17 @@
                           </td>
 
                           <td>
-                            <% if (product.productId.status) { %>
+                            <% if (product.productId.status&&product.productId.category.status&&product.productId.brand.status) { %>
 
-                                <% if (product.categoryOffer == '10' || product.categoryOffer == '20' || product.categoryOffer == '30') { %>
+                                <% if (product.productId.category.offerPrice == '10%' || product.productId.category.offerPrice == '20%' || product.productId.category.offerPrice == '30%'&&product.productId.offerPrice == 0 || null) { %>
                                   <% 
-                                       let discount=product.total*product.categoryOffer/100
+                                       let discount= product.total*parseInt( product.productId.category.offerPrice.split('').slice(0,2).join(''))/100
                                        let discounts=Math.floor(discount)*product.quantity
                                      %>
-                                  <h6 style="line-height: 16px;font-size: 15px;" id="total_<%= product.productId._id %>">₹<%= discounts %></h6>
+                                  <h6 style="line-height: 16px;font-size: 15px;" id="total_<%= product.productId._id %>">₹<%=product.productId.price*product.quantity -discounts %></h6>
+
+                                <% }else if (product.productId.offerPrice != null||0){ %>
+                                  <h6 style="line-height: 16px;font-size: 15px;" id="total_<%= product.productId._id %>">₹<%= product.productId.offerPrice * product.quantity %></h6>
 
                                 <% }else{ %>
                                   <h6 style="line-height: 16px;font-size: 15px;" id="total_<%= product.productId._id %>">₹<%= product.total * product.quantity %></h6>
@@ -588,7 +593,7 @@
                         <h6 style="font-size: 15px;">Subtotal</h6>
                     </div>
                     <div class="summary-value">
-                        <h6 style="line-height: 16px;font-size: 15px;" class="subtotalPrice">₹<%= subtotal %></h6>
+                        <h6 id="sub-Total" style="line-height: 16px;font-size: 15px;" class="subtotalPrice">₹<%= subtotal %></h6>
                     </div>
                 </div>
                 <% if (shippingCost > 0) { %>
@@ -597,7 +602,7 @@
                           <h6 style="font-size: 15px;">Shipping</h6>
                       </div>
                       <div class="summary-value">
-                          <h6 style="line-height: 16px;font-size: 15px;" class="shippingCost">₹<%= shippingCost %></h6>
+                          <h6  id="" style="line-height: 16px;font-size: 15px;" class="shippingCost">₹<%= shippingCost %></h6>
                       </div>
                   </div>
                 <% } %>
@@ -607,7 +612,7 @@
                         <h6 style="font-size: 15px;">Grand Total</h6>
                     </div>
                     <div class="summary-value">
-                        <h6 style="line-height: 16px;font-size: 15px;" class="grandTotal" id="grandtotal">₹<%= grandTotal %></h6>
+                        <h6   id="Grand-total"   style="line-height: 16px;font-size: 15px;" class="grandTotal" id="grandtotal">₹<%= grandTotal %></h6>
                     </div>
                 </div>
             </div>
@@ -743,7 +748,6 @@ function deleteCart(id) {
 
 
 
- // Function to update quantity in backend
  function updateQuantity(productId, inputQuantity, stockQuantity) {
 
   console.log('Input quantity:', inputQuantity, 'Type:', typeof inputQuantity);
@@ -756,30 +760,48 @@ function deleteCart(id) {
 
      
 
-    if (inputQuantity >= 10) {
-        console.log("Limit exceeded");
-        quantityInput.value = 10;
-
-        Toastify({
-             text: "Ur Limit Is Reached",
-              duration: 3000,
-              close: true,
-              gravity: "top",
-              position: "center",
-              backgroundColor:' #71cd14',
-              className: "toastify-custom",
-            }).showToast();
-        return;
-    } 
+    
     console.log("Checking stock limit...");
     
     
-     if (inputQuantity == stockQuantity) {
-        console.log("now inside the if quantyty equal to original produ quam=ntyt");
-        quantityInput.value = stockQuantity;
+    
+    fetch(`/updateCart/${productId}`, {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ quantity: 1 })
+})
+.then(response => response.json())
+.then(result => {
+    if (result.success) {
+        console.log('Grandtotal coming from backend', result.grandTotal);
+        document.getElementById(`qty_${result.id}`).value = result.quantityCart;
+        document.getElementById("sub-Total").textContent ='₹' +  parseInt(result.subtotal);
         
-        Toastify({
-             text: "Product Quatity is Over",
+        result.findCart.cartProducts.forEach(product => {
+            const productId = product.productId._id;
+            let total;
+
+            if (product.productId.category.offerPrice && product.productId.offerPrice === 0) {
+                const discountPercentage = parseInt(product.productId.category.offerPrice);
+                const discount = (product.productId.price * discountPercentage) / 100;
+                total = product.productId.price - discount;
+            } else if (product.productId.offerPrice) {
+                total = product.productId.offerPrice;
+            } else {
+                total = product.productId.price;
+            }
+
+            document.getElementById(`total_${productId}`).textContent ='₹' +  parseInt(total * result.quantityCart);
+        })
+        document.getElementById('Grand-total').textContent = '₹' + parseInt(result.grandTotal);
+
+    } else {
+
+
+      Toastify({
+             text: result.messege,
               duration: 3000,
               close: true,
               gravity: "top",
@@ -787,29 +809,13 @@ function deleteCart(id) {
               backgroundColor:' #71cd14',
               className: "toastify-custom",
             }).showToast();
-        return;
+      // grandTotal
+        console.error('Failed to update quantity:', result.message);
     }
-
-    fetch(`/updateCart/${productId}`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ quantity: 1})
-    })
-    .then(response => response.json())
-    .then(result => {
-        if (result.success) {
-          console.log('subtotal comming from backent',result.subtotal);
-          
-            location.reload();
-        } else {
-            console.error('Failed to update quantity:', result.message);
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-    });
+})
+.catch(error => {
+    console.error('Error:', error);
+});
 }
 
 // Function to handle quantity change event
@@ -827,19 +833,7 @@ function decreaseButton(productId, inputQuantity, stockQuantity){
 
     const quantityInput = document.getElementById(`qty_${productId}`);
 
-    if(inputQuantity<=1){
-            console.log("ehti evde mone");
-            Toastify({
-             text: "Zero is not possible",
-              duration: 3000,
-              close: true,
-              gravity: "top",
-              position: "center",
-              backgroundColor:' #71cd14',
-              className: "toastify-custom",
-            }).showToast();
-           return;
-          }
+   
 
 
     console.log("productId",productId);
@@ -853,10 +847,41 @@ function decreaseButton(productId, inputQuantity, stockQuantity){
             .then(response => response.json())
             .then(result => {
                 if (result.success) {
-                       location.reload()
+                        // location.reload()
+                        console.log('Grandtotal coming from backend', result.grandTotal);
+        document.getElementById(`qty_${result.id}`).value = result.quantityCart;
+        document.getElementById("sub-Total").textContent ='₹' +  parseInt(result.subtotal);
+        
+        result.findCart.cartProducts.forEach(product => {
+            const productId = product.productId._id;
+            let total;
+
+            if (product.productId.category.offerPrice && product.productId.offerPrice === 0) {
+                const discountPercentage = parseInt(product.productId.category.offerPrice);
+                const discount = (product.productId.price * discountPercentage) / 100;
+                total = product.productId.price - discount;
+            } else if (product.productId.offerPrice) {
+                total = product.productId.offerPrice;
+            } else {
+                total = product.productId.price;
+            }
+
+            document.getElementById(`total_${productId}`).textContent = '₹' +  parseInt(total * result.quantityCart);
+        })
+        document.getElementById('Grand-total').textContent = '₹' + parseInt(result.grandTotal);
+
                 } else {
-                    // Handle error if needed
-                    console.error('Failed to update quantity:', result.message);
+                  Toastify({
+             text: result.messege,
+              duration: 3000,
+              close: true,
+              gravity: "top",
+              position: "center",
+              backgroundColor:' #71cd14',
+              className: "toastify-custom",
+            }).showToast();
+      // grandTotal
+        console.error('Failed to update quantity:', result.message);
                 }
             })
             .catch(error => {

@@ -13,10 +13,8 @@
         
         <div class="banner_content row">
           <div class="col-lg-12">
-            <!-- <p class="sub text-uppercase">men Collection</p> -->
-            <!-- <h3><span>Show</span> Your <br />Personal <span>Style</span></h3> -->
-            <!-- <h4>Fowl saw dry which a above together place.</h4> -->
-            <a class="main_btn mt-40" href="/productPage">View Collection</a>
+       
+            <a class="main_btn mt-40" href="/productPage" style="text-decoration: none;">View Collection</a>
             
           </div>
         </div>
@@ -174,8 +172,8 @@
             </a>
           </div>
           <div class="product-btm">
-            <a href="#" class="d-block">
-              <h4><%= product.productName %></h4>
+            <a href="#" class="d-block"  style="text-decoration: none;">
+              <h4 style="text-decoration: none;"><%= product.productName %></h4>
             </a>
             <div style="display: flex; align-items: center; justify-content: space-between;">
               <div>
@@ -193,12 +191,16 @@
                 <span style="color: green; font-size: 14px; text-decoration:none;" class="offer-price">₹<%= product.categoryOffer %> Off</span>
               <% } %>
               <div style="display: flex; align-items: center;">
-                <!-- <a href="#" class="heart-icon" style="margin-right: 10px;">
-                  <i class="ti-heart"></i>
-                </a> -->
-                <a href="#" class="cart-icon">
-                  <i class="ti-shopping-cart" style="font-size: 1.5rem; color: #71cd14; text-decoration: none;"></i>
-                </a>
+                <% if (cartProductId?.includes(product._id.toString() )) { %>
+                  <a id="cartIcon" class="cart-icon" style="text-decoration: none; position: relative;">
+                    <i class="fa fa-shopping-cart"    onclick="ExisistCart()"  style="font-size: 1.5rem; color: #71cd14; text-decoration: none; cursor: pointer;"></i>
+                    <span style="position: absolute; top: -10px; right: -10px; background-color: red; color: white; border-radius: 50%; padding: 2px 6px; font-size: 0.75rem;">1</span>
+                 </a>
+                <% }else{ %>
+                  <a id="cartIcon" class="cart-icon" style="text-decoration: none;">
+                    <i class="fa fa-shopping-cart" onclick="DirectAddToCart('<%= product._id %>','<%= product.stockQuantity %>')" style="font-size: 1.5rem; color: #71cd14; text-decoration: none; cursor: pointer;"></i>
+                  </a>
+                <% } %>
               </div>
             </div>
           </div>
@@ -377,6 +379,68 @@
   <!-- Pagination controls -->
   
 
+  <script>
+  function DirectAddToCart(id,Quantity) {
+
+if(Quantity==0){
+  Toastify({
+             text: 'Out Of Stock',
+              duration: 3000,
+              close: true,
+              gravity: "top",
+              position: "center",
+              backgroundColor:' #71cd14',
+              className: "toastify-custom",
+            }).showToast();
+            return
+}
+
+
+    fetch(`/AddToBag/${id}`,{
+      method:'GET',
+      headers:{'Content-Type': 'application/json'}
+    })
+    .then(response=>response.json())
+    .then(response=>{
+      if(response.success){
+        console.log(response.msg);
+
+        Toastify({
+             text: response.msg,
+              duration: 3000,
+              close: true,
+              gravity: "top",
+              position: "center",
+              backgroundColor:' #71cd14',
+              className: "toastify-custom",
+            }).showToast();
+
+            setTimeout(() => {
+              location.reload()
+            }, 1000);
+        
+      }
+    })
+  }
+
+
+
+  function ExisistCart() {
+    Toastify({
+             text: 'this Product Already Exisist In cart',
+              duration: 3000,
+              close: true,
+              gravity: "top",
+              position: "center",
+              backgroundColor:' #71cd14',
+              className: "toastify-custom",
+            }).showToast();
+
+            
+      }
+   
+  
+</script>
 
 
   
@@ -417,5 +481,36 @@
     padding: 30px 0px;
 }
     </style>
+
+
+<style>
+ 
+  .toastify-custom {
+    font-family: 'Roboto', sans-serif;
+    font-size: 16px; 
+    color: #fff; 
+    border-radius: 8px; 
+    padding: 10px 20px; 
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2); 
+    font-size: 15px; 
+    font-weight: bold;
+}
+
+
+.toastify-custom .toastify-close {
+    color: #fff; 
+    font-size: 15px; 
+    
+}
+
+.toastify-custom::before {
+  content: '🚨'; 
+  font-size: 20px; 
+}
+.toastify-custom {
+    background: #71cd14;
+}
+
+</style>
 
     <%- include('footer') %>

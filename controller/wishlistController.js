@@ -2,6 +2,8 @@ const { findById } = require('../models/usermodel');
 const Wishlist=require('../models/WishlistModel')
 const Product=require('../models/pruductModel')
 const mongoose = require('mongoose');
+const CARTMOD=require('../models/cartModel')
+const { clearCustomQueryHandlers } = require('puppeteer');
 
 
 module.exports={
@@ -42,33 +44,33 @@ ADDWISHLIST: async (req, res) => {
 GetWishLIst: async (req, res) => {
   const userId = req.session.userId;
   const user = req.session.user;
-  const page = parseInt(req.query.page) || 1; // Page number
-  const limit = parseInt(req.query.limit) || 5; // Number of items per page
+  const page = parseInt(req.query.page) || 1; 
+  const limit = parseInt(req.query.limit) || 4; 
 
   try {
     console.log('userId', userId);
-
-    // Convert userId string to ObjectId
     const userObjectId = new mongoose.Types.ObjectId(userId);
-
-   
     const totalWishlistItems = await Wishlist.countDocuments({ userId: userObjectId });
-
-    
     const skip = (page - 1) * limit;
-
-    
     const wishlistItems = await Wishlist.find({ userId: userObjectId })
                                         .skip(skip)
-                                        .limit(limit);
-    console.log('wishlistItems', wishlistItems);
+                                        .limit(limit)
+                                        .populate('productId'); 
 
-    const wishlistProductIds = wishlistItems.map(item => item.productId);
-
+    const wishlistProductIds = wishlistItems.map(item => item.productId._id); 
     const wishlistProducts = await Product.find({ _id: { $in: wishlistProductIds } });
-
-    
     const totalPages = Math.ceil(totalWishlistItems / limit);
+
+const FindCart=await CARTMOD.findOne({userId:userId})
+
+if(!FindCart){
+  console.log(" no user is there");
+  
+}else{
+  var cartProductId=await FindCart.cartProducts.map(value=>value.productId.toString())
+}
+
+
 
     res.render('user/wishlistPage', {
       products: wishlistProducts,
@@ -76,7 +78,7 @@ GetWishLIst: async (req, res) => {
       currentPage: page,
       totalPages,
       limit,
-      user
+      cartProductId
     });
 
   } catch (error) {
@@ -84,6 +86,7 @@ GetWishLIst: async (req, res) => {
     res.status(500).send('Server error');
   }
 },
+
 
 DeleteWishlist:async(req,res)=>{
   console.log('req.params',req.params);

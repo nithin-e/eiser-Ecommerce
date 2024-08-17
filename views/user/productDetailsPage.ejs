@@ -45,7 +45,7 @@ body {
     font-family: Arial, sans-serif;
     background-color: #f4f4f4;
     margin: 0;
-    padding: 20px;
+  
 }
 
 .product-container {
@@ -156,15 +156,15 @@ body {
 <!--================Home Banner Area =================-->
 <section class="banner_area" >
   <div class="banner_inner d-flex align-items-center">
-    <div class="container" style="margin-top: 80px;">
+    <div class="container" style="margin-top: 95px;">
       <div class="banner_content d-md-flex justify-content-between align-items-center">
         <div class="mb-3 mb-md-0">
           <h2>Product Details</h2>
           <p>Very us move be blessed multiply night</p>
         </div>
         <div class="page_link">
-          <a href="/">Home</a>
-          <a href="/productPage">Products</a>
+          <a href="/" style="text-decoration: none;">Home</a>
+          <a href="/productPage" style="text-decoration: none;">Products</a>
         </div>
       </div>
     </div>
@@ -173,7 +173,7 @@ body {
 <!--================End Home Banner Area =================-->
 
 <!--================Single Product Area =================-->
-<% if (products && products.status) { %>
+<% if (products && products.status&&products.category.status&&products.brand.status) { %>
   <div class="product_image_area" style="margin-top: -90px;">
     <div class="container">
       <div class="row s_product_inner">
@@ -195,9 +195,9 @@ body {
           <div class="s_product_text">
             <div style="display: flex; gap: 20px;">
               <div>
-                <h3><%= products.productName %></h3>
+                <h3 style="font-weight: 600;"><%= products.productName %></h3>
                 <div class="d-flex">
-                  <span>Price&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;</span>  
+                  <span style="font-weight: 400;">Price&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;</span>  
                   <h2 style="font-size: 16px; font-weight: 500;  text-decoration: none;  color:red; padding-top: 3px;<% if (products.offerPrice) {%>
                     text-decoration: line-through; text-decoration-color: green;
                   <% } %>">
@@ -205,36 +205,36 @@ body {
                   </h2>&nbsp;&nbsp;&nbsp;&nbsp;
                   <% if (products.offerPrice) { %>
                     <h6 style="color:green;padding-top: 3px; text-decoration: none;"> ₹<%= products.offerPrice %></h6>
-                  <% }else if (products.categoryOffer == '10%' || products.categoryOffer == '20%' || products.categoryOffer == '30%'){ %>
-                  <h6 style="color:green;padding-top: 3px; text-decoration: none;"> <%= products.categoryOffer %>Off</h6>
+                  <% }else if (products.category.offerPrice == '10%' || products.category.offerPrice  == '20%' ||products.category.offerPrice  == '30%'){ %>
+                  <h6 style="color:green;padding-top: 3px; text-decoration: none;"> <%= products.category.offerPrice %>Off</h6>
                   <% } %>
                 </div>
               </div>
             </div>
             <ul class="list">
               <li>
-                <a class="active" href="#">
-                  <span>Category</span> : <%= products.category.name %></a>
+                <a class="active"  style="text-decoration: none; font-weight: bolder;">
+                  <span style="font-weight: bolder; font-family: monospace;">Category</span> : <%= products.category.name %></a>
               </li>
               <li>
-                <a class="active" href="#">
-                  <span>Brand</span> : <%= products.brand.name %></a>
+                <a class="active"  style="text-decoration: none;font-weight: bolder;">
+                  <span style="font-weight: bolder; font-family: monospace;">Brand</span> : <%= products.brand.name %></a>
               </li>
               <% if (products.stockQuantity > 10) { %>
                 <li>
-                  <a href="#" style="color: green;font-weight: 900;"> <span style="font-weight: 600;">Availability</span> : <%= products.stockQuantity %>  In Stock </a>
+                  <a href="#" style="color: green;font-weight: 900; text-decoration: none;"> <span style="font-weight: 600;">Availability</span> : <%= products.stockQuantity %>  In Stock </a>
                 </li>
               <% } else if (products.stockQuantity < 10 && products.stockQuantity >= 1) { %>
                 <li>
-                  <a href="#" style="color: orange;font-weight: 900;"> <span style="color: orange;font-weight: 600;">Availability</span> : <%= products.stockQuantity %> Less Quantity</a>
+                  <a href="#" style="color: orange;font-weight: 900; text-decoration: none;"> <span style="color: orange;font-weight: 600;">Availability</span> : <%= products.stockQuantity %> Less Quantity</a>
                 </li>
               <% } else if (products.stockQuantity == 0) { %>
                 <li>
-                  <a href="#" style="color:red;font-weight: 900;"> <span style="color: red;font-weight: 600">Availability</span> :  Out Of Stock</a>
+                  <a href="#" style="color:red;font-weight: 900; text-decoration: none;"> <span style="color: red;font-weight: 600">Availability</span> :  Out Of Stock</a>
                 </li>
               <% } %>
             </ul>
-            <p>Description:<br> <%= products.description %></p>
+            <p  style="font-weight: 500; font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;">Description:<br> <%= products.description %></p>
             <div class="card_area"> 
               <% if (products.stockQuantity > 0) { %>
                 <% if (locals.CartExisistIndex === -1 || locals.CartExisistIndex == undefined) { %>
@@ -263,7 +263,7 @@ body {
       <div class="col-12 text-center">
         <h2>Product not available</h2>
         <p>The requested product is currently unavailable or has been removed.</p>
-        <a href="/products" class="btn btn-primary">Back to Products</a>
+        <a href="/productPage" class="btn btn-primary">Back to Products</a>
       </div>
     </div>
   </div>
@@ -481,7 +481,7 @@ body {
  
  
  </style>
-<section class="product_description_area">
+<section class="product_description_area" style="padding: 0px;">
   <div class="container">
     <ul class="nav nav-tabs" id="myTab" role="tablist">
       <li class="nav-item">
@@ -493,55 +493,168 @@ body {
     </ul>
     <div class="tab-content" id="myTabContent">
       <div class="tab-pane fade" id="home" role="tabpanel" aria-labelledby="home-tab">
-        <p>
-          Beryl Cook is one of Britain’s most talented and amusing artists .Beryl’s pictures feature women of all shapes and sizes enjoying themselves .Born between the two world wars, Beryl Cook eventually left Kendrick School in Reading at the age of 15, where she went to secretarial school and then into an insurance office. After moving to London and then Hampton, she eventually married her next door neighbour from Reading, John Cook. He was an officer in the Merchant Navy and after he left the sea in 1956, they bought a pub for a year before John took a job in Southern Rhodesia with a motor company. Beryl bought their young son a box of watercolours, and when showing him how to use it, she decided that she herself quite enjoyed painting. John subsequently bought her a child’s painting set for her birthday and it was with this that she produced her first significant work, a half-length portrait of a dark-skinned lady with a vacant expression and large drooping breasts. It was aptly named ‘Hangover’ by Beryl’s husband and
-        </p>
+        <p style="font-weight: 500;color: black;">
+          "Beryl Cook, one of Britain’s most talented and humorous artists, found joy in capturing the vibrancy of life through her paintings. Born between the World Wars, Beryl's journey began far from the art world, working in various roles before discovering her love for painting later in life. It was a simple box of watercolors bought for her young son that sparked her passion. With the encouragement of her husband, she created her first notable piece, 'Hangover,' which humorously depicted a lady with a vacant expression and large drooping features. This spontaneous discovery of art reflects how creativity can bloom from the most unexpected moments."        </p>
         <!-- <p>
           It is often frustrating to attempt to plan meals that are designed for one. Despite this fact, we are seeing more and more recipe books and Internet websites that are dedicated to the act of cooking for one. Divorce and the death of spouses or grown children leaving for college are all reasons that someone accustomed to cooking for more than one would suddenly need to learn how to adjust all the cooking practices utilized before into a streamlined plan of cooking that is more efficient for one person creating less
         </p> -->
+      
       </div>
       <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
-        <div class="row">
-          <div class="col-lg-4 col-md-4 col-sm-6">
-            <div class="products-grid">
+            <div class="row" style="margin-right: -60px;">
               <% allproducts.forEach(product => { %>
-                <% if (product.status==true&&product?.category?.name == products?.category.name) { %>  
-                  
-                  <div class="single-product">
-                    <div class="product-img">
+              <div class="col-lg-3 col-md-6" style="max-width: 19%;">
+                <div class="single-product">
+                  <div class="product-img">
+                    <a href="/ViewProduct/<%= product._id %>">
                       <img class="img-fluid w-100" src="<%= product.images[0] %>" alt="" />
-                      <div class="p_icon">
-                        <a href="/ViewProduct/<%= product._id %>">
-                          <i class="ti-eye"></i>
-                        </a>
-                        <a href="#">
-                          <i class="ti-heart"></i>
-                        </a>
-                        <a href="#">
-                          <i class="ti-shopping-cart"></i>
-                        </a>
+                    </a>
+                    <% if (product.stockQuantity==0) { %>
+                      <div class="stock-badge" style="color: red;">
+                        outOff Stock
                       </div>
-                    </div>
-                    <div class="product-btm">
-                      <a href="#" class="d-block">
-                        <h4><%= product.productName %></h4>
-                      </a>
-                      <div class="mt-3">
-                        <span class="mr-4">₹<%= product.price %></span>
+                    <% } else if(product.stockQuantity<10){ %>
+                      <div class="stock-badge" style="color: orange">
+                        Limited Stock
+                      </div>  
+                    <% }else{ %>
+                      <div class="stock-badge" style="color: green">
+                        Limited Stock
+                      </div> 
+                    <% } %>
+                    <a href="#" class="heart-icon" style="position: absolute; top: 10px; right: 10px; color: red;text-decoration: none;">
+                      <i class="ti-heart"></i>
+                    </a>
+                  </div>
+                  <div class="product-btm">
+                    <a href="#" class="d-block"  style="text-decoration: none;">
+                      <h4 style="text-decoration: none;"><%= product.productName %></h4>
+                    </a>
+                    <div style="display: flex; align-items: center; justify-content: space-between;">
+                      <div>
+                        <span 
+                          style="font-size: 16px; font-weight: 500; color: gray; <% if (product.offerPrice) { %> text-decoration: line-through; text-decoration-color: green;<% } %>" 
+                          class="single-price">
+                          ₹<%= product.price %>&nbsp;
+                        </span>
+                      </div>
+                      <% if (product.offerPrice) { %>
+                        <div style="margin-left: 10px;">
+                          <span style="color: green; font-size: 14px; text-decoration:none;" class="offer-price">₹<%= product.offerPrice %></span>
+                        </div>
+                      <% }else if(product.categoryOffer=='10%'||product.categoryOffer=='20%'||product.categoryOffer=='30%'){ %>
+                        <span style="color: green; font-size: 14px; text-decoration:none;" class="offer-price">₹<%= product.categoryOffer %> Off</span>
+                      <% } %>
+                      <div style="display: flex; align-items: center;">
+                        <% if (cartProductId?.includes(product._id.toString() )) { %>
+                          <a id="cartIcon" class="cart-icon" style="text-decoration: none; position: relative;">
+                            <i class="fa fa-shopping-cart"    onclick="ExisistCart()"  style="font-size: 1.5rem; color: #71cd14; text-decoration: none; cursor: pointer;"></i>
+                            <span style="position: absolute; top: -10px; right: -10px; background-color: red; color: white; border-radius: 50%; padding: 2px 6px; font-size: 0.75rem;">1</span>
+                         </a>
+                        <% }else{ %>
+                          <a id="cartIcon" class="cart-icon" style="text-decoration: none;">
+                            <i class="fa fa-shopping-cart" onclick="DirectAddToCart('<%= product._id %>','<%= product.stockQuantity %>')" style="font-size: 1.5rem; color: #71cd14; text-decoration: none; cursor: pointer;"></i>
+                          </a>
+                        <% } %>
                       </div>
                     </div>
                   </div>
-                <% } %>
+                </div>
+              </div>
               <% }) %>
             </div>
-          </div>
-        </div>
         
       </div>
       
     </div>
   </div>
 </section>
+
+
+
+
+
+
+
+<style>
+
+ .product-img-wrapper {
+  position: relative;
+}
+
+.heart-icon {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  color: red; /* Adjust the color as needed */
+}
+
+.stock-badge {
+  position: absolute;
+  left: 10px;
+  padding: 5px;
+  border-radius: 5px;
+  color: white;
+}
+</style>
+
+
+<style>
+  .product-img {
+    position: relative;
+    overflow: hidden;
+  }
+  .stock-badge {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    background-color: rgba(255, 255, 255, 0.9);
+    color: #333;
+    padding: 6px 12px;
+    font-size: 12px;
+    font-weight: 600;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+  }
+  .stock-badge .dot {
+    width: 8px;
+    height: 8px;
+    background-color: #2ecc71;
+    border-radius: 50%;
+    margin-right: 6px;
+    animation: pulse 2s infinite;
+  }
+  .stock-badge .text {
+    opacity: 0;
+    width: 0;
+    overflow: hidden;
+    transition: all 0.3s ease;
+  }
+  .single-product:hover .stock-badge {
+    padding-right: 20px;
+  }
+  .single-product:hover .stock-badge .text {
+    opacity: 1;
+    width: auto;
+  }
+  @keyframes pulse {
+    0% {
+      transform: scale(0.95);
+      box-shadow: 0 0 0 0 rgba(46, 204, 113, 0.7);
+    }
+    70% {
+      transform: scale(1);
+      box-shadow: 0 0 0 10px rgba(46, 204, 113, 0);
+    }
+    100% {
+      transform: scale(0.95);
+      box-shadow: 0 0 0 0 rgba(46, 204, 113, 0);
+    }
+  }
+</style>
 
 
 <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
@@ -664,12 +777,108 @@ function ADDWISHLIST(ProId) {
 </script>
 
 
+<script>
+  function DirectAddToCart(id,Quantity) {
+
+if(Quantity==0){
+  Toastify({
+             text: 'Out Of Stock',
+              duration: 3000,
+              close: true,
+              gravity: "top",
+              position: "center",
+              backgroundColor:' #71cd14',
+              className: "toastify-custom",
+            }).showToast();
+            return
+}
+
+
+    fetch(`/AddToBag/${id}`,{
+      method:'GET',
+      headers:{'Content-Type': 'application/json'}
+    })
+    .then(response=>response.json())
+    .then(response=>{
+      if(response.success){
+        console.log(response.msg);
+
+        Toastify({
+             text: response.msg,
+              duration: 3000,
+              close: true,
+              gravity: "top",
+              position: "center",
+              backgroundColor:' #71cd14',
+              className: "toastify-custom",
+            }).showToast();
+
+            setTimeout(() => {
+              location.reload()
+            }, 2000);
+        
+      }
+    })
+  }
+
+
+
+  function ExisistCart() {
+    Toastify({
+             text: 'this Product Already Exisist In cart',
+              duration: 3000,
+              close: true,
+              gravity: "top",
+              position: "center",
+              backgroundColor:' #71cd14',
+              className: "toastify-custom",
+            }).showToast();
+
+            
+      }
+   
+  
+</script>
+
+
 <style>
   .toastify-custom {
       font-size: 12px; 
       padding: 4px;
   }
 </style>
+
+<style>
+ 
+  .toastify-custom {
+    font-family: 'Roboto', sans-serif;
+    font-size: 16px; 
+    color: #fff; 
+    border-radius: 8px; 
+    padding: 10px 20px; 
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2); 
+    font-size: 15px; 
+    font-weight: bold;
+}
+
+
+.toastify-custom .toastify-close {
+    color: #fff; 
+    font-size: 15px; 
+    
+}
+
+.toastify-custom::before {
+  content: '🚨'; 
+  font-size: 20px; 
+}
+.toastify-custom {
+    background: #71cd14;
+}
+
+</style>
+
+
 
 
     <!--================End Product Description Area =================-->

@@ -82,10 +82,14 @@
                     <label for="category">Category</label>
                     <select id="category" name="category">
                         <% allcategory.forEach(cats => { %>
-                            <option value="<%= cats._id %>" <%= isProduct.category.name == cats.name ? 'selected' : '' %>><%= cats.name %></option>
+                            <option value="<%= cats._id %>" 
+                                <%= isProduct.category && isProduct.category.name === cats.name ? 'selected' : '' %>>
+                                <%= cats.name %>  
+                            </option>
                         <% }) %>
                     </select>
                 </div>
+                
                 
                 <div class="form-group">
                     <label for="brand">Brand</label>

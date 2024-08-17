@@ -75,6 +75,19 @@
                                 <button class="btn btn-primary" data-filter="year">Year</button>
                                 <button class="btn btn-primary" data-filter="all">All Time</button>
                             </div>
+
+                            <div class="d-flex align-items-center">
+                                <div>
+                                    <input type="date" class="form-control me-2" id="startDate" placeholder="Start Date">
+                                    <div id="startDateError" class="error-message" style="color: red; font-size: 8px;"></div>
+                                </div>
+                                <div>
+                                    <input type="date" class="form-control me-2" id="endDate" placeholder="End Date">
+                                    <div id="endDateError" class="error-message" style="color: red; font-size: 8px;"></div>
+                                </div>
+                                <button class="btn btn-primary" id="applyCustomDate">Apply</button>
+                            </div>
+
                         </div>
                         <canvas id="reportsChart" style="height: 300px; display: block; box-sizing: border-box; width: 100%;" width="1375" height="687"></canvas>
                     </div>
@@ -247,6 +260,16 @@
                         <small id="endDateError" class="text-danger"></small>
                     </div>
                     <div class="mb-3">
+						<label for="timeInterval" class="form-label">Time Interval</label>
+						<select class="form-select" name="timeInterval" id="timeInterval" oninput="validateForm()">
+							<option value="" disabled selected>Options</option>
+							<option value="day">Daily</option>
+							<option value="week">Weekly</option>
+							<option value="month">Monthly</option>
+							<option value="year">Yearly</option>
+						</select>
+					</div>
+                    <div class="mb-3">
                         <label for="downloadFormat" class="form-label">Download Format</label>
                         <select class="form-select" id="downloadFormat" name="downloadformat" oninput="validateForm()">
                             <option value="">Select Format</option>
@@ -271,6 +294,8 @@
 let salesChart;
 
 async function fetchSalesData(period = 'all') {
+    console.log('.........................',period);
+    
     try {
         const response = await fetch(`/api/sales-data?period=${period}`);
         if (!response.ok) {
@@ -303,7 +328,7 @@ async function createOrUpdateSalesChart(period = 'all') {
 
 
 
-    console.log('label kittando',labels);
+   
 
     const ctxLine = document.getElementById('reportsChart').getContext('2d');
     const chartConfig = {
@@ -370,39 +395,197 @@ document.addEventListener('DOMContentLoaded', () => {
 
 document.querySelectorAll('[data-filter]').forEach(button => {
     button.addEventListener('click', () => {
+
+    
+        
         const period = button.getAttribute('data-filter');
-        updateCharts(period);
+        updateCharts(period)
     });
 });
 </script>
 
+
 <script>
-    document.addEventListener("DOMContentLoaded", function() {
-        var downloadSalesReportBtn = document.getElementById("downloadSalesReportBtn");
-        var salesReportModal = new bootstrap.Modal(document.getElementById("salesReportModal"));
+document.getElementById('applyCustomDate').addEventListener('click', (event) => {
+    event.preventDefault();
+
+    const startDate = document.getElementById('startDate').value;
+    const endDate = document.getElementById('endDate').value;
+    const currentDate = new Date().toISOString().split('T')[0]; 
+
+    const startDateError = document.getElementById('startDateError');
+    const endDateError = document.getElementById('endDateError');
+
+    // Clear previous error messages
+    startDateError.innerHTML = "";
+    endDateError.innerHTML = "";
+
+    let isValid = true;
+
+    if (startDate === "") {
+        startDateError.innerHTML = "Start Date is required";
+        isValid = false;
+    } else if (startDate > currentDate) {
+        startDateError.innerHTML = "Start Date must be less than equal to current date";
+        isValid = false;
+    }
+
+    if (endDate === "") {
+        endDateError.innerHTML = "End Date is required";
+        isValid = false;
+    } else if (endDate > currentDate) {
+        endDateError.innerHTML = "End Date must be less than equal to current date";
+        isValid = false;
+    } else if (endDate < startDate) {
+        endDateError.innerHTML = "End Date cannot be less than Start Date";
+        isValid = false;
+    }
+
+    if (isValid) {
+        console.log("Validation passed. Proceeding with date application.");
+    }
+
+
+    const data={
+        startDate,
+        endDate
+    }
+
+    fetch('/coustemChartFliter', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data) 
+})
+.then(response => response.json())
+.then(data => {
+    if(data.success){
+        updateDynamicLabelss(data.salesData);
+    }
+})
+.catch(error => {
+    console.error('Error:', error);
+});
+
+});
+
+
+
+
+
+
+
+    function updateDynamicLabelss(salesData) {
+        console.log('function nte ullil kerindo');
+        
+      const   labels = salesData.map(item => item._id);
+      const   values = salesData.map(item => item.totalSales);
+      
+
+
+
+
+      const ctxLine = document.getElementById('reportsChart').getContext('2d');
+    const chartConfig = {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Sales',
+                data: values,
+                fill: false,
+                borderColor: 'rgb(75, 192, 192)',
+                tension: 0.1
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Total Sales'
+                    }
+                },
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Date'
+                    }
+                }
+            }
+        }
+    };
+
+    if (salesChart) {
+        salesChart.data = chartConfig.data;
+        salesChart.update();
+    } else {
+        salesChart = new Chart(ctxLine, chartConfig);
+    }
+}
+
+
+
+
+
+
+
+
     
-        downloadSalesReportBtn.addEventListener("click", function() {
-            salesReportModal.show();
-        });
-    });
+
+
+
+
 </script>
 
+
+
+
+
+
+
+
+
 <script>
-    function validateForm() {
-        const startDate = document.getElementById('startDate').value;
-        const endDate = document.getElementById('endDate').value;
-        const downloadFormat = document.getElementById('downloadFormat').value;
+    function handleTimeIntervalChange() {
+    const timeInterval = document.getElementById('timeInterval').value;
+    const startDateInput = document.getElementById('startDate');
+    const endDateInput = document.getElementById('endDate');
+    const startDateContainer = startDateInput.closest('.mb-3');
+    const endDateContainer = endDateInput.closest('.mb-3');
 
-        const startDateError = document.getElementById('startDateError');
-        const endDateError = document.getElementById('endDateError');
-        const downloadFormatError = document.getElementById('downloadFormatError');
-        const generateReportBtn = document.getElementById('generateReportBtn');
+    if (timeInterval) {
+        startDateContainer.style.display = 'none';
+        endDateContainer.style.display = 'none';
+        startDateInput.value = '';
+        endDateInput.value = '';
+    } else {
+        startDateContainer.style.display = 'block';
+        endDateContainer.style.display = 'block';
+    }
 
-        startDateError.innerHTML = "";
-        endDateError.innerHTML = "";
-        downloadFormatError.innerHTML = "";
+    validateForm();
+}
 
-        const currentDate = new Date().toISOString().split('T')[0];
+function validateForm() {
+    const startDate = document.getElementById('startDate').value;
+    const endDate = document.getElementById('endDate').value;
+    const downloadFormat = document.getElementById('downloadFormat').value;
+    const timeInterval = document.getElementById('timeInterval').value;
+
+    const startDateError = document.getElementById('startDateError');
+    const endDateError = document.getElementById('endDateError');
+    const downloadFormatError = document.getElementById('downloadFormatError');
+    const generateReportBtn = document.getElementById('generateReportBtn');
+
+    startDateError.innerHTML = "";
+    endDateError.innerHTML = "";
+    downloadFormatError.innerHTML = "";
+
+    const currentDate = new Date().toISOString().split('T')[0];
+
+    if (!timeInterval) {
         if (startDate === "") {
             startDateError.innerHTML = "Start Date is required";
         } else if (startDate > currentDate) {
@@ -416,21 +599,19 @@ document.querySelectorAll('[data-filter]').forEach(button => {
         } else if (endDate < startDate) {
             endDateError.innerHTML = "End Date cannot be less than Start Date";
         }
-
-        if (downloadFormat === "") {
-            downloadFormatError.innerHTML = "Download Format is required";
-        }
-
-        if (!startDateError.innerHTML && !endDateError.innerHTML && !downloadFormatError.innerHTML) {
-            generateReportBtn.disabled = false;
-        } else {
-            generateReportBtn.disabled = true;
-        }
     }
 
-    function generateReport() {
-        $('#salesReportModal').modal('hide');
+    if (downloadFormat === "") {
+        downloadFormatError.innerHTML = "Download Format is required";
     }
+
+    if ((!startDateError.innerHTML && !endDateError.innerHTML && !downloadFormatError.innerHTML && !timeInterval) ||
+        (timeInterval && !downloadFormatError.innerHTML)) {
+        generateReportBtn.disabled = false;
+    } else {
+        generateReportBtn.disabled = true;
+    }
+}
 </script>
 
 <%- include('../admin/adminpartials/Footer') -%>

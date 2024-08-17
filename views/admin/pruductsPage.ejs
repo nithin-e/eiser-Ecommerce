@@ -72,7 +72,9 @@
                             <th scope="col">Brand</th>
                             <th scope="col">stock</th>
                             <th scope="col">Price</th>
+                            <th scope="col">OffPrice</th>
                             <th scope="col">Date</th>
+                            <th scope="col">EX date</th>
                             <th scope="col">Action</th>
                         </tr>
                     </thead>
@@ -85,16 +87,19 @@
                             
                             </td>  
                             <td><%= value.productName %></td>
-                            <td><%= value.category.name%></td>
-                            
+                           
+                            <td><%=value.category? value.category.name : 'N/A' %></td> 
                             <td><%= value.brand ? value.brand.name : 'N/A' %></td> 
                             
                             <td><%= value.stockQuantity %></td>
                            
                             <td><%= value.price%></td>
+                            <td><%= value.offerPrice%></td>
                             <td><%= value.createdAt.toLocaleString('en-IN', {  dateStyle: 'short' })  %></td>  
-                         
-                            <td class="text-center">
+                            <td>
+                                <%= new Date(value.offerDate).toLocaleDateString('en-GB') %>
+                              </td>  
+                             <td class="text-center">
                                 <a href="/editProduct/<%- value._id -%>" style="text-decoration: none;">
                                     <button style="background-color: blue; border-radius: 30px; border: none; width: 90px; color: white; ">Edit</button>
                                 </a>

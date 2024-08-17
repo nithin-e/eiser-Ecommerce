@@ -8,8 +8,7 @@ module.exports={
 
     ShowOrderPage: async(req,res)=>{
       try {
-        
-        const ORDER = await orderModel.find().populate('customer')
+        const ORDER = await orderModel.find().populate('customer').sort({createdAt:-1});
         // console.log("user order",ORDER);
         res.render('admin/OrderManagement',{ORDER})
       } catch (error) {
@@ -46,6 +45,32 @@ module.exports={
           console.error('Error updating order status:', error);
           res.status(500).send('Error updating order status');
       }
+  },
+
+  FullOrderDetailsAdminSide: async(req,res)=>{
+    const {id}=req.params
+  try {
+    const findOrder= await orderModel.findOne({orderID:id})
+    if(!findOrder){
+      console.log('order  not found');
+    }
+    res.json({success:true,message:findOrder})
+  } catch (error) {
+    res.status(500).json({ success: false, message: "Internal server error" });
+  }
+  },
+
+  OrderFullDetailsAdminSideReturn: async(req,res)=>{
+  const {id}=req.params
+  try {
+    const findOrder= await orderModel.findOne({orderID:id})
+    if(!findOrder){
+      console.log('order  not found');
+    }
+    res.json({success:true,message:findOrder})
+  } catch (error) {
+    res.status(500).json({ success: false, message: "Internal server error" });
+  }
   }
   
 

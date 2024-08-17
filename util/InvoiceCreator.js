@@ -37,7 +37,7 @@ const generateInvoice = async (orderDetails) => {
             "products": deliveredProducts.map(product => ({
                 "quantity": product.quantity.toString(),
                 "description": product.productName,
-                "tax-rate": 1,
+                "tax-rate": 0,
                 "price": product.productPrice
             })),
             "bottom-notice": "Thank you for choosing Eiser",

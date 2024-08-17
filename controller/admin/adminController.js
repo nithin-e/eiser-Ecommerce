@@ -352,6 +352,8 @@ adminHome: async (req, res) => {
 
   // add category and show succes messege in frond end
   storedb: async (req, res) => {
+
+    console.log('cau u get ...........',req.body)
    let {name,Offerprice} = req.body;
    const formattedOfferPrice = `${Offerprice}%`;
 
@@ -388,12 +390,21 @@ adminHome: async (req, res) => {
   //edit category 
   editCategory: async (req, res) => {
     const { id } = req.params;
-    console.log("settalle",id);
+    console.log('..............................',req.body)
+    console.log("getting.................",id);
     try {  
       const catry = await CATMOD.findById(id);
       console.log("thi ir", catry);
       if (catry) {
+        
+    
+
+
         res.render("admin/categoryedit",{catry});
+
+
+
+
       } else {
         res.status(404).send("User not found");
       }
@@ -407,27 +418,37 @@ adminHome: async (req, res) => {
 applyChanges:async(req,res)=>{
   const {id,name,Offerprice}=req.body
   console.log("aaaaaa this mee",name);
+   const namee=name.trim()
   try{
     const formattedOfferPrice = `${Offerprice}%`;
     console.log('...........................',formattedOfferPrice);
     
 
-    const already= await CATMOD.findOne({name})
+    const already= await CATMOD.findOne({name:namee})
     console.log("here here",already);
-    if(already&&already.offerPrice=='0'){
-      console.log("here both name are same",already.name,"and",name);
-      req.session.alreadythre="This Category Already There"
-      console.log("hereeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee");
-       res.redirect("/category")
-    }
-    
 
-    
-      console.log("enth thengaaanu")
-      await CATMOD.findByIdAndUpdate(id,{name,offerPrice:formattedOfferPrice},{new:true})
+if(!already){
+  console.log('if ill');
+  
+
+  await CATMOD.findByIdAndUpdate(id,{name:namee,offerPrice:formattedOfferPrice},{new:true})
    
-     req.session.cateditUp="Category SuccesFully Updated"
-     res.redirect("/category")
+  req.session.cateditUp="Category SuccesFully Updated"
+ return res.redirect("/category")
+
+}else if(already.name){
+  console.log('elseif one ill il keryy');
+  req.session.alreadythre="This Category Already There"
+  // console.log("hereeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee");
+  return res.redirect("/category")
+}else if(already&&already.offerPrice=='0'){
+  console.log('elseif one2ill il keryy');
+  console.log("here both name are same",already.name,"and",name);
+  req.session.alreadythre="This Category Already There"
+  console.log("hereeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee");
+  return res.redirect("/category")
+}
+   
     
     
   }catch(error){
@@ -576,7 +597,8 @@ blockUnblockbrand:async(req,res)=>{
   showProductPage: async(req, res) => {
       try {
         
-   const Allprod= await Product.find().populate('category').populate('brand')
+   const Allprod= await Product.find().populate('category').populate('brand').sort({createdAt:-1})
+ 
   // console.log("oke alle",Allprod);
    console.log('all items');
         const ProIn= req.session.ProIn
@@ -702,7 +724,7 @@ if(isProduct){
 editBottom: async (req, res) => {
   const { id } = req.params;
   const { productName, description, stockQuantity, category, brand, price, Offerprice, expiryDate } = req.body;
-    console.log("req.body id kittando", id);
+    console.log("req.body .........expiryDate.......... kittando", expiryDate);
   req.session.Admin = true;
 
   // console.log('..........................',req.files);
@@ -739,7 +761,7 @@ editBottom: async (req, res) => {
       editPro.categoryOffer = categoryOffer;
       editPro.brand = brand;
       editPro.offerPrice = Offerprice;
-      editPro.expiryDate = expiryDate
+      editPro.offerDate = expiryDate;
       editPro.price = price;
       
       await editPro.save();

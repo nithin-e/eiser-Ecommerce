@@ -1,112 +1,123 @@
 const mongoose = require("mongoose");
 const { ObjectId } = require("mongodb");
 const Schema = mongoose.Schema;
-const Product = require('../models/pruductModel'); 
-const Userdb=require('../models/usermodel')
+const Product = require("../models/pruductModel");
+const Userdb = require("../models/usermodel");
 
 // Define the order schema
-const orderSchema = new mongoose.Schema({
-  orderID: {
-    type: String,
-    required: true,
-  },
-  customer: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: Userdb, 
-    required: true,
-  },
-  products: [
-    {
-      productName:{
+const orderSchema = new mongoose.Schema(
+  {
+    orderID: {
+      type: String,
+      required: true,
+    },
+    customer: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: Userdb,
+      required: true,
+    },
+    products: [
+      {
+        productName: {
+          type: String,
+          required: true,
+        },
+        product: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Product",
+          required: true,
+          type: [String],
+        },
+        quantity: {
+          type: Number,
+          required: true,
+        },
+        productImage: {
+          type: [String],
+          required: true,
+        },
+        productPrice: {
+          type: Number,
+          required: true,
+        },
+      },
+    ],
+    address: {
+      name: {
         type: String,
-        required: true
+        requred: true,
       },
-      product: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Product', 
-        required: true,
-        type: [String],
+      locality: {
+        type: String,
       },
-      quantity: {
-        type: Number,
-        required: true,
+      city: {
+        type: String,
       },
-      productImage:{
-        type: [String],
-        required: true,
+      district: {
+        type: String,
       },
-      productPrice:{
-        type: Number,
-        required: true,
+      state: {
+        type: String,
       },
-      // status: {
-      //   type: String,
-      //   enum: ['Pending', 'Processing', 'Shipped', 'Delivered', 'Cancelled', 'PaymentFailed'],
-      //   default: 'Pending',
-      // },
-      
+      pincode: {
+        type: String,
+      },
     },
-  ],
-  address: {
-    name:{
+    totalprice: {
+      type: Number,
+      required: true,
+    },
+    orderDate: {
       type: String,
-       requred:true
+      required: true,
     },
-    locality: {
+    orderTime: {
       type: String,
+      required: true,
     },
-    city: {
+    status: {
       type: String,
+      enum: [
+        "Pending",
+        "Processing",
+        "Shipped",
+        "Delivered",
+        "Cancelled",
+        "PaymentFailed",
+      ],
+      default: "Pending",
     },
-    district: {
+    paymentMethod: {
       type: String,
+      enum: ["Wallet", "Razor Pay", "Cash on Delivery"],
+      required: true,
     },
-    state: {
-      type: String,
-    },
-    pincode: {
-      type: String,
-    },
-  },
-  totalprice: {
-    type: Number,
-    required: true,
-  },
-  orderDate : {
-    type: String,
-    required: true,
-  },
-  orderTime: {
-    type: String, 
-    required: true,
-  },
-  status: {
-    type: String,
-    enum: ['Pending', 'Processing', 'Shipped', 'Delivered', 'Cancelled', 'PaymentFailed'],
-    default: 'Pending',
-  },
-  paymentMethod: {
-    type: String,
-    enum: ['Wallet', 'Razor Pay', 'Cash on Delivery'], 
-    required: true,
-  },
-   CouponAmound:{
-      type: Number
+    CouponAmound: {
+      type: Number,
     },
     Itemstatus: {
       type: String,
-      enum: ['Approved', 'Reject','Pending'],
-       default: 'Pending'
+      enum: ["Approved", "Reject", "Pending"],
+      default: "Pending",
     },
-  returnReason:{type:String,default:'not Returned'},
-  userRequest: {
-    type: String,
-    enum: ['Requested For Return', 'No Request Yet','Return Done','Return Rejected'],
-    default: 'No Request Yet'
+    returnReason: { type: String, default: "not Returned" },
+    userRequest: {
+      type: String,
+      enum: [
+        "Requested For Return",
+        "No Request Yet",
+        "Return Done",
+        "Return Rejected",
+      ],
+      default: "No Request Yet",
+    },
+  },
+  {
+    timestamps: true,
   }
-});
+);
 
 // Create the Order model from the schema
-const Order = mongoose.model('Order', orderSchema);
+const Order = mongoose.model("Order", orderSchema);
 
 module.exports = Order;

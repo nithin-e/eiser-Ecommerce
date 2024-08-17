@@ -61,28 +61,48 @@ User
 <!-- - cart quantity validation -->
 <!-- - address input validation -->
 <!-- - website crashes after order completion -->
-- quantity validation in checkout and on order creation
-- sort
-- interconnect search, sort and filter
+<!-- - quantity validation in checkout and on order creation -->
+<!-- - sort -->
+<!-- - interconnect search, sort and filter -->
 <!-- - profile name validation -->
 <!-- - weak password is saved despite validation errors -->
-- unlisted products can be ordered
-- show latest orders on top
-- products from unlisted categories show up in product list
+<!-- - unlisted products can be ordered -->
+<!-- - show latest orders on top -->
+<!-- - products from unlisted categories show up in product list -->
 
 Admin
 <!-- - reject duplicate categories (edit) -->
-- use Indian date format
+<!-- - use Indian date format -->
 <!-- - category offers -->
-- dashboard date range filter 
-- download report for criteria selected in dashboard without having to select dates again
-- sales report total discounts 
-- show latest orders on top
-- order detail view
-- stock management: quantity not decremented on order creation
+<!-- - dashboard date range filter  -->
+<!-- - download report for criteria selected in dashboard without having to select dates again -->
+<!-- - sales report total discounts  -->
+<!-- - show latest orders on top -->
+<!-- - order detail view -->
+<!-- - stock management: quantity not decremented on order creation -->
 
 
 "
+
+
+
+
+
+
+
+
+
+User
+- don’t show/avail expired offers
+<!-- - wishlist ad to cart button -->
+<!-- -whenever increasing the cart qty, page is  getting referesh (ideally it should not referesh -->
+<!-- -Remove the duplicate brand ()validate the brand creation page to avaoid accepting the duplicate value -->
+- interconnect search, sort and filter
+
+Admin
+<!-- - reject duplicate categories (edit) -->
+<!-- - dashboard date range filter  -->
+
 </body>
 </html>
 
@@ -90,39 +110,3 @@ Admin
 
 
 
-
-
-function validateCouponDates(startDate, expiryDate) {
-    const currentDate = new Date();
-    const start = new Date(startDate);
-    const expiry = new Date(expiryDate);
-
-    // Remove time component for date comparison
-    currentDate.setHours(0, 0, 0, 0);
-    start.setHours(0, 0, 0, 0);
-    expiry.setHours(0, 0, 0, 0);
-
-    if (expiry < currentDate) {
-        return "Expiry date cannot be in the past.";
-    }
-
-    if (expiry < start) {
-        return "Expiry date cannot be before the start date.";
-    }
-
-    const isValidDate = (date) => {
-        const month = date.getMonth() + 1;
-        const day = date.getDate();
-        return month >= 1 && month <= 12 && day >= 1 && day <= 31;
-    };
-
-    if (!isValidDate(start)) {
-        return "Invalid start date.";
-    }
-
-    if (!isValidDate(expiry)) {
-        return "Invalid expiry date.";
-    }
-
-    return null; // No error
-}

@@ -43,9 +43,9 @@
                     <span style="color: red;" id="error-message"></span>
 
 
-                <label for="Offerprice">Offer Price (optional (10,20,30 only possible))</label>
+                <label for="Offerprice">Offer Price (optional (0,10,20,30 only possible))</label>
                 <input type="number" id="Offerprice" value="<%= catry.offerPrice.replace('%', '') %>" name="Offerprice">
-                <span class="error-message" id="offer-error"></span>
+                <span style="color: red;" class="error-message" id="offer-error"></span>
                 </div>
                 
                 <input type="hidden" name="id" value="<%-catry._id-%>">
@@ -85,12 +85,12 @@
           }
       
           // Validate offer price
-          const allowedOffers = [10, 20, 30];
+          const allowedOffers = [0,10, 20, 30];
           const offerPrice = parseFloat(offerPriceInput);
       
           if (offerPriceInput && !allowedOffers.includes(offerPrice)) {
             event.preventDefault();
-            offerError.innerText = "Offer price must be one of the following values: 10, 20, 30.";
+            offerError.innerText = "Offer price must be one of the following values:0, 10, 20, 30.";
           }
         });
       </script>

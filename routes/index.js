@@ -72,10 +72,11 @@ router.get("/logout", (req, res) => {
 
 
 //showing product details...............
-router.get("/ViewProduct/:id",blockedUser, userController.ShowProductDetails);
 router.get("/productPage",blockedUser, userController.showProductSeperetPage);  
+router.get("/ViewProduct/:id",blockedUser, userController.ShowProductDetails);
 router.get('/filterProduct',userController.filterProducts)
 router.get('/SearchProduct',userController.SearchingProduct)
+router.get('/SortProduct',userController.SortProduct)
 
 
 
@@ -97,7 +98,7 @@ router.get('/View-cart',userthere,CartController.ShowCartPage)
 router.get('/AddToBag/:id',CartController.STOREDATABAG)
 router.post('/deleteCart/:id',userthere,CartController.deleteCart)
 router.post('/updateCart/:id',userthere,CartController.updateQuantity)
-router.post('/decreseBotton/:id',userthere,CartController.decreseBotton)
+router.post('/decreseBotton/:id',userthere,CartController.decreaseButton)
 
 
 
@@ -143,6 +144,8 @@ router.post('/DeleteWishList/:id',userthere,WishlistController.DeleteWishlist)
 //generate invoice
 router.post('/GenerateInvoice/:id',ORDERCONTROLLER.GenerateInvoice)
 router.get('/downloadinvoice/:id',ORDERCONTROLLER.DownLoadInvoice)
+router.get('/contactus',userController.getContactUs)
+
 
 
 

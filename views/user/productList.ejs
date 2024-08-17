@@ -7,6 +7,7 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
 
   <%- include('Header') %>
 </head> 
@@ -323,14 +324,20 @@
                   aria-labelledby="headingBrands">
                   <div class="accordion-body">
                     <div>
-                      <% products.forEach(brand => { %>
-                      <% if (brand.brand && brand.brand.name) { %>
-                      <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="brandCheckbox_<%= brand.brand.name %>" name="brands" value="<%= brand.brand.name %>" />
-                        <label style="font-weight: bolder; font-family: unset;" class="form-check-label" for="brandCheckbox_<%= brand.brand.name %>"><%= brand.brand.name %></label>
-                      </div>
-                      <% } %>
-                      <% }) %>
+                      <% 
+                        const uniqueBrands = new Set();
+                        products.forEach(brand => {
+                          if (brand.brand && brand.brand.name && !uniqueBrands.has(brand.brand.name)) {
+                            uniqueBrands.add(brand.brand.name);
+                      %>
+                        <div class="form-check">
+                          <input class="form-check-input" type="checkbox" id="brandCheckbox_<%= brand.brand.name %>" name="brands" value="<%= brand.brand.name %>" />
+                          <label style="font-weight: bolder; font-family: unset;" class="form-check-label" for="brandCheckbox_<%= brand.brand.name %>"><%= brand.brand.name %></label>
+                        </div>
+                      <%
+                          }
+                        });
+                      %>
                       <span class="badge badge-secondary float-end"></span>
                     </div>
                   </div>
@@ -377,80 +384,330 @@
       </div>
 
       <div class="col-lg-9" style="border-top: 2px solid green; max-width: 74%;  margin-top: -50px;">
-        <div class="search-container" style="margin-left: 700px; margin-top: 8px;">
-          <input type="text" id="searchInput" class="search-box" value="" placeholder="Search...">
-        </div>
-
+        
+      <!-- <div class="col-lg-6 col-md-6 col-sm-6"> -->
+        <div class="shop__product__option__right">
+          <p>Sort by:</p>
+          <select id="sortSelect">
+              <option value="recommended">Recommended</option>
+              <option value="low_to_high">Price: Low To High</option>
+              <option value="high_to_low">Price: High to Low</option>
+          </select>
+          <input type="text" id="searchInput" class="search-box" placeholder="Search...">
+      </div>
         <header class="d-sm-flex align-items-center border-bottom mb-4 pb-3"></header>
+        <style>
+         .shop__product__option__right {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 15px;
+    background-color: #f8f8f8;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
 
+.shop__product__option__right p {
+    margin: 0;
+    font-weight: bold;
+    color: #333;
+}
+
+.shop__product__option__right select {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: white;
+    font-size: 14px;
+    cursor: pointer;
+    transition: border-color 0.3s ease;
+}
+
+.shop__product__option__right select:hover,
+.shop__product__option__right select:focus {
+    border-color: #71cd14;
+    outline: none;
+}
+
+.search-container {
+    position: relative;
+}
+
+#searchInput {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    width: 200px;
+    transition: all 0.3s ease;
+}
+
+#searchInput:focus {
+    width: 220px;
+    border-color: #71cd14;
+    outline: none;
+    box-shadow: 0 0 0 2px #71cd14(0, 123, 255, 0.25);
+}
+
+#searchInput::placeholder {
+    color: #999;
+}
+
+/* Custom select styling */
+select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-color: #ffffff;
+    border: 2px solid #e0e0e0;
+    border-radius: 25px;
+    padding: 12px 45px 12px 20px;
+    font-size: 16px;
+    color: #333;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    min-width: 200px;
+}
+
+/* Custom arrow */
+select {
+    background-image: 
+        linear-gradient(45deg, transparent 50%, #71cd14 50%),
+        linear-gradient(135deg, #71cd14 50%, transparent 50%);
+    background-position:
+        calc(100% - 20px) calc(1em + 2px),
+        calc(100% - 15px) calc(1em + 2px);
+    background-size:
+        5px 5px,
+        5px 5px;
+    background-repeat: no-repeat;
+}
+
+/* Hover and focus states */
+select:hover, select:focus {
+    border-color: #71cd14;
+    box-shadow: 0 4px 8px #71cd14(0, 123, 255, 0.2);
+    outline: none;
+}
+
+/* Style for options */
+select option {
+    padding: 12px;
+    background-color: #ffffff;
+    color: #333;
+}
+
+/* Styling for when an option is selected */
+select option:checked {
+    background-color: #e6f2ff;
+    color: #71cd14;
+}
+
+/* Custom scrollbar for dropdown (works in some browsers) */
+select::-webkit-scrollbar {
+    width: 10px;
+}
+
+select::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+select::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 5px;
+}
+
+select::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+/* Base styles for options */
+select option {
+    padding: 12px 20px;
+    background-color: #ffffff;
+    color: #333;
+    font-size: 16px;
+    line-height: 1.5;
+    transition: background-color 0.2s ease;
+}
+
+/* Hover effect for options */
+select option:hover {
+    background-color: #f0f8ff;
+    cursor: pointer;
+}
+
+/* Style for selected option */
+select option:checked {
+    background-color: #e6f2ff;
+    color: #007bff;
+    font-weight: bold;
+}
+
+/* Custom styles for specific options */
+select option[value="?sort=recommended"] {
+    border-left: 4px solid #ffd700; /* Gold color for recommended */
+}
+
+select option[value="?sort=low_to_high"] {
+    border-left: 4px solid #4caf50; /* Green for low to high */
+}
+
+select option[value="?sort=high_to_low"] {
+    border-left: 4px solid #f44336; /* Red for high to low */
+}
+
+/* Enhance readability in dropdown */
+select {
+    color: #333;
+    font-family: Arial, sans-serif;
+}
+
+/* Style for disabled options if needed */
+select option:disabled {
+    color: #999;
+    font-style: italic;
+}
+
+/* Ensure consistent styling across browsers */
+@-moz-document url-prefix() {
+    select option {
+        padding: 10px 20px;
+    }
+}
+        </style>
 
 
         <section class="inspired_product_area section_gap_bottom_custom">
           <div class="container">
             <div class="row">
               <% products.forEach(product => { %>
-              <div class="col-lg-3 col-md-4">
-                <div class="single-product">
-                  <div class="product-img">
-                    <a href="/ViewProduct/<%= product._id %>">
-                      <img class="img-fluid w-100" src="<%= product.images[0] %>" alt="" />
-                    </a>
-                    <% if (product.stockQuantity == 0) { %>
-                      <div class="stock-badge" style="color: red;">
-                        Out of Stock
-                      </div>
-                    <% } else if (product.stockQuantity < 10) { %>
-                      <div class="stock-badge" style="color: orange;">
-                        Limited Stock
-                      </div>  
-                    <% } else { %>
-                      <div class="stock-badge" style="color: green;">
-                        In Stock
-                      </div> 
-                    <% } %>
-                    <a href="#" class="heart-icon" style="position: absolute; top: 10px; right: 10px; color:#71cd14; text-decoration: none; font-size:larger;">
-                      <i class="ti-heart"></i>
-                    </a>
-                  </div>
-                  <div class="product-btm">
-                    <a href="#" class="d-block" style="text-decoration: none;">
-                      <h4><%= product.productName %></h4>
-                    </a>
-                    <div style="display: flex; align-items: center; justify-content: space-between;">
-                      <div>
-                        <span 
-                          style="font-size: 16px; font-weight: 500; color: gray; <% if (product.offerPrice) { %> text-decoration: line-through; text-decoration-color: green;<% } %>" 
-                          class="single-price">
-                          ₹<%= product.price %>&nbsp;
-                        </span>
-                      </div>
-                      <% if (product.offerPrice) { %>
-                        <div style="margin-left: 10px;">
-                          <span style="color: green; font-size: 14px; text-decoration: none;" class="offer-price">₹<%= product.offerPrice %></span>
-                        </div>
-                      <% } else if (product.categoryOffer == '10%' || product.categoryOffer == '20%' || product.categoryOffer == '30%') { %>
-                        <span style="color: green; font-size: 14px; text-decoration: none;" class="offer-price">₹<%= product.categoryOffer %> Off</span>
-                      <% } %>
-                      <div style="display: flex; align-items: center;">
-                        <a href="#" class="cart-icon">
-                          <i class="ti-shopping-cart" style="font-size: 1.5rem; color: #71cd14; text-decoration: none;"></i>
+                <% if (product.status && product.category && product.category.status && product.brand && product.brand.status) { %>
+                  <div class="col-lg-3 col-md-4">
+                    <div class="single-product">
+                      <div class="product-img">
+                        <a href="/ViewProduct/<%= product._id %>">
+                          <img class="img-fluid w-100" src="<%= product.images[0] %>" alt="" />
                         </a>
+                        <% if (product.stockQuantity == 0) { %>
+                          <div class="stock-badge" style="color: red;">
+                            Out of Stock
+                          </div>
+                        <% } else if (product.stockQuantity < 10) { %>
+                          <div class="stock-badge" style="color: orange;">
+                            Limited Stock
+                          </div>  
+                        <% } else { %>
+                          <div class="stock-badge" style="color: green;">
+                            In Stock
+                          </div> 
+                        <% } %>
+                      </div>
+                      <div class="product-btm" style="text-decoration: none;">
+                        <a href="#" class="d-block" style="text-decoration: none;">
+                          <h4 style="text-decoration: none;"><%= product.productName %></h4>
+                        </a>
+                        <div style="display: flex; align-items: center; justify-content: space-between;">
+                          <div>
+                            <span 
+                              style="font-size: 16px; font-weight: 500; color: gray; <% if (product.offerPrice) { %> text-decoration: line-through; text-decoration-color: green;<% } %>" 
+                              class="single-price">
+                              ₹<%= product.price %>&nbsp;
+                            </span>
+                          </div>
+                          <% if (product.offerPrice) { %>
+                            <div style="margin-left: 10px;">
+                              <span style="color: green; font-size: 14px; text-decoration: none;" class="offer-price">₹<%= product.offerPrice %></span>
+                            </div>
+                          <% } else if (product.category.offerPrice == '10%' || product.category.offerPrice  == '20%' ||product.category.offerPrice  == '30%') { %>
+                            <span style="color: green; font-size: 14px; text-decoration: none;" class="offer-price">₹<%= product.category.offerPrice  %> Off</span>
+                          <% } %>
+                          <div style="display: flex; align-items: center;">
+                            <% if (cartProductId?.includes(product._id.toString() )) { %>
+                              <a id="cartIcon" class="cart-icon" style="text-decoration: none; position: relative;">
+                                <i class="fa fa-shopping-cart"    onclick="ExisistCart()"  style="font-size: 1.5rem; color: #71cd14; text-decoration: none; cursor: pointer;"></i>
+                                <span style="position: absolute; top: -10px; right: -10px; background-color: red; color: white; border-radius: 50%; padding: 2px 6px; font-size: 0.75rem;">1</span>
+                             </a>
+                            <% }else{ %>
+                              <a id="cartIcon" class="cart-icon" style="text-decoration: none;">
+                                <i class="fa fa-shopping-cart" onclick="DirectAddToCart('<%= product._id %>','<%= product.stockQuantity %>')" style="font-size: 1.5rem; color: #71cd14; text-decoration: none; cursor: pointer;"></i>
+                              </a>
+                            <% } %>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              </div>
+                <% } %>
               <% }) %>
+              
+             
             </div>
           </div>
         </section>
 
-       
+ 
 
 
 
 
-
+       <style>
+        .pagination {
+          margin-top: -70px;
+          display: flex;
+          justify-content: center;
+          font-family: Arial, sans-serif;
+        }
+      
+        .pagination ul {
+          list-style: none;
+          padding: 0;
+          display: flex;
+          background-color: var(--card-background);
+          border-radius: 25px;
+          box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+      
+        .pagination li {
+          margin: 5px;
+        }
+      
+        .pagination li a {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 36px;
+          height: 36px;
+          color: var(--text-color);
+          border-radius: 50%;
+          text-decoration: none;
+          font-weight: 600;
+          transition: all 0.3s ease;
+          font-size: 14px;
+        }
+      
+        .pagination li.active a {
+          background-color: var(--primary-color);
+          color: var(--card-background);
+          box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+      
+        .pagination li a:hover {
+          background-color: var(--hover-color, #f0f0f0);
+          transform: scale(1.1);
+        }
+      
+        .pagination li.disabled a {
+          opacity: 0.5;
+          pointer-events: none;
+        }
+      
+        .pagination .prev-next a {
+          font-size: 18px;
+          width: 40px;
+          height: 40px;
+        }
+      </style>
 
 
      
@@ -486,8 +743,70 @@
 
 
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastify-js/1.12.0/toastify.min.js"></script>
+
+<script>
+  function DirectAddToCart(id,Quantity) {
+
+if(Quantity==0){
+  Toastify({
+             text: 'Out Of Stock',
+              duration: 3000,
+              close: true,
+              gravity: "top",
+              position: "center",
+              backgroundColor:' #71cd14',
+              className: "toastify-custom",
+            }).showToast();
+            return
+}
 
 
+    fetch(`/AddToBag/${id}`,{
+      method:'GET',
+      headers:{'Content-Type': 'application/json'}
+    })
+    .then(response=>response.json())
+    .then(response=>{
+      if(response.success){
+        console.log(response.msg);
+
+        Toastify({
+             text: response.msg,
+              duration: 3000,
+              close: true,
+              gravity: "top",
+              position: "center",
+              backgroundColor:' #71cd14',
+              className: "toastify-custom",
+            }).showToast();
+
+            setTimeout(() => {
+              location.reload()
+            }, 1000);
+        
+      }
+    })
+  }
+
+
+
+  function ExisistCart() {
+    Toastify({
+             text: 'this Product Already Exisist In cart',
+              duration: 3000,
+              close: true,
+              gravity: "top",
+              position: "center",
+              backgroundColor:' #71cd14',
+              className: "toastify-custom",
+            }).showToast();
+
+            
+      }
+   
+  
+</script>
    
 
 
@@ -536,8 +855,30 @@
 
 
 <script>
-document.getElementById('filterProduct').addEventListener('click', function (event) {
-event.preventDefault()
+  
+  
+  var searchInput = document.getElementById('searchInput');
+  var inputValue = ''; 
+
+  if (searchInput) {
+      searchInput.addEventListener('input', function () {
+          inputValue = searchInput.value;
+           console.log('Input value:', inputValue);
+      });
+  } else {
+      console.error('Input element not found.');
+  }
+
+   var selectedOption=''
+  document.getElementById('sortSelect').addEventListener('change', function() {
+            selectedOption = this.value;
+        });
+
+  
+  document.getElementById('filterProduct').addEventListener('click', function (event) {
+    
+    event.preventDefault()
+    console.log('Selected sort .........option:', selectedOption);
 
   // Get selected categories
   let category = [];
@@ -555,11 +896,18 @@ event.preventDefault()
   let minPrice = document.getElementById('minPrice').value;
   let price = document.getElementById('maxPrice').value;
 
+
+
   const data = new URLSearchParams({
     brand,
     category,
-    price
+    price,
+    inputValue,
+    selectedOption
   });
+
+  console.log('appo data entha avastha',data);
+
 
   fetch(`/filterProduct?${data.toString()}`, {
     method: 'GET',
@@ -568,6 +916,8 @@ event.preventDefault()
     },
   })
   .then(response => {
+    console.log("sdfgsffffffffffffffff");
+    
     if (!response.ok) {
       throw new Error('Network response was not ok ' + response.statusText);
     }
@@ -575,6 +925,8 @@ event.preventDefault()
   })
   .then(data => {
     if (data.success) {
+      console.log("........",data.products);
+      
       renderProducts(data.products);
     } else {
       console.error('Error in response data:', data);
@@ -583,9 +935,13 @@ event.preventDefault()
   .catch(error => {
     console.error('Fetch error:', error);
   });
-});
 
-function renderProducts(products) {
+
+});
+  
+
+
+function renderProducts (products) {
   const productsGrid = document.querySelector('.inspired_product_area .container .row');
   productsGrid.innerHTML = ''; // Clear the current products
 
@@ -601,6 +957,8 @@ function renderProducts(products) {
   }
 
   products.forEach(product => {
+    console.log('ddddddd',product);
+    
     if (product.status === true) {
       const stockBadgeColor = product.stockQuantity === 0
         ? 'red'
@@ -618,9 +976,10 @@ function renderProducts(products) {
               <div class="stock-badge" style="color: ${stockBadgeColor};">
                 ${product.stockQuantity === 0 ? 'Out of Stock' : product.stockQuantity < 10 ? 'Limited Stock' : 'In Stock'}
               </div>
-              <a href="#" class="heart-icon" style="position: absolute; top: 10px; right: 10px; color: red; text-decoration: none;">
-                <i class="ti-heart"></i>
-              </a>
+              
+
+
+
             </div>
             <div class="product-btm">
               <a href="#" class="d-block">
@@ -638,8 +997,8 @@ function renderProducts(products) {
                   <div style="margin-left: 10px;">
                     <span style="color: green; font-size: 14px; text-decoration: none;" class="offer-price">₹${product.offerPrice}</span>
                   </div>
-                ` : product.categoryOffer === '10%' || product.categoryOffer === '20%' || product.categoryOffer === '30%' ? `
-                  <span style="color: green; font-size: 14px; text-decoration: none;" class="offer-price">₹${product.categoryOffer} Off</span>
+                ` : product.category.offerPrice === '10%' ||product.category.offerPrice === '20%' || product.category.offerPrice === '30%' ? `
+                  <span style="color: green; font-size: 14px; text-decoration: none;" class="offer-price">₹${product.category.offerPrice} Off</span>
                 ` : ''}
                 <div style="display: flex; align-items: center;">
                   <a href="#" class="cart-icon">
@@ -655,6 +1014,7 @@ function renderProducts(products) {
     }
   });
 }
+
 
 
 </script>
@@ -679,6 +1039,8 @@ function renderProducts(products) {
   
   <script>
  function getInputValue() {
+
+  
     var inputElement = document.getElementById('searchInput');
     var inputValue = inputElement.value; 
 
@@ -720,6 +1082,8 @@ function displayProducts(products) {
   }
 
   products.forEach(product => {
+    console.log('ddddddd',product);
+    
     if (product.status === true) {
       const stockBadgeColor = product.stockQuantity === 0
         ? 'red'
@@ -737,9 +1101,10 @@ function displayProducts(products) {
               <div class="stock-badge" style="color: ${stockBadgeColor};">
                 ${product.stockQuantity === 0 ? 'Out of Stock' : product.stockQuantity < 10 ? 'Limited Stock' : 'In Stock'}
               </div>
-              <a href="#" class="heart-icon" style="position: absolute; top: 10px; right: 10px; color: red; text-decoration: none;">
-                <i class="ti-heart"></i>
-              </a>
+             
+
+
+
             </div>
             <div class="product-btm">
               <a href="#" class="d-block">
@@ -757,8 +1122,8 @@ function displayProducts(products) {
                   <div style="margin-left: 10px;">
                     <span style="color: green; font-size: 14px; text-decoration: none;" class="offer-price">₹${product.offerPrice}</span>
                   </div>
-                ` : product.categoryOffer === '10%' || product.categoryOffer === '20%' || product.categoryOffer === '30%' ? `
-                  <span style="color: green; font-size: 14px; text-decoration: none;" class="offer-price">₹${product.categoryOffer} Off</span>
+                ` : product.category.offerPrice === '10%' || product.category.offerPrice === '20%' || product.category.offerPrice === '30%' ? `
+                  <span style="color: green; font-size: 14px; text-decoration: none;" class="offer-price">₹${product.category.offerPrice} Off</span>
                 ` : ''}
                 <div style="display: flex; align-items: center;">
                   <a href="#" class="cart-icon">
@@ -775,9 +1140,161 @@ function displayProducts(products) {
   });
 }
 
- 
   </script>
 
+  <script>
+document.getElementById('sortSelect').addEventListener('change', function(event) {
+  event.preventDefault()
+            selectedOption = this.value;
+
+const data = new URLSearchParams({
+    selectedOption
+  });
+
+
+  fetch(`/SortProduct?${data.toString()}`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+  })
+  .then(response => {
+    console.log("sdfgsffffffffffffffff");
+    
+    if (!response.ok) {
+      throw new Error('Network response was not ok ' + response.statusText);
+    }
+    return response.json();
+  })
+  .then(data => {
+    if (data.success) {
+      console.log(".....vvvvvvvvv...",data.products);
+      
+      SortProduct(data.products);
+    } else {
+      console.error('Error in response data:', data);
+    }
+  })
+  .catch(error => {
+    console.error('Fetch error:', error);
+  });
+         
+            
+        });
+
+
+
+
+
+
+
+
+
+        function SortProduct(products) {
+  const productsGrid = document.querySelector('.inspired_product_area .container .row');
+  productsGrid.innerHTML = ''; // Clear the current products
+
+  if (products.length === 0) {
+    productsGrid.innerHTML = `
+      <div class="col-12">
+        <div class="no-products">
+          <p>No products found</p>
+        </div>
+      </div>
+    `;
+    return;
+  }
+
+  products.forEach(product => {
+    console.log('ddddddd',product);
+    
+    if (product.status === true) {
+      const stockBadgeColor = product.stockQuantity === 0
+        ? 'red'
+        : product.stockQuantity < 10
+        ? 'orange'
+        : 'green';
+
+      const productHTML = `
+        <div class="col-lg-3 col-md-4">
+          <div class="single-product">
+            <div class="product-img">
+              <a href="/ViewProduct/${product._id}">
+                <img class="img-fluid w-100" src="${product.images[0]}" alt="" />
+              </a>
+              <div class="stock-badge" style="color: ${stockBadgeColor};">
+                ${product.stockQuantity === 0 ? 'Out of Stock' : product.stockQuantity < 10 ? 'Limited Stock' : 'In Stock'}
+              </div>
+             
+
+
+
+              
+            </div>
+            <div class="product-btm">
+              <a href="#" class="d-block">
+                <h4>${product.productName}</h4>
+              </a>
+              <div style="display: flex; align-items: center; justify-content: space-between;">
+                <div>
+                  <span 
+                    style="font-size: 16px; font-weight: 500; color: gray; ${product.offerPrice ? 'text-decoration: line-through; text-decoration-color: green;' : ''}" 
+                    class="single-price">
+                    ₹${product.price}&nbsp;
+                  </span>
+                </div>
+                ${product.offerPrice ? `
+                  <div style="margin-left: 10px;">
+                    <span style="color: green; font-size: 14px; text-decoration: none;" class="offer-price">₹${product.offerPrice}</span>
+                  </div>
+                ` : product.category.offerPrice === '10%' || product.category.offerPrice === '20%' ||product.category.offerPrice === '30%' ? `
+                  <span style="color: green; font-size: 14px; text-decoration: none;" class="offer-price">₹${product.category.offerPrice} Off</span>
+                ` : ''}
+                <div style="display: flex; align-items: center;">
+                  <a href="#" class="cart-icon">
+                    <i class="ti-shopping-cart" style="font-size: 1.5rem; color: #71cd14; text-decoration: none;"></i>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+      productsGrid.innerHTML += productHTML;
+    }
+  });
+}
+  </script>
+
+<style>
+ 
+  .toastify-custom {
+    font-family: 'Roboto', sans-serif;
+    font-size: 16px; 
+    color: #fff; 
+    border-radius: 8px; 
+    padding: 10px 20px; 
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2); 
+    font-size: 15px; 
+    font-weight: bold;
+}
+
+
+.toastify-custom .toastify-close {
+    color: #fff; 
+    font-size: 15px; 
+    
+}
+
+.toastify-custom::before {
+  content: '🚨'; 
+  font-size: 20px; 
+}
+.toastify-custom {
+    background: #71cd14;
+}
+
+</style>
 
 </body>
 </html>

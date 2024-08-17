@@ -10,6 +10,13 @@ require("./config/passport");
 const cors = require('cors');
 const { v4: uuidv4 } = require("uuid");
 const morgan = require("morgan");
+require('./util/cron-Job')
+
+
+
+
+
+
 
 const mongoose = require("./config/connectMongo");
 var indexRouter = require("./routes/index");
@@ -42,9 +49,7 @@ app.use((req, res, next) => {
 });
 
 
-// error handler
 app.use(function (err, req, res, next) {
-  // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get("env") === "development" ? err : {};
 

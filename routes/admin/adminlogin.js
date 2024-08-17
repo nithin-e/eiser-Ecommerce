@@ -100,8 +100,17 @@ adminrouter.post('/updateOrderStatus/:id',ReturnManageMent.UpdateOrderStatus)
 //admindashboard
 
 adminrouter.get('/api/sales-data',adminChartController.AdminChart)
+adminrouter.post('/coustemChartFliter',adminChartController.CoustemFilter)
+
 
 adminrouter.post('/salesreport', adminChartController.downloadSalesReport);
+
+adminrouter.post('/OrderFullDetailsAdminSide/:id',OrderManageMent.FullOrderDetailsAdminSide)
+adminrouter.post('/OrderFullDetailsAdminSideReturn/:id',OrderManageMent.OrderFullDetailsAdminSideReturn)
+
+
+
+
 
 
 

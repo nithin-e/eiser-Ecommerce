@@ -14,7 +14,8 @@ const mongoose = require("mongoose");
 const Wishlist = require("../models/WishlistModel");
 const Wallet=require('../models/walletModel')
 const ObjectId = mongoose.Types.ObjectId;
-const uuid=require('uuid')
+const uuid=require('uuid');
+const { fi } = require("date-fns/locale");
 
 
 
@@ -31,6 +32,8 @@ module.exports = {
     const user = req.session.user;
     req.session.nouser = null;
 
+    const userId= req.session.userId     
+
     try {
       const allProduct = await Product.find()
         .skip(perPage * page - perPage)
@@ -43,6 +46,19 @@ module.exports = {
       const cartError = req.session.cartError;
       delete req.session.cartError;
 
+      const FindCart=await CARTMOD.findOne({userId:userId})
+
+      if(!FindCart){
+        console.log(" no user is there");
+        
+      }else{
+        var cartProductId=await FindCart.cartProducts.map(value=>value.productId.toString())
+      }
+
+
+
+
+
       res.render("user/user_home", {
         user: user,
         allProduct: allProduct,
@@ -50,6 +66,7 @@ module.exports = {
         cartError: cartError,
         current: page,
         pages: Math.ceil(count / perPage),
+        cartProductId
       });
     } catch (err) {
       console.error("Error fetching products:", err);
@@ -268,8 +285,7 @@ const referalLink= `http://localhost:3000/loginAndSignup?refId=${userdata._id}`
     const email = req.session.email;
     console.log("this is from email", email);
     const userId = req.session.userId;
-    //  const Usser = await userdb.findById(id)
-    //   console.log("this is from email",Usser);
+   
     try {
       const { otpcode, otpExpires } = await genOtp();
 
@@ -352,19 +368,29 @@ const referalLink= `http://localhost:3000/loginAndSignup?refId=${userdata._id}`
   
       // Check if the product exists and its status is true
       if (!products || !products.status) {
-        // If the product doesn't exist or its status is false, redirect to the product listing page
-        return res.redirect('/'); // Adjust this URL to your product listing page
+        console.log('is it okeee  ibde kerandoooooooooooooooo');
+        
+        return res.redirect('/'); 
       }
   
       const allBrands = await BRANDMOD.find();
-      const allproducts = await Product.find({ _id: { $ne: id }, status: true }).populate(
-        "category"
-      );
+      const allproducts = await Product.find({ _id: { $ne: id }, status: true }).limit(10)
+      .populate("category")
+      .populate("brand");
+      
+      const FindCart=await CARTMOD.findOne({userId:userId})
+
+if(!FindCart){
+  console.log(" no user is there");
   
+}else{
+  var cartProductId=await FindCart.cartProducts.map(value=>value.productId.toString())
+}
+
+
+
       const allcategory = await CATMOD.find();
-  
       const FindUser = await CARTMOD.findOne({ userId: userId });
-  
       const WishlistInfo = await Wishlist.find();
       const isProductInWishlist = WishlistInfo.some(item => item.productId.toString() === products._id.toString());
   
@@ -391,7 +417,8 @@ const referalLink= `http://localhost:3000/loginAndSignup?refId=${userdata._id}`
         allcategory,
         allBrands,
         CartExisistIndex,
-        isProductInWishlist
+        isProductInWishlist,
+        cartProductId
       });
   
     } catch (error) {
@@ -406,7 +433,7 @@ const referalLink= `http://localhost:3000/loginAndSignup?refId=${userdata._id}`
     const page = req.query.page || 1;
 
     try {
-      // Fetch all products without any filters
+   
       const totalProducts = await Product.countDocuments();
       const products = await Product.find()
         .skip(perPage * page - perPage)
@@ -417,6 +444,25 @@ const referalLink= `http://localhost:3000/loginAndSignup?refId=${userdata._id}`
       const allCategories = await Category.find();
       const allBrands = await BRANDMOD.find();
       const user = req.session.user;
+      const userId = req.session.userId;
+
+
+//finding cart
+ const findUserCart=await CARTMOD.findOne({userId:userId})
+ console.log('...........',findUserCart);
+ 
+ if(!findUserCart){
+
+ }else{
+
+var cartProductId= await findUserCart.cartProducts.map(value=>value.productId.toString())
+console.log('this my cart ids',cartProductId);
+
+
+ }
+
+
+
 
       res.render("user/productList", {
         products,
@@ -426,6 +472,7 @@ const referalLink= `http://localhost:3000/loginAndSignup?refId=${userdata._id}`
         current: page,
         pages: Math.ceil(totalProducts / perPage),
         filters: {}, // No filters applied
+        cartProductId
       });
     } catch (err) {
       console.error(err);
@@ -436,16 +483,22 @@ const referalLink= `http://localhost:3000/loginAndSignup?refId=${userdata._id}`
   // filtering product
 
   filterProducts: async (req, res) => {
+    console.log('ibde enthandooooooooooo');
+    
     console.log("Received query parameters:", req.query);
 
-    const { brand, category, price } = req.query;
+    const { brand, category, price,inputValue,selectedOption } = req.query;
     console.log(
       "Extracted parameters - Brand:",
       brand,
       "Category:",
       category,
       "Price:",
-      price
+      price,
+      'inputvalue',
+      inputValue,
+      'selectedOption',
+      selectedOption
     );
 
     try {
@@ -472,9 +525,28 @@ const referalLink= `http://localhost:3000/loginAndSignup?refId=${userdata._id}`
       if (price) {
         filter.price = { $lte: parseFloat(price) };
       }
-      console.log("Constructed filter:", filter);
+      // console.log("Constructed filter:", filter);
 
-      const products = await Product.find(filter);
+      if(inputValue){
+        filter.$or = [
+          { productName: { $regex: inputValue, $options: "i" } },
+          { description: { $regex: inputValue, $options: "i" } }
+        ];
+      }
+
+      
+
+      let sortOption = {};
+      if (selectedOption === 'low_to_high') {
+        sortOption = { price: 1 }; 
+      } else if (selectedOption === 'high_to_low') {
+        sortOption = { price: -1 }; 
+      }
+    
+      console.log("Final filter:", filter);
+  
+
+      const products = await Product.find(filter).sort(sortOption);
       
       console.log(
         "productsproductsproducts",
@@ -549,5 +621,45 @@ const referalLink= `http://localhost:3000/loginAndSignup?refId=${userdata._id}`
         console.error("Error searching products:", error);
         return res.status(500).json({ success: false, message: "Internal server error" });
     }
+},
+
+SortProduct: async(req,res)=>{
+console.log('req.url',req.query);
+const{selectedOption}=req.query
+try {
+
+  let sortOption = {};
+  if (selectedOption === 'low_to_high') {
+    sortOption = { price: 1 }; 
+  } else if (selectedOption === 'high_to_low') {
+    sortOption = { price: -1 }; 
+  }
+
+  const products = await Product.find().sort(sortOption);
+      
+  console.log(
+    "productsproductsproducts",
+    products
+  );
+
+  // Respond with found products
+  res.json({ success: true, products });
+  
+} catch (error) {
+  return res.status(500).json({ success: false, message: "Internal server error" });
+
 }
+
+},
+
+getContactUs: async (req, res) => {
+  const user = req.session.user;
+
+  try {
+      res.render('user/contactUs', {user })
+  } catch (error) {
+      console.log(error);
+  }
+},
+
 }

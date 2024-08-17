@@ -236,7 +236,7 @@ module.exports = {
         const user = req.session.user;
         const userId = req.session.userId;
         try {
-            const orderInfo = await orderModel.find({ customer: new ObjectId(userId) }).populate('products.product').sort({orderDate:-1});
+            const orderInfo = await orderModel.find({ customer: new ObjectId(userId) }).populate('products.product').sort({createdAt:-1});
            
             // console.log("order informations", orderInfo);
             res.render('user/userOrderPage', { user, orderInfo });

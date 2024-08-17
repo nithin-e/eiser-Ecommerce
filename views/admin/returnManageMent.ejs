@@ -75,6 +75,7 @@ select[name="orderStatus"] option:checked {
                         <th scope="col">Status</th>
                         <th scope="col"> userRequest</th>
                         <th scope="col">itemStatus</th>
+                        <th scope="col">view</th>
                       </tr>
                     </thead>
                     
@@ -83,13 +84,13 @@ select[name="orderStatus"] option:checked {
                     <tbody>
                       <% ORDER.forEach((order, index) => { %>
                         <% if (order.status == "Delivered") { %>
-                        <% order.products.forEach(product => { %>
+                        
                           <tr>
-                            <td><img src="<%= product.productImage[0] %>" alt="<%= product.productName %>" style="width:70px;height:70px;"/></td>
+                            <td><img src="<%= order?.products[0].productImage[0]  %>" alt="1223345" style="width:70px;height:70px;"/></td>
                             <td><%= order.customer.name %></td>
                             <td><%= order.orderID %></td>
                             <td><%= order.paymentMethod %></td>
-                            <td><%= order.products.reduce((sum, product) => sum + product.quantity, 0) %></td>
+                            <td><%= order.products.length%></td>
                             <td><%= order.orderDate %></td>
                             <td><%= order.totalprice %></td>
                             <td><%= order.returnReason %></td>
@@ -109,9 +110,10 @@ select[name="orderStatus"] option:checked {
                                    <p>Waiting?</p>
                                   </td>
                                 <%}%>
+                                <td>
+                                  <button class="view-button" onclick="OrderFullDetails('<%= order.orderID %>')">View</button>
+                                </td>
                           </tr>
-                        <% }) %>
-
                         <% } %>
                       <% }) %>
                     
@@ -120,6 +122,171 @@ select[name="orderStatus"] option:checked {
                   </table>
             </div>
         </div>
+
+
+
+
+
+
+
+        <div class="modal fade" id="exampleModall" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" style="font-family: Arial, Helvetica, sans-serif;">
+          <div class="modal-dialog modal-lg">
+              <div class="modal-content">
+                  <div class="modal-header">
+                      <h5 class="modal-title" id="exampleModalLabel">Order Details</h5>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <div class="modal-body">
+                      <% if (ORDER && ORDER.length > 0) { %>
+                          <% ORDER.forEach(order => { %>
+                              <div class="order-summary row">
+                                  <div class="col-md-6">
+                                      <p><strong>Order ID:</strong> <span id="orderId">#<%= order.orderID %></span></p>
+                                      <p><strong>Date:</strong> <span id="orderDate"><%= order.orderDate %> <%= order.orderTime %></span></p>
+                                      <p><strong>Items:</strong> <span id="itemCount"><%= order.products.length %></span></p>
+                                  </div>
+                                  <div class="col-md-6 text-end">
+                                      <p><strong>Total amount:</strong> <span id="grandTotal">₹<%= order.totalprice %></span></p>
+                                      <p><strong>Status:</strong> <span class="badge bg-info" id="orderStatus"><%= order.status %></span></p>
+                                      <p><strong>Item Status:</strong> <span class="badge bg-secondary" id="itemStatus"><%= order.Itemstatus %></span></p>
+                                      <% if (order.status !== 'Cancelled' && order.status !== 'Delivered') { %>
+                                              
+                                                                             <% } %>
+                                      <% if (order.status === 'Delivered' && order.userRequest === 'No Request Yet') { %>
+                                          <button class="btn btn-outline-warning btn-sm">Request Return</button>
+                                      <% } %> 
+                                  </div>
+                              </div>
+                              <hr>
+                              <div class="shipping-info row">
+                                  <div class="col-md-3">
+                                      <h6>Shipping address</h6>
+                                      <address id="shippingAddress">
+                                          <%= order.address.name %><br>
+                                          <%= order.address.locality %><br>
+                                          <%= order.address.city %>, <%= order.address.district %><br>
+                                          <%= order.address.state %> <%= order.address.pincode %>
+                                      </address>
+                                  </div>
+                                  <div class="col-md-3">
+                                      <h6>Billing address</h6>
+                                      <p>Same as shipping address</p>
+                                  </div>
+                                  <div class="col-md-3">
+                                      <h6>Payment method</h6>
+                                      <p><%= order.paymentMethod %></p>
+                                  </div>
+                                  <div class="col-md-3">
+                                      <h6>Tracking number</h6>
+                                      <p>ID<%= order.orderID %></p>
+                                  </div>
+                              </div>
+                              <hr>
+                              <div class="order-items">
+                                  <% order.products.forEach(product => { %>
+                                      <div class="row item align-items-center mb-3">
+                                          <div class="col-md-2">
+                                              <img src="<%= product.productImage[0] %>" alt="<%= product.productName %>" class="img-fluid">
+                                          </div>
+                                          <div class="col-md-6">
+                                              <h6><%= product.productName %></h6>
+                                              <p class="text-muted">Quantity: <%= product.quantity %></p>
+                                          </div>
+                                          <div class="col-md-2 text-end">
+                                              <p>₹<%= product.productPrice %></p>
+                                          </div>
+                                          <div class="col-md-2 text-end">
+                                              <p>₹<%= product.productPrice * product.quantity %></p>
+                                          </div>
+                                      </div>
+                                  <% }); %>
+                              </div>
+                              <hr>
+                              <div class="order-totals row">
+                                  <div class="col-md-8 text-end">
+                                      <p>Subtotal:</p>
+                                      <% if (order.CouponAmound) { %>
+                                          <p>Discount:</p>
+                                      <% } %>
+                                      <p><strong>Grand total:</strong></p>
+                                  </div>
+                                  <div class="col-md-4 text-end">
+                                      <p>₹<%= order.totalprice + (order.CouponAmound || 0) %></p>
+                                      <% if (order.CouponAmound) { %>
+                                          <p>-₹<%= order.CouponAmound %></p>
+                                      <% } %>
+                                      <p><strong>₹<%= order.totalprice %></strong></p>
+                                  </div>
+                              </div>
+                              <% if (order.returnReason !== 'not Returned') { %>
+                                  <div class="return-info">
+                                      <h6>Return Information</h6>
+                                      <p><strong>Return Reason:</strong> <%= order.returnReason %></p>
+                                      <p><strong>Return Status:</strong> <%= order.userRequest %></p>
+                                  </div>
+                              <% } %>
+                          <% }); %>
+                      <% } else { %>
+                          <p>No order details available.</p>
+                      <% } %>
+                  </div>
+              </div>
+          </div>
+      </div>
+
+        <style>
+          .order-items {
+            overflow: hidden;
+        }  
+        .order-items {
+            max-height: 400px; 
+            overflow-y: auto; 
+             
+        }
+        .order-items {
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+               max-height: 132px;
+               
+        }
+        .btn-primary {
+            background-color: #71cd14;
+            border-color: #71cd14;
+            color: #ffffff;
+        }
+        
+        .btn-primary:hover {
+            background-color: #71cd14;
+            border-color: #71cd14;
+        }
+        
+        .btn-primary i {
+            margin-right: 5px;
+        }
+        
+        </style>
+
+
+
+
+
+<style>
+  .view-button {
+background-color: #71cd14; 
+color: white;
+border: none;
+padding: 5px 10px;
+font-size: 16px;
+cursor: pointer;
+border-radius: 5px;
+}
+
+.view-button:hover {
+background-color: #5a9a11; 
+}
+</style>
+
 
         <!-- Bootstrap JS, Popper.js, and jQuery CDN -->
         <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
@@ -179,6 +346,142 @@ select[name="orderStatus"] option:checked {
   });
 });
 
+    </script>
+
+    <script>
+      
+function OrderFullDetails(id) {
+   
+ 
+
+   fetch(`/OrderFullDetailsAdminSideReturn/${id}`,{
+     method:'POST',
+     headers:{'content-Type':'Application/json'}
+   })
+   .then(response=>response.json())
+   .then(response=>{
+       if(response.success){
+           console.log('...................................',response.message);
+
+           FullOredr(response.message)
+       }
+   })
+}
+
+
+
+
+
+
+ 
+function FullOredr(orderData) {
+    console.log('FullOredr function called with:', orderData);
+    const modalContent = generateModalContent(orderData);
+    $('#exampleModall .modal-body').html(modalContent);
+    
+    var myModal = new bootstrap.Modal(document.getElementById('exampleModall'));
+    myModal.show();
+}
+
+
+
+function generateModalContent(orderInfo) {
+    console.log('generateModalContent called with:', orderInfo);
+
+    if (!orderInfo || (Array.isArray(orderInfo) && orderInfo.length === 0)) {
+        return '<p>No order details available.</p>';
+    }
+
+    // If orderInfo is not an array, wrap it in an array
+    const orders = Array.isArray(orderInfo) ? orderInfo : [orderInfo];
+
+    let content = '';
+    orders.forEach(order => {
+        content += `
+            <div class="order-summary row">
+                <div class="col-md-6">
+                    <p><strong>Order ID:</strong> <span id="orderId">#${order.orderID}</span></p>
+                    <p><strong>Date:</strong> <span id="orderDate">${order.orderDate} ${order.orderTime}</span></p>
+                    <p><strong>Items:</strong> <span id="itemCount">${order.products ? order.products.length : 'N/A'}</span></p>
+                </div>
+                <div class="col-md-6 text-end">
+                    <p><strong>Total amount:</strong> <span id="grandTotal">₹${order.totalprice}</span></p>
+                    <p><strong>Status:</strong> <span class="badge bg-info" id="orderStatus">${order.status}</span></p>
+                    ${order.status === 'Delivered' && order.userRequest === 'No Request Yet' ? 
+                        '<button class="btn btn-outline-warning btn-sm">Request Return</button>' : ''}
+                </div>
+            </div>
+            <hr>
+            <div class="shipping-info row">
+                <div class="col-md-3">
+                    <h6>Shipping address</h6>
+                    <address id="shippingAddress">
+                        ${order.address ? `
+                            ${order.address.name}<br>
+                            ${order.address.locality}<br>
+                            ${order.address.city}, ${order.address.district}<br>
+                            ${order.address.state} ${order.address.pincode}
+                        ` : 'Address not available'}
+                    </address>
+                </div>
+                <div class="col-md-3">
+                    <h6>Billing address</h6>
+                    <p>Same as shipping address</p>
+                </div>
+                <div class="col-md-3">
+                    <h6>Payment method</h6>
+                    <p>${order.paymentMethod || 'N/A'}</p>
+                </div>
+                <div class="col-md-3">
+                    <h6>Tracking number</h6>
+                    <p>ID${order.orderID}</p>
+                </div>
+            </div>
+            <hr>
+            <div class="order-items">
+                ${order.products ? order.products.map(product => `
+                    <div class="row item align-items-center mb-3">
+                        <div class="col-md-2">
+                            <img src="${product.productImage ? product.productImage[0] : ''}" alt="${product.productName}" class="img-fluid">
+                        </div>
+                        <div class="col-md-6">
+                            <h6>${product.productName}</h6>
+                            <p class="text-muted">Quantity: ${product.quantity}</p>
+                        </div>
+                        <div class="col-md-2 text-end">
+                           <p style="margin-right: 100px;">₹${product.productPrice}</p>    
+                        </div>
+                        <div class="col-md-2 text-end">
+                            <p style="margin-right: 76px;">₹${product.productPrice * product.quantity}</p>
+                        </div>
+                    </div>
+                `).join('') : '<p>No product details available</p>'}
+            </div>
+            <hr>
+            <div class="order-totals row">
+                <div class="col-md-8 text-end">
+                    <p>Subtotal:</p>
+                    ${order.CouponAmound ? '<p>Discount:</p>' : ''}
+                    <p><strong>Grand total:</strong></p>
+                </div>
+                <div class="col-md-4 text-end">
+                    <p>₹${order.totalprice}</p>
+                    ${order.CouponAmound ? `<p>-₹${order.CouponAmound}</p>` : ''}
+                    <p><strong>₹${order.totalprice - (order.CouponAmound || 0)}</strong></p>
+                </div>
+            </div>
+            ${order.returnReason && order.returnReason !== 'not Returned' ? `
+                <div class="return-info">
+                    <h6>Return Information</h6>
+                    <p><strong>Return Reason:</strong> ${order.returnReason}</p>
+                    <p><strong>Return Status:</strong> ${order.userRequest}</p>
+                </div>
+            ` : ''}
+        `;
+    });
+
+    return content;
+}
     </script>
 </body>
 </html>
