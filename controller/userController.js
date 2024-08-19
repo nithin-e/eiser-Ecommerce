@@ -568,45 +568,74 @@ console.log('this my cart ids',cartProductId);
   },
 
 
+
+
   SearchingProduct: async (req, res) => {
     console.log("Request query:", req.query);
 
     try {
-        const { inputValue } = req.query;
-        console.log("Extracted inputValue:", inputValue);
+        const { brands, categories, price, inputValue } = req.query;
 
-        if (!inputValue) {
-            return res.status(400).json({ success: false, message: "Input value is required" });
-        }
-
-        // Fetch category and brand concurrently
-        const [category, brand] = await Promise.all([
-            CATMOD.findOne({ name: { $regex: inputValue, $options: "i" } }),
-            BRANDMOD.findOne({ name: { $regex: inputValue, $options: "i" } }),
-        ]);
-
-        console.log("Category found:", category);
-        console.log("Brand found:", brand);
+        console.log("Extracted values:", 
+            'inputValue:', inputValue,
+            'brands:', brands,
+            'categories:', categories,
+            'price:', price
+        );
 
         // Build the search criteria
         const searchOptions = {
             status: true,
             isDeleted: false,
-            $or: [
-                { productName: { $regex: inputValue, $options: "i" } },
-            ],
         };
 
-        if (category) searchOptions.$or.push({ category: category._id });
-        if (brand) searchOptions.$or.push({ brand: brand._id });
+        // Input value search
+        if (inputValue) {
+            searchOptions.$or = [
+                { productName: { $regex: inputValue, $options: "i" } },
+            ];
+
+            const [category, brand] = await Promise.all([
+                CATMOD.findOne({ name: { $regex: inputValue, $options: "i" } }),
+                BRANDMOD.findOne({ name: { $regex: inputValue, $options: "i" } }),
+            ]);
+
+            if (category) searchOptions.$or.push({ category: category._id });
+            if (brand) searchOptions.$or.push({ brand: brand._id });
+        }
+
+        // Brand filter
+        if (brands && brands !== '[]') {
+            const parsedBrands = JSON.parse(brands);
+            if (parsedBrands.length > 0) {
+                searchOptions.brand = { $in: parsedBrands };
+            }
+        }
+
+        // Category filter
+        if (categories && categories !== '[]') {
+            const parsedCategories = JSON.parse(categories);
+            if (parsedCategories.length > 0) {
+                const categoryObjects = await CATMOD.find({ name: { $in: parsedCategories } });
+                const categoryIds = categoryObjects.map(cat => cat._id);
+                searchOptions.category = { $in: categoryIds };
+            }
+        }
+
+        // Price filter
+        if (price) {
+            const priceValue = Number(price);
+            if (!isNaN(priceValue)) {
+                searchOptions.price = { $lte: priceValue };
+            }
+        }
 
         console.log("Search options:", searchOptions);
 
         // Fetch products with related data
         const products = await Product.find(searchOptions)
             .populate("brand")
-            .populate("category")
-         
+            .populate("category");
 
         console.log("Products found:", products.length);
 
@@ -622,6 +651,14 @@ console.log('this my cart ids',cartProductId);
         return res.status(500).json({ success: false, message: "Internal server error" });
     }
 },
+
+
+
+
+
+
+
+
 
 SortProduct: async(req,res)=>{
 console.log('req.url',req.query);

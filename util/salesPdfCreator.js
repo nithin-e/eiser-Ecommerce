@@ -31,8 +31,8 @@ function generateTableRowNoLine(doc, y, c1, c2, c3, c4, c5) {
 }
 
 // Generating Invoice for customers
-const generateSalesPDF = async (orders, startDate, endDate) => {
-    console.log('.............inbe entha generateSalesPDF  avastha',orders);
+const generateSalesPDF = async (orders, startFormat, endFormat) => {
+    console.log('.............inbe entha generateSalesPDF  avastha',startFormat,endFormat);
     return new Promise((resolve, reject) => {
         try {
             const doc = new PDFDocument({ margin: 50 });
@@ -47,7 +47,7 @@ const generateSalesPDF = async (orders, startDate, endDate) => {
             doc
     .fontSize(15)
     .text(
-        `Sales Report ${startDate} to ${endDate}`,
+        `Sales Report ${startFormat} to ${endFormat}`,
         50,
         50,
         {

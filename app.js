@@ -84,6 +84,9 @@ app.use("/", adminrouter);
 app.use(cors())
 
 
+app.use((req, res, next) => {
+  res.status(404).render('404', { title: 'Page Not Found' });
+});
 
 
 // catch 404 and forward to error handler

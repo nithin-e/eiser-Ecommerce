@@ -385,7 +385,6 @@
 
       <div class="col-lg-9" style="border-top: 2px solid green; max-width: 74%;  margin-top: -50px;">
         
-      <!-- <div class="col-lg-6 col-md-6 col-sm-6"> -->
         <div class="shop__product__option__right">
           <p>Sort by:</p>
           <select id="sortSelect">
@@ -1037,16 +1036,41 @@ function renderProducts (products) {
 }
   </style>
   
-  <script>
- function getInputValue() {
 
-  
+
+
+  <script>
+
+    function getInputValue() {
+    // Get search input value
     var inputElement = document.getElementById('searchInput');
-    var inputValue = inputElement.value; 
+    var inputValue = inputElement.value;
+
+    console.log('......input value  also ......',inputValue);
+    
+
+    var selectedCategories = Array.from(document.querySelectorAll('input[name="categories"]:checked'))
+        .map(checkbox => checkbox.value);
+
+        console.log('categoriescheck edA eda',selectedCategories);
+
+    var selectedBrands = Array.from(document.querySelectorAll('input[name="brands"]:checked'))
+        .map(checkbox => checkbox.value);
+
+        console.log('brand edA eda',selectedBrands);
+
+    var minPrice = document.getElementById('minPrice').value;
+    var price = document.getElementById('maxPrice').value;
 
     const data = new URLSearchParams({
-        inputValue
+        inputValue,
+        categories: JSON.stringify(selectedCategories),
+        brands: JSON.stringify(selectedBrands),
+        price
     });
+
+    console.log('data check edA eda',data);
+    
 
     fetch(`/SearchProduct?${data.toString()}`, {
         method: 'GET',
@@ -1057,7 +1081,7 @@ function renderProducts (products) {
     .then(response => response.json())  
     .then(response => {
         if (response.success) {
-          displayProducts(response.products);
+            displayProducts(response.products);
         }
     })
     .catch(error => {
@@ -1068,7 +1092,7 @@ document.getElementById('searchInput').addEventListener('input', getInputValue);
 
 function displayProducts(products) {
   const productsGrid = document.querySelector('.inspired_product_area .container .row');
-  productsGrid.innerHTML = ''; // Clear the current products
+  productsGrid.innerHTML = ''; 
 
   if (products.length === 0) {
     productsGrid.innerHTML = `

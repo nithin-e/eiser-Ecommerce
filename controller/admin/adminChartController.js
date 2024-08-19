@@ -34,6 +34,13 @@ function generateTimestamp(dateString) {
 
 
 
+function formatDateToDDMMYYYY(date) {
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+    const year = date.getFullYear();
+    return `${day}-${month}-${year}`;
+}
+
 
 
 
@@ -223,11 +230,11 @@ module.exports = {
                 console.log('End Date:', endDate);
     
                 // Construct the query
-                const formattedStartDatee = startDate;
-                const formattedEndDatee = endDate;
+                const formattedStartDate = startDate;
+                const formattedEndDate= endDate;
     
-                const startFormat = formatDateToDDMMYYYY(formattedStartDatee);
-                const endFormat = formatDateToDDMMYYYY(formattedEndDatee);
+                var startFormat = formatDateToDDMMYYYY(formattedStartDate);
+                var endFormat = formatDateToDDMMYYYY(formattedEndDate);
                 console.log('Formatted Start Date:', startFormat);
                 console.log('Formatted End Date:', endFormat);
     

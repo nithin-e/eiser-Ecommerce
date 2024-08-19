@@ -260,8 +260,8 @@ module.exports = {
             const discounts = Math.floor(discount);
             
             total=discounts
-            subtotal +=product.total * qty-total
-           return product.subtotal=subtotal*product.quantity
+            
+           return subtotal += (product.total-total)*qty
 
           }else if(product.productId.offerPrice != null||0){
             total = parseFloat(product.total);
@@ -274,14 +274,15 @@ module.exports = {
           }
         })
   
+       
         let shippingCost=100
         let grandTotal = subtotal + shippingCost;
-      
       
         
         findCart.cartProducts[productIndex].subtotal=subtotal
         findCart.subtotal = subtotal;
         await findCart.save();
+
 
         var quantityCart=findCart.cartProducts[productIndex].quantity
         res.json({ success: true, subtotal: subtotal,quantityCart,id,findCart,grandTotal});

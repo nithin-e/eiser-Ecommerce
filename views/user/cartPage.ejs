@@ -226,7 +226,7 @@
         .summary-value h6 {
           margin: 0;
           font-size: 16px;
-          color: var(--text-color);
+          /* color: var(--text-color); */
         }
       
         .summary-value h6 {
@@ -494,12 +494,18 @@
                   <!-- Product Rows -->
                   <% if (!cartItems || cartItems.length === 0) { %>
                     <tr>
-                      <td colspan="5">
-                        <h2 style="font-family: monospace;">Your cart is empty</h2>
-                        <p style="font-family: system-ui;font-weight: 600;">Looks like you haven't added anything to your cart yet.</p>
-                        <a href="/productPage" class="gray_btn" style="margin-left: 153px;">Continue Shopping</a>
+                      <td colspan="5" style="text-align: center;">
+                          <!-- <lottie-player src="https://lottie.host/68c59b03-209b-458b-834e-0c11eaf3cb81/cafcfbty4L.json" 
+                                         background="#FFFFFF" 
+                                         speed="1" 
+                                         style="width: 300px; height: 300px; margin: 0 auto;" 
+                                         loop controls autoplay>
+                          </lottie-player> -->
+                          <h2 style="font-family: monospace;">Your cart is empty</h2>
+                          <p style="font-family: system-ui; font-weight: 600;">Looks like you haven't added anything to your cart yet.</p>
+                          <a href="/productPage" class="gray_btn" style="margin-left: 110px;margin-right: 64px;text-decoration: none; ">Continue Shopping</a>
                       </td>
-                    </tr>
+                  </tr>
                   <% } else { %>
                     <% cartItems.forEach(item => { %>
                       <% item.cartProducts.forEach(product => { %>
@@ -685,6 +691,7 @@
         padding: 4px; 
     }
 </style>
+<script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
 
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastify-js/1.12.0/toastify.min.js"></script>
