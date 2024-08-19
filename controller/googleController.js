@@ -44,6 +44,8 @@ module.exports = {
             }
 
         }catch(error){
+            console.log('============,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,===========');
+            
             console.error('Error during Google authentication success handling:', error);
             return res.redirect('/user-login?message=Google authentication failed');
           }
