@@ -5,8 +5,8 @@ const {AUTH_EMAIL,AUTH_PASS} = process.env;
 
 
 
-console.log(AUTH_EMAIL);
-console.log(AUTH_PASS);
+// console.log(AUTH_EMAIL);
+// console.log(AUTH_PASS);
 
 // create a transporter
 let mailTransporter = nodemailer.createTransport({
@@ -26,8 +26,8 @@ mailTransporter.verify((error,success) => {
     if(error) {
         console.log("Error verifying transporter : ",error);
     } else {
-        console.log("Transporter is ready to send Emails");
-        console.log(success);
+        // console.log("Transporter is ready to send Emails");
+        // console.log(success);
     }
 })
 

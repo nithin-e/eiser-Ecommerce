@@ -19,7 +19,6 @@ const mongoose = require('mongoose');
 require('dotenv').config();
 
 const uri = process.env.DB_URL;
-console.log("uriiiii",uri)
 
 mongoose.connect(uri, { serverSelectionTimeoutMS: 5000 }) // Added timeout
   .then(() => {
