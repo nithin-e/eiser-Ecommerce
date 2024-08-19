@@ -23,6 +23,8 @@ module.exports = {
             }
             
             else{
+                console.log('this  is =======================================================hkhkhkjh');
+                
                 // Generate  secure random password
       const randomPassword = Math.random().toString(36).slice(-8); 
       const hashedPassword = await bcrypt.hash(randomPassword, 10);
