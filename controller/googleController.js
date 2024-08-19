@@ -10,12 +10,12 @@ module.exports = {
             console.log('req.user.com555555:', existingUser);
             if(existingUser.status){
                 req.session.user= req.user.displayName;
-                const user=req.session.user
+               
                 req.session.userGoogleLogged = true;
                 req.session.name=name
                 req.session.email = email;
                 req.session.userId = existingUser._id;
-            res.redirect("/",{user})
+            res.redirect("/")
             }else if(!existingUser.status){
                 console.log("eda mone lock ingpoore")
                 req.session.googleblock = "this email id has been blocked"
