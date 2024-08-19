@@ -230,7 +230,7 @@ module.exports = {
       req.session.user = email;
       
 //creting referall link
-const referalLink= `http://localhost:3000/loginAndSignup?refId=${userdata._id}`
+const referalLink= `https://eiser.online/loginAndSignup?refId=${userdata._id}`
 
   userdata.referalLink=referalLink
   await userdata.save()
