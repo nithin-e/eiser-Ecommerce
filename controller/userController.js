@@ -1,7 +1,7 @@
 const { session } = require("passport");
 const userdb = require("../models/usermodel");
 const otpmodel = require("../models/otpmodel");
-const { render } = require("../app");
+// const { render } = require("../app");
 const genOtp = require("../util/otpgenarate");
 const { sendEmail } = require("../util/nodemailer");
 const bcrypt = require("bcrypt");
