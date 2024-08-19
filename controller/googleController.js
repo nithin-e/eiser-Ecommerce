@@ -3,7 +3,7 @@ const bcrypt = require("bcrypt");
 module.exports = {
     googleLoginSucces:async(req,res)=>{
         try{
-            console.log('req.user:', req.user);
+            console.log('req......user:', req.user);
             const { name: { givenName: name }, emails: [{ value: email }] } = req.user;
            
             const existingUser= await Userdb.findOne({email})

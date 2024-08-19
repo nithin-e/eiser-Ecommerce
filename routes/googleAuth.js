@@ -16,6 +16,8 @@ router.get('/login/success', googleController.googleLoginSucces )
 
 // Route for failed login
 router.get('/login/failed',(req,res) => {
+    console.log('google login filled............');
+    
     res.status(401).json({
         error : true,
         message : "Log in Failure"
