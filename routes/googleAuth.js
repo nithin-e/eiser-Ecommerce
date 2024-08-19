@@ -40,7 +40,6 @@ router.get('/auth/login/success', passport.authenticate('google', {
     successRedirect: '/',
     failureRedirect: '/login'
 }));
-
 // Route to initiate Google OAuth login
 router.get('/auth/google',
   passport.authenticate('google', { scope: ['profile', 'email'] })

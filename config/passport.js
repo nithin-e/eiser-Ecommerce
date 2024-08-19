@@ -31,7 +31,7 @@ passport.use(
         {
             clientID: process.env.CLIENT_ID,
             clientSecret: process.env.CLIENT_SECRET,
-            callbackURL: process.env.CLIENT_URL,  // Use the environment variable here
+            callbackURL: process.env.CLIENT_URL,
             scope: ["profile", "email"]
         },
         function (accessToken, refreshToken, profile, callback) {
