@@ -36,7 +36,7 @@ router.get('/google',passport.authenticate('google',{
 // }));
 
 
-app.get('/auth/login/success', passport.authenticate('google', { 
+router.get('/auth/login/success', passport.authenticate('google', { 
     successRedirect: '/',
     failureRedirect: '/login'
 }));
