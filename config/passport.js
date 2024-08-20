@@ -5,24 +5,38 @@ const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 require('dotenv').config();
 
+// passport.use(
+//     new GoogleStrategy(
+//         {
+//             clientID : process.env.CLIENT_ID,
+//             clientSecret : process.env.CLIENT_SECRET,
+//             callbackURL : "https://eiser.online/auth/google/callback",
+//             scope : ["profile","email"]
+//         },
+//         function (accessToken , refreshToken , profile , callback) {
+//             console.log("profile Data")
+//             console.log(profile)
+//             callback(null,profile);
+//         }
+//     )
+// );
+
+
 passport.use(
     new GoogleStrategy(
-        {
-            clientID : process.env.CLIENT_ID,
-            clientSecret : process.env.CLIENT_SECRET,
-            callbackURL : "https://eiser.online/auth/google/callback",
-            scope : ["profile","email"]
-        },
-        function (accessToken , refreshToken , profile , callback) {
-            console.log("profile Data")
-            console.log(profile)
-            callback(null,profile);
-        }
+      {
+        clientID: process.env.CLIENT_ID,
+        clientSecret: process.env.CLIENT_SECRET,
+        callbackURL: "https://eiser.online/auth/google/callback",
+        // callbackURL: "http://localhost:4000/auth/google/callback",
+        scope: ["profile", "email"],
+        prompt: "select_account",
+      },
+      (accessToken, refreshToken, profile, callback) => {
+        callback(null, profile);
+      }
     )
-);
-
-
-
+  );
 
 
 
