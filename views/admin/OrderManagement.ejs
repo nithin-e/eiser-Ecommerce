@@ -76,14 +76,21 @@ select[name="orderStatus"] option:checked {
                       </tr>
                     </thead>
                     <tbody>
-                      <% ORDER.forEach((order, index) => { %>
-                        
+                        <% ORDER.forEach((order, index) => { %>
                           <tr>
-                            <td><img src="<%= order?.products[0].productImage[0] %>" alt="5734" style="width:70px;height:70px;"/></td>
-                            <td><%= order.customer.name %></td>
+                            <td>
+                              <img src="<%= order?.products[0].productImage[0] %>" alt="5734" style="width:70px;height:70px;" />
+                            </td>
+                            <td>
+                              <% if (order.customer && order.customer.name) { %>
+                                <%= order.customer.name %>
+                              <% } else { %>
+                                <em>No Customer Info</em>
+                              <% } %>
+                            </td>
                             <td><%= order.orderID %></td>
                             <td><%= order.paymentMethod %></td>
-                            <td><%= order.products.length%></td>
+                            <td><%= order.products.length %></td>
                             <td><%= order.orderDate %></td>
                             <td>
                               <% 
@@ -95,10 +102,9 @@ select[name="orderStatus"] option:checked {
                             <td>
                               <% if (order.status == 'Cancelled') { %>
                                 <p>Order Cancelled</p>
-                              <% } else if(order.status =='Delivered' ) { %>
+                              <% } else if(order.status == 'Delivered') { %>
                                 <p>Order Delivered</p>
-
-                                <% } else{ %>
+                              <% } else { %>
                                 <select name="orderStatus" data-order-id="<%= order.orderID %>">
                                   <option value="Pending" <%= order.status === 'Pending' ? 'selected' : '' %>>Pending</option>
                                   <option value="Processing" <%= order.status === 'Processing' ? 'selected' : '' %>>Processing</option>
@@ -112,9 +118,9 @@ select[name="orderStatus"] option:checked {
                               <button class="view-button" onclick="OrderFullDetails('<%= order.orderID %>')">View</button>
                             </td>
                           </tr>
-                       
-                      <% }) %>
-                    </tbody>
+                        <% }) %>
+                      </tbody>
+                      
                     
                   </table>
             </div>
