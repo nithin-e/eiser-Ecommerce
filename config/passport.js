@@ -33,6 +33,10 @@ passport.use(
         prompt: "select_account",
       },
       (accessToken, refreshToken, profile, callback) => {
+        console.log('.......========..profile data..==========......');
+        console.log(profile)
+        
+        
         callback(null, profile);
       }
     )
