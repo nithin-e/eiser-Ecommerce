@@ -29,17 +29,12 @@ router.get('/google',passport.authenticate('google',{
 }));
 
 // Callback route for Google OAuth
-// router.get("/google/callback",passport.authenticate('google',{
+router.get("/google/callback",passport.authenticate('google',{
     
-//     successRedirect : process.env.CLIENT_URL,
-//     failureRedirect : "/login/failed"
-// }));
+    successRedirect : process.env.CLIENT_URL,
+    failureRedirect : "/login/failed"
+}))
 
-
-router.get('/auth/login/success', passport.authenticate('google', { 
-    successRedirect: '/',
-    failureRedirect: '/login'
-}));
 // Route to initiate Google OAuth login
 router.get('/auth/google',
   passport.authenticate('google', { scope: ['profile', 'email'] })

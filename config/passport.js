@@ -1,46 +1,29 @@
-// const passport = require('passport');
-// const GoogleStrategy = require('passport-google-oauth20').Strategy;
-// require('dotenv').config();
+
 
 
 const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 require('dotenv').config();
 
-// passport.use(
-//     new GoogleStrategy(
-//         {
-//             clientID : process.env.CLIENT_ID,
-//             clientSecret : process.env.CLIENT_SECRET,
-//             callbackURL : "https://eiser.online/auth/google/callback",
-//             scope : ["profile","email"]
-//         },
-//         function (accessToken , refreshToken , profile , callback) {
-//             console.log("profile Data")
-//             console.log(profile)
-//             callback(null,profile);
-//         }
-//     )
-// );
-
-
-
-
 passport.use(
     new GoogleStrategy(
         {
-            clientID: process.env.CLIENT_ID,
-            clientSecret: process.env.CLIENT_SECRET,
-            callbackURL: process.env.CLIENT_URL,
-            scope: ["profile", "email"]
+            clientID : process.env.CLIENT_ID,
+            clientSecret : process.env.CLIENT_SECRET,
+            callbackURL : "https://eiser.online/auth/google/callback",
+            scope : ["profile","email"]
         },
-        function (accessToken, refreshToken, profile, callback) {
+        function (accessToken , refreshToken , profile , callback) {
             console.log("profile Data")
             console.log(profile)
-            callback(null, profile);
+            callback(null,profile);
         }
     )
 );
+
+
+
+
 
 
 passport.serializeUser((user,done) => {
