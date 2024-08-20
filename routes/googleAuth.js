@@ -6,7 +6,7 @@ require('dotenv').config();
 
 
 
-// router.get('/login/success', googleController.googleLoginSucces )
+ router.get('/login/success', googleController.googleLoginSucces )
 
 
 
@@ -37,8 +37,11 @@ require('dotenv').config();
 // );
 
 
-router.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
-
+router.get('/auth/google', (req, res, next) => {
+    console.log('Attempting Google authentication');
+    passport.authenticate('google', { scope: ['profile', 'email'] })(req, res, next);
+  });
+  
 router.get("/auth/google/callback", passport.authenticate('google', {
   failureRedirect: "/login/failed"
 }), googleController.googleLoginSucces);

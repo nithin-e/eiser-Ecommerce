@@ -27,8 +27,7 @@ passport.use(
       {
         clientID: process.env.CLIENT_ID,
         clientSecret: process.env.CLIENT_SECRET,
-        callbackURL: "https://eiser.online/auth/google/callback",
-        // callbackURL: "http://localhost:4000/auth/google/callback",
+        callbackURL: "https://eiser.online/auth/google/callback",        // callbackURL: "http://localhost:4000/auth/google/callback",
         scope: ["profile", "email"],
         prompt: "select_account",
       },
