@@ -81,43 +81,62 @@ select[name="orderStatus"] option:checked {
                     
                      
                    
-                    <tbody>
-                      <% ORDER.forEach((order, index) => { %>
-                        <% if (order.status == "Delivered") { %>
-                        
-                          <tr>
-                            <td><img src="<%= order?.products[0].productImage[0]  %>" alt="1223345" style="width:70px;height:70px;"/></td>
-                            <td><%= order.customer.name %></td>
-                            <td><%= order.orderID %></td>
-                            <td><%= order.paymentMethod %></td>
-                            <td><%= order.products.length%></td>
-                            <td><%= order.orderDate %></td>
-                            <td><%= order.totalprice %></td>
-                            <td><%= order.returnReason %></td>
-                            <td><%= order.status %></td>
-                            <input  type="hidden" id="returnAmound" value="<%= order.totalprice %>">
-                            <td><%= order. userRequest %></td>
-                            <% if (order.userRequest !== "No Request Yet") { %>
+                    <t<tbody>
+                        <% ORDER.forEach((order, index) => { %>
+                          <% if (order.status == "Delivered") { %>
+                            <tr>
+                              <td>
+                                <img src="<%= order?.products[0]?.productImage[0]  %>" alt="1223345" style="width:70px;height:70px;"/>
+                              </td>
+                              <td>
+                                <%= order.customer ? order.customer.name : 'N/A' %>
+                              </td>
+                              <td>
+                                <%= order.orderID %>
+                              </td>
+                              <td>
+                                <%= order.paymentMethod %>
+                              </td>
+                              <td>
+                                <%= order.products.length %>
+                              </td>
+                              <td>
+                                <%= order.orderDate %>
+                              </td>
+                              <td>
+                                <%= order.totalprice %>
+                              </td>
+                              <td>
+                                <%= order.returnReason %>
+                              </td>
+                              <td>
+                                <%= order.status %>
+                              </td>
+                              <input type="hidden" id="returnAmound" value="<%= order.totalprice %>">
+                              <td>
+                                <%= order.userRequest %>
+                              </td>
+                              <% if (order.userRequest !== "No Request Yet") { %>
                                 <td>
-                              <select name="orderStatus" data-order-id="<%= order.orderID %>">
-                                <option value="Pending" >pending</option>
-                                <option value="Approved" <%= order.Itemstatus === 'ReturnApproved' ? 'selected' : '' %>>Approved</option>
-                               <option value="Reject" <%= order.Itemstatus === 'ReturnReject' ? 'selected' : '' %>>Reject</option>
-                                </select>
-                             </td>
-                             <% }else{ %>
-                                <td>
-                                   <p>Waiting?</p>
-                                  </td>
-                                <%}%>
-                                <td>
-                                  <button class="view-button" onclick="OrderFullDetails('<%= order.orderID %>')">View</button>
+                                  <select name="orderStatus" data-order-id="<%= order.orderID %>">
+                                    <option value="Pending">Pending</option>
+                                    <option value="Approved" <%= order.Itemstatus === 'ReturnApproved' ? 'selected' : '' %>>Approved</option>
+                                    <option value="Reject" <%= order.Itemstatus === 'ReturnReject' ? 'selected' : '' %>>Reject</option>
+                                  </select>
                                 </td>
-                          </tr>
-                        <% } %>
-                      <% }) %>
-                    
-                    </tbody>
+                              <% } else { %>
+                                <td>
+                                  <p>Waiting?</p>
+                                </td>
+                              <% } %>
+                              <td>
+                                <button class="view-button" onclick="OrderFullDetails('<%= order.orderID %>')">View</button>
+                              </td>
+                            </tr>
+                          <% } %>
+                        <% }) %>
+                      </tbody>
+                      
                    
                   </table>
             </div>
