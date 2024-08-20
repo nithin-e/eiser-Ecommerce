@@ -6,40 +6,42 @@ require('dotenv').config();
 
 
 
-// Route for successful login
-router.get('/login/success', googleController.googleLoginSucces )
+// router.get('/login/success', googleController.googleLoginSucces )
 
 
 
 
 
 
-// Route for failed login
-router.get('/login/failed',(req,res) => {
-    console.log('google login filled............');
+// router.get('/login/failed',(req,res) => {
+//     console.log('google login filled............');
     
-    res.status(401).json({
-        error : true,
-        message : "Log in Failure"
-    })
-});
+//     res.status(401).json({
+//         error : true,
+//         message : "Log in Failure"
+//     })
+// });
 
-router.get('/google',passport.authenticate('google',{
-    scope : ['email','profile']
-}));
+// router.get('/google',passport.authenticate('google',{
+//     scope : ['email','profile']
+// }));
 
-// Callback route for Google OAuth
-router.get("/google/callback",passport.authenticate('google',{
+// router.get("/google/callback",passport.authenticate('google',{
     
-    successRedirect : process.env.CLIENT_URL,
-    failureRedirect : "/login/failed"
-}))
+//     successRedirect : process.env.CLIENT_URL,
+//     failureRedirect : "/login/failed"
+// }))
 
-// Route to initiate Google OAuth login
-router.get('/auth/google',
-  passport.authenticate('google', { scope: ['profile', 'email'] })
-);
+// router.get('/auth/google',
+//   passport.authenticate('google', { scope: ['profile', 'email'] })
+// );
 
+
+router.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
+
+router.get("/auth/google/callback", passport.authenticate('google', {
+  failureRedirect: "/login/failed"
+}), googleController.googleLoginSucces);
 
 
 
