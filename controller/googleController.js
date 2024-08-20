@@ -2,6 +2,7 @@ const Userdb=require("../models/usermodel")
 const bcrypt = require("bcrypt");
 module.exports = {
     googleLoginSucces: async (req, res) => {
+        
         try {
           console.log('req.user:', req.user);
           

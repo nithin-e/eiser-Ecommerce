@@ -13,28 +13,6 @@ require('dotenv').config();
 
 
 
-// router.get('/login/failed',(req,res) => {
-//     console.log('google login filled............');
-    
-//     res.status(401).json({
-//         error : true,
-//         message : "Log in Failure"
-//     })
-// });
-
-// router.get('/google',passport.authenticate('google',{
-//     scope : ['email','profile']
-// }));
-
-// router.get("/google/callback",passport.authenticate('google',{
-    
-//     successRedirect : process.env.CLIENT_URL,
-//     failureRedirect : "/login/failed"
-// }))
-
-// router.get('/auth/google',
-//   passport.authenticate('google', { scope: ['profile', 'email'] })
-// );
 
 
 router.get('/google', (req, res, next) => {
