@@ -993,13 +993,14 @@
 
            if(Total>1000){
             Toastify({
-        text: "Orders above Rs 1000 are not eligible for Cash on Delivery (COD).",
-        duration: 3000,
-        close: true,
-        gravity: "top",
-        position: "center",
-        backgroundColor: "#71cd14",
-      }).showToast();
+              text: "Orders above Rs 1000 are not eligible for Cash on Delivery (COD).",
+              duration: 3000,
+              close: true,
+              gravity: "top",
+              position: "center",
+              backgroundColor:' #71cd14',
+              className: "toastify-custom",
+            }).showToast();
       return;
            }
            
@@ -1043,13 +1044,14 @@
         // Show error if no address or payment method selected
         console.log("No address or payment method selected");
         Toastify({
-            text: "Please select an address and a payment method.",
-            duration: 3000,
-            close: true,
-            gravity: "top",
-            position: "center",
-            backgroundColor: "#71cd14",
-        }).showToast();
+          text: "Please select an address and a payment method.",
+              duration: 3000,
+              close: true,
+              gravity: "top",
+              position: "center",
+              backgroundColor:' #71cd14',
+              className: "toastify-custom",
+            }).showToast();
     }
 }
 
@@ -1525,9 +1527,8 @@ function applyCoupon(code, Amount, minAmount) {
   const Grandtotal = parseFloat(subtotalElement.innerText.replace('₹', '').trim());
   
   if (minAmount > Grandtotal) {
-  
     Toastify({
-             text: "Make sure the minimum purchase amount is crossed or not.",
+              text: "Make sure the minimum purchase amount is crossed or not.",
               duration: 3000,
               close: true,
               gravity: "top",
@@ -1565,21 +1566,16 @@ function applyCoupon(code, Amount, minAmount) {
         document.getElementById("couopn-Id").value=data.Amount
         modal.style.display = "none";
         Toastify({
-        text: "Coupon applied successfully!",
-        duration: 3000,
-        close: true,
-        gravity: "top", 
-        position: "center", 
-        backgroundColor: "linear-gradient(to right, #00b09b, #96c93d)",
-        stopOnFocus: true, 
-      }).showToast();
+             text: "Coupon applied successfully!",
+              duration: 3000,
+              close: true,
+              gravity: "top",
+              position: "center",
+              backgroundColor:' #71cd14',
+              className: "toastify-custom",
+            }).showToast();
 
       console.log(',,,,,,,,myrrrrrrrrrr,,,,,,,,',data.Amount);
-      // document.getElementById("couopn-Id").value=data.Amount
-      // PRODUCTINFO(Grandtotal.toString(), data.Amount.toString());
-      
-     
-
       }
     })
     .catch(error => {
@@ -1626,14 +1622,14 @@ function DeleteCoupon(amount) {
       .then(response => {
         if (response.success) {
           Toastify({
-            text: "Coupon Removed successfully!",
-            duration: 3000,
-            close: true,
-            gravity: "top",
-            position: "center",
-            backgroundColor: "linear-gradient(to right, #00b09b, #96c93d)",
-            stopOnFocus: true,
-          }).showToast();
+            text: "Coupon applied successfully!",
+              duration: 3000,
+              close: true,
+              gravity: "top",
+              position: "center",
+              backgroundColor:' #71cd14',
+              className: "toastify-custom",
+            }).showToast();
           setTimeout(() => {
             window.location.reload();
           }, 2000);

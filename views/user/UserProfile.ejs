@@ -245,7 +245,8 @@
                     
                 </div>
                 <p><strong>Email:</strong> <%= userInfo.email %> </p>
-                <p><strong>Referral link:</strong> <a href="#"><%= userInfo.referalLink %></a></p>
+                 <!-- <a href="#"><button onclick="copyLink('<%= userInfo.referalLink %>')">Copy Link</button></p> -->
+                    <p><strong>Referral link:</strong><button class="copy-button" onclick="copyLink('<%= userInfo.referalLink %>')">Copy Link</button></p>
                 <p><strong>Password:</strong> *********** <a href="#" onclick="openModal()">Change Password</a></p>
             </div>
         </div>
@@ -287,8 +288,33 @@
 
 
 
+
 <%- include('footer') %>
 <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+
+<script>
+       function copyLink(referalLink ) {
+            
+            
+            // Create a temporary textarea element
+            const textarea = document.createElement('textarea');
+            textarea.value = referalLink;
+            document.body.appendChild(textarea);
+            
+            // Select and copy the text
+            textarea.select();
+            document.execCommand('copy');
+            
+            // Remove the temporary textarea
+            document.body.removeChild(textarea);
+            
+            // Alert the user or provide feedback
+            alert('Link copied to clipboard!');
+        }
+</script>
+
+
+
 <script>
     function toggleEdit() {
         var textElement = document.getElementById('nameText');
