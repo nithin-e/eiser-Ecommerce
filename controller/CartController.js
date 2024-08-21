@@ -149,7 +149,7 @@ module.exports = {
       }
     }else{
       console.log("ithil aaaaahada praashnam");
-      res.json({ success: false, err: "login and explroe more things" });
+      res.json({ success: false});
     }
     } catch (error) {
       console.error("Error storing cart data:", error);

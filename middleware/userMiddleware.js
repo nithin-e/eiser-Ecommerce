@@ -4,10 +4,9 @@ const userdb=require("../models/usermodel")
 //back preventing
 const Authenticated = (req, res, next) => {
     if(req.session.user){
-        console.log("session have user right",req.session.user);
+
         res.redirect("/")
     }else{
-        console.log("session have user vvvvvvv right");
         next()
     }
 }
@@ -17,9 +16,9 @@ const userthere= (req, res, next) => {
     if(req.session.user){
       return next()
     }else{
+        console.log('hi one');
         
-        // req.session.cartError = "If you want to go to the cart, you must be logged in.";
-        return res.redirect("/");
+        return res.redirect("/login");
     }
 }
 
@@ -29,6 +28,7 @@ const checkOtpVerfy = (req, res, next) => {
     if(req.session.checkOtpVerfy){
        return next();
     }else{
+        console.log('hi one2');
     return res.redirect("/")
     }
 }
@@ -38,14 +38,13 @@ const checkOtpVerfy = (req, res, next) => {
 
 const blockedUser= async(req,res,next)=>{
    
-    console.log("user hhhhhhhhhhhh ",req.session.userId)
     const id = req.session.userId
     
     
     const User=await userdb.findById(id)
     console.log('fdfdfffdffdfdfdfdfff',User);
     if(!User){
-        console.log("nooo userrr");
+       
         next()
     }
     else if(!User.status){
@@ -73,8 +72,5 @@ module.exports ={
     Authenticated,
     checkOtpVerfy,
     blockedUser,
-    // chekkingUser,
-    // CheckingUserInCart,
-    // CheckingUserInCartBotton,
     userthere
 }

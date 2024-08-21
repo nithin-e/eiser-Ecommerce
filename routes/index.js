@@ -95,7 +95,7 @@ router.get('/UserWallet',userthere,userProfileController.USERWALLET)
 
 // cart side..............
 router.get('/View-cart',userthere,CartController.ShowCartPage)
-router.get('/AddToBag/:id',CartController.STOREDATABAG)
+router.get('/AddToBag/:id',userthere,CartController.STOREDATABAG)
 router.post('/deleteCart/:id',userthere,CartController.deleteCart)
 router.post('/updateCart/:id',userthere,CartController.updateQuantity)
 router.post('/decreseBotton/:id',userthere,CartController.decreaseButton)
@@ -123,7 +123,6 @@ router.post ("/faildOrder",userthere,ORDERCONTROLLER.RazorFailedOrder)
 router.post('/repayment',userthere,ORDERCONTROLLER.ContinuePayment)
 
 
-// router.post('CancellEachProduct',ORDERCONTROLLER.SingleOrderRemove)
 
 //coupon
 router.post('/couponDiscount',userthere,ORDERCONTROLLER.discountCoupon)

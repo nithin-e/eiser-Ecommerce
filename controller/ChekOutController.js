@@ -64,6 +64,7 @@ module.exports={
                 addresses: [AddressData]
                   });
                   await userAddresses.save();
+                  console.log('mandaaaaaaaaaaaaaapyeeeeeeeee11111111111111eeeeeeeeeeeeee');
                   console.log("New Address Successfully Created");
                res.json({success:true,msg:"New Address Successfully Created"})
 
@@ -71,6 +72,8 @@ module.exports={
             } else {
                 userAddresses.addresses.push(AddressData);
                 await userAddresses.save();
+                console.log('mandaaaaaaaaaaaaaapyeeeeeeeeeeeeeeeeeeeeeee');
+                
                 res.json({success:true, msg:"New Address Successfully Added"}) 
             }
 
