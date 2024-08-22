@@ -245,7 +245,6 @@
                     
                 </div>
                 <p><strong>Email:</strong> <%= userInfo.email %> </p>
-                    <!-- <p><strong>Referral link:</strong><button class="copy-button" onclick="copyLink('<%= userInfo.referalLink %>')">Copy Link</button></p> -->
                     <div class="referral-container">
                         <p>Share your referral link:</p>
                         <div class="referral-link-box">
@@ -298,6 +297,7 @@
 
 <style>
     .referral-container {
+        margin-left: -4px;
       font-family: Arial, sans-serif;
       max-width: 400px;
       margin: 20px auto;
@@ -354,6 +354,23 @@
 
 <%- include('footer') %>
 <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+
+
+<script>
+    function copyReferralLink() {
+      var copyText = document.getElementById("referralLink");
+      copyText.select();
+      copyText.setSelectionRange(0, 99999);
+      document.execCommand("copy");
+      
+      var copyMessage = document.getElementById("copyMessage");
+      copyMessage.textContent = "Referral link copied to clipboard!";
+      
+      setTimeout(function() {
+        copyMessage.textContent = "";
+      }, 3000);
+    }
+    </script>
 
 <script>
        function copyLink(referalLink ) {

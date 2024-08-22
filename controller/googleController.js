@@ -43,6 +43,11 @@ module.exports = {
               status: true
             });
       
+
+            const referalLink= `https://eiser.online/loginAndSignup?refId=${user._id}`
+
+              user.referalLink=referalLink
+              await user.save()
             req.session.user = displayName;
             req.session.userGoogleLogged = true;
             req.session.name = userName;
