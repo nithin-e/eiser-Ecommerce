@@ -245,8 +245,18 @@
                     
                 </div>
                 <p><strong>Email:</strong> <%= userInfo.email %> </p>
-                 <!-- <a href="#"><button onclick="copyLink('<%= userInfo.referalLink %>')">Copy Link</button></p> -->
-                    <p><strong>Referral link:</strong><button class="copy-button" onclick="copyLink('<%= userInfo.referalLink %>')">Copy Link</button></p>
+                    <!-- <p><strong>Referral link:</strong><button class="copy-button" onclick="copyLink('<%= userInfo.referalLink %>')">Copy Link</button></p> -->
+                    <div class="referral-container">
+                        <p>Share your referral link:</p>
+                        <div class="referral-link-box">
+                          <input type="text" id="referralLink" value="<%= userInfo.referalLink %>" readonly>
+                          <button id="copyButton" onclick="copyReferralLink()">
+                            <span class="button-text">Copy</span>
+                            <span class="icon">📋</span>
+                          </button>
+                        </div>
+                        <p id="copyMessage" class="copy-message"></p>
+                      </div>
                 <p><strong>Password:</strong> *********** <a href="#" onclick="openModal()">Change Password</a></p>
             </div>
         </div>
@@ -286,7 +296,60 @@
     </form>
 </div>
 
-
+<style>
+    .referral-container {
+      font-family: Arial, sans-serif;
+      max-width: 400px;
+      margin: 20px auto;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      background-color: #f8f9fa;
+    }
+    
+    .referral-link-box {
+      display: flex;
+      margin-bottom: 10px;
+    }
+    
+    #referralLink {
+      flex-grow: 1;
+      padding: 10px;
+      border: 1px solid #ced4da;
+      border-radius: 4px 0 0 4px;
+      font-size: 14px;
+    }
+    
+    #copyButton {
+      padding: 10px 15px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 0 4px 4px 0;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      display: flex;
+      align-items: center;
+    }
+    
+    #copyButton:hover {
+      background-color: #0056b3;
+    }
+    
+    .button-text {
+      margin-right: 5px;
+    }
+    
+    .icon {
+      font-size: 18px;
+    }
+    
+    .copy-message {
+      font-size: 14px;
+      color: #28a745;
+      margin-top: 10px;
+    }
+    </style>
 
 
 <%- include('footer') %>
